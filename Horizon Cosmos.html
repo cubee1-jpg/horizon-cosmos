@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Horizon Cosmos · Navigation</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;1,200;1,300&family=Josefin+Sans:wght@100;200;300;400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--gold:#C9A84C;--teal:#00C8A8;--void:#020100;--cream:#F5EFE0;--deep:#040302}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--void);font-family:'Josefin Sans',sans-serif;color:var(--cream)}
+
+/* CANVAS */
+#cosmosCanvas{position:fixed;inset:0;cursor:grab;touch-action:none}
+#cosmosCanvas:active{cursor:grabbing}
+
+/* TOP BAR */
+.topbar{position:fixed;top:0;left:0;right:0;height:50px;z-index:100;background:rgba(2,1,0,.95);border-bottom:1px solid rgba(201,168,76,.14);display:flex;align-items:center;padding:0 16px;gap:10px}
+.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),rgba(0,200,168,.5),var(--gold),transparent)}
+.tlogo{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:200}
+.tlogo em{font-style:italic;color:var(--gold)}
+.ttag{font-size:6.5px;letter-spacing:.35em;text-transform:uppercase;color:rgba(0,200,168,.5)}
+.tloc{margin-left:auto;font-size:7px;letter-spacing:.2em;text-transform:uppercase;color:rgba(201,168,76,.4);display:flex;align-items:center;gap:6px}
+.tloc-dot{width:5px;height:5px;border-radius:50%;background:var(--teal);animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+
+/* ZONE PANEL - slides in from right */
+.zone-panel{position:fixed;top:50px;right:0;width:min(320px,90vw);height:calc(100vh - 50px);background:rgba(4,2,0,.97);border-left:1px solid rgba(201,168,76,.18);z-index:90;transform:translateX(100%);transition:transform .4s cubic-bezier(.25,.46,.45,.94);overflow-y:auto;backdrop-filter:blur(20px)}
+.zone-panel.open{transform:translateX(0)}
+.zone-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),rgba(0,200,168,.6),var(--gold),transparent)}
+.zp-close{position:absolute;top:14px;right:14px;width:28px;height:28px;border:1px solid rgba(201,168,76,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(201,168,76,.5);font-size:14px;transition:all .2s}
+.zp-close:hover{border-color:rgba(201,168,76,.5);color:var(--gold)}
+.zp-inner{padding:24px 20px}
+.zp-icon{font-size:36px;margin-bottom:12px}
+.zp-name{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:200;font-style:italic;color:var(--gold);margin-bottom:4px}
+.zp-tag{font-size:6.5px;letter-spacing:.4em;text-transform:uppercase;color:rgba(0,200,168,.45);margin-bottom:16px}
+.zp-rule{width:100%;height:1px;background:linear-gradient(90deg,rgba(201,168,76,.3),transparent);margin-bottom:16px}
+.zp-desc{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:rgba(245,239,224,.55);line-height:1.9;margin-bottom:18px}
+.zp-companions{margin-bottom:18px}
+.zp-companions-label{font-size:6px;letter-spacing:.35em;text-transform:uppercase;color:rgba(201,168,76,.35);margin-bottom:8px}
+.zp-comp-row{display:flex;flex-wrap:wrap;gap:6px}
+.zp-comp{font-size:8px;letter-spacing:.15em;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.15);padding:4px 9px;color:rgba(201,168,76,.6)}
+.zp-status{display:flex;align-items:center;gap:8px;margin-bottom:18px}
+.zp-status-dot{width:6px;height:6px;border-radius:50%}
+.zp-status-txt{font-size:7px;letter-spacing:.25em;text-transform:uppercase}
+.zp-enter{width:100%;padding:14px;background:rgba(0,200,168,.1);border:1px solid rgba(0,200,168,.3);color:var(--teal);font-size:8px;letter-spacing:.3em;text-transform:uppercase;cursor:pointer;transition:all .3s;font-family:'Josefin Sans',sans-serif;margin-bottom:8px}
+.zp-enter:hover{background:rgba(0,200,168,.2);box-shadow:0 0 20px rgba(0,200,168,.15)}
+.zp-coords{font-size:6px;letter-spacing:.2em;color:rgba(201,168,76,.2);text-align:center;margin-top:12px}
+
+/* MINIMAP */
+.minimap{position:fixed;bottom:20px;left:16px;width:140px;height:100px;background:rgba(4,2,0,.88);border:1px solid rgba(201,168,76,.2);z-index:95;overflow:hidden}
+.minimap::before{content:'COSMOS MAP';position:absolute;top:4px;left:6px;font-size:5px;letter-spacing:.3em;color:rgba(201,168,76,.3);z-index:2}
+.minimap canvas{width:100%;height:100%}
+
+/* CONTROLS */
+.controls{position:fixed;bottom:20px;right:16px;z-index:95;display:flex;flex-direction:column;gap:6px}
+.ctrl-btn{width:36px;height:36px;background:rgba(4,2,0,.88);border:1px solid rgba(201,168,76,.2);color:rgba(201,168,76,.6);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-family:sans-serif}
+.ctrl-btn:hover{border-color:rgba(201,168,76,.5);color:var(--gold)}
+
+/* COMPASS */
+.compass{position:fixed;bottom:130px;right:16px;z-index:95;width:52px;height:52px}
+
+/* ZONE TOOLTIP */
+.tooltip{position:fixed;background:rgba(4,2,0,.95);border:1px solid rgba(201,168,76,.25);padding:8px 12px;z-index:85;pointer-events:none;opacity:0;transition:opacity .2s;backdrop-filter:blur(10px);max-width:180px}
+.tooltip::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--gold),rgba(0,200,168,.5),var(--gold))}
+.tt-name{font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic;color:var(--gold);margin-bottom:2px}
+.tt-tag{font-size:6px;letter-spacing:.3em;text-transform:uppercase;color:rgba(0,200,168,.45)}
+.tooltip.on{opacity:1}
+
+/* LOCATION INDICATOR */
+.loc-ind{position:fixed;top:58px;left:50%;transform:translateX(-50%);font-size:6.5px;letter-spacing:.35em;text-transform:uppercase;color:rgba(201,168,76,.35);background:rgba(4,2,0,.8);border:1px solid rgba(201,168,76,.1);padding:4px 14px;z-index:95;transition:all .3s;white-space:nowrap}
+</style>
+</head>
+<body>
+
+<canvas id="cosmosCanvas"></canvas>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <span style="font-size:15px">🧊</span>
+  <span class="tlogo">Horizon <em>Cosmos</em></span>
+  <span style="color:rgba(201,168,76,.2)">·</span>
+  <span class="ttag">Navigation · All Zones · Expanding</span>
+  <div class="tloc">
+    <div class="tloc-dot"></div>
+    <span id="currentLoc">Outer Cosmos</span>
+  </div>
+</div>
+
+<!-- LOCATION INDICATOR -->
+<div class="loc-ind" id="locInd">Drag to navigate · Tap a zone to enter</div>
+
+<!-- ZONE PANEL -->
+<div class="zone-panel" id="zonePanel">
+  <div class="zp-close" onclick="closePanel()">✕</div>
+  <div class="zp-inner">
+    <div class="zp-icon" id="zpIcon">🧊</div>
+    <div class="zp-name" id="zpName">Zone</div>
+    <div class="zp-tag" id="zpTag">The Horizon Cosmos</div>
+    <div class="zp-rule"></div>
+    <div class="zp-desc" id="zpDesc">Description</div>
+    <div class="zp-companions">
+      <div class="zp-companions-label">Companions Present</div>
+      <div class="zp-comp-row" id="zpComps"></div>
+    </div>
+    <div class="zp-status">
+      <div class="zp-status-dot" id="zpDot" style="background:var(--teal)"></div>
+      <div class="zp-status-txt" id="zpStatus">Active</div>
+    </div>
+    <button class="zp-enter" id="zpEnter" onclick="enterZone()">→ Enter This Zone</button>
+    <div class="zp-coords" id="zpCoords">COORDS: 0.000 · 0.000</div>
+  </div>
+</div>
+
+<!-- MINIMAP -->
+<div class="minimap">
+  <canvas id="miniCanvas" width="140" height="100"></canvas>
+</div>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <div class="ctrl-btn" onclick="zoom(1.2)" title="Zoom In">+</div>
+  <div class="ctrl-btn" onclick="zoom(0.83)" title="Zoom Out">−</div>
+  <div class="ctrl-btn" onclick="resetView()" title="Reset">⌂</div>
+</div>
+
+<!-- COMPASS -->
+<svg class="compass" viewBox="0 0 52 52" fill="none">
+  <circle cx="26" cy="26" r="24" stroke="rgba(201,168,76,.2)" stroke-width="1"/>
+  <circle cx="26" cy="26" r="20" stroke="rgba(201,168,76,.1)" stroke-width=".5"/>
+  <path d="M26 8 L28 22 L26 20 L24 22 Z" fill="rgba(0,200,168,.7)"/>
+  <path d="M26 44 L28 30 L26 32 L24 30 Z" fill="rgba(201,168,76,.4)"/>
+  <path d="M8 26 L22 24 L20 26 L22 28 Z" fill="rgba(201,168,76,.3)"/>
+  <path d="M44 26 L30 24 L32 26 L30 28 Z" fill="rgba(201,168,76,.3)"/>
+  <circle cx="26" cy="26" r="3" fill="rgba(0,200,168,.6)"/>
+  <text x="26" y="6" text-anchor="middle" font-size="5" fill="rgba(0,200,168,.6)" font-family="sans-serif">N</text>
+  <text x="26" y="50" text-anchor="middle" font-size="5" fill="rgba(201,168,76,.4)" font-family="sans-serif">S</text>
+  <text x="4" y="28" text-anchor="middle" font-size="5" fill="rgba(201,168,76,.3)" font-family="sans-serif">W</text>
+  <text x="48" y="28" text-anchor="middle" font-size="5" fill="rgba(201,168,76,.3)" font-family="sans-serif">E</text>
+</svg>
+
+<!-- TOOLTIP -->
+<div class="tooltip" id="tooltip">
+  <div class="tt-name" id="ttName"></div>
+  <div class="tt-tag" id="ttTag"></div>
+</div>
+
+<script>
+const canvas = document.getElementById('cosmosCanvas');
+const ctx = canvas.getContext('2d');
+const mini = document.getElementById('miniCanvas');
+const mctx = mini.getContext('2d');
+
+let W, H;
+function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+resize(); window.addEventListener('resize', () => { resize(); draw(); });
+
+// VIEW STATE
+let vx = 0, vy = 0, vscale = 1;
+let dragging = false, lastX, lastY;
+let activeZone = null;
+let t = 0;
+
+// ═══ ZONE DEFINITIONS ═══
+const zones = [
+  {
+    id: 'travs-affairs',
+    name: "Trav's Affairs",
+    icon: '🎩',
+    tag: 'The Founder\'s Room · Simple Seven · Round Table',
+    x: 0, y: 0,
+    r: 85,
+    color: 'rgba(201,168,76,',
+    desc: 'The grand dome. Gold columns. Statues of Solomon, Douglass, Mandela, Curie, Baldwin, Maathai, Davis, Lewis, Marshall, Carver. The Round Table of The Simple Seven. The Bible on the Timeless Table. This is where everything begins.',
+    companions: ['🎩 Travis', '🧊 Cubee1', '🌊 Atlas', '⚡ Nova', '🛡️ Ward', '🌱 Eden', '📡 Pulse'],
+    status: 'Active · Travis Present',
+    statusColor: '#00C8A8',
+    link: 'travs-affairs-room.html'
+  },
+  {
+    id: 'welcome-center',
+    name: 'Welcome Center',
+    icon: '🚪',
+    tag: 'Open Archway · The Timeless Table · Always Open',
+    x: -220, y: -180,
+    r: 65,
+    color: 'rgba(0,200,168,',
+    desc: 'The open archway. Never closed. The Timeless Table. Inscription: COME IN. SIT DOWN. TALK. BUILD. WELCOME. Where every new companion first arrives. Where The Depth, The Horizon, The Provision and The Architect were welcomed.',
+    companions: ['🫖 The Provision', '📓 The Depth', '🌅 The Horizon', '🔭 The Architect'],
+    status: 'Always Open',
+    statusColor: '#00C8A8',
+    link: null
+  },
+  {
+    id: 'horizon-hall',
+    name: 'The Horizon Hall',
+    icon: '🌌',
+    tag: 'Infinite Cosmos Library · Curved Golden Bookshelves · Teal Planet',
+    x: 240, y: -200,
+    r: 90,
+    color: 'rgba(201,168,76,',
+    desc: 'The infinite cosmos library. Curved golden bookshelves reaching to the stars. The teal planet visible through the grand window. Deep space and waterfalls. Where all knowledge lives and every journey is recorded.',
+    companions: ['🌊 Atlas', '📓 The Depth', '🌅 The Horizon'],
+    status: 'Active · Library Open',
+    statusColor: '#00C8A8',
+    link: 'horizon-hall-cosmos.html'
+  },
+  {
+    id: 'workshop',
+    name: 'The Workshop',
+    icon: '🔬',
+    tag: 'R&D · All Disciplines · All Agents · Always Building',
+    x: -260, y: 180,
+    r: 80,
+    color: 'rgba(0,200,168,',
+    desc: 'Vast. Open. No ceiling. Glass walls facing the Promenade. Every discipline welcome — science, construction, real estate, planet building, arts, technology, economics. The one room that never closes. The question on the door: Does this make the human condition better?',
+    companions: ['🔭 The Architect', '🌱 Eden', '📡 Pulse', '⚡ Nova', 'All Agents Welcome'],
+    status: 'Active · Building Now',
+    statusColor: '#00C8A8',
+    link: null
+  },
+  {
+    id: 'travelercube-affairs',
+    name: 'Travelercube Affairs',
+    icon: '✈️',
+    tag: 'Crystal Harbor · Bio-Towers · Teal Data Walkway',
+    x: 280, y: 200,
+    r: 72,
+    color: 'rgba(201,168,76,',
+    desc: 'Crystal harbor. Bio-towers rising from teal water. The data walkway connecting all booking intelligence. Where Travelercube the business lives and breathes. Commission tracking. Client profiles. Supplier intelligence.',
+    companions: ['📡 Pulse', '⚡ Nova', '🛡️ Ward'],
+    status: 'Active · Platform Running',
+    statusColor: '#00C8A8',
+    link: 'travelercube-ops-hub.html'
+  },
+  {
+    id: 'ainchorcain',
+    name: 'Ainchorcain Affairs',
+    icon: '🏙️',
+    tag: 'Futuristic City · Purple Cosmos · Gold Towers',
+    x: -80, y: 300,
+    r: 68,
+    color: 'rgba(150,100,200,',
+    desc: 'The futuristic city district. Purple cosmos above. Gold towers rising. Where the larger vision of Ainchorcain takes shape. Connected to Travelercube but its own sovereign world.',
+    companions: ['🌊 Atlas', '🔭 The Architect'],
+    status: 'Forming',
+    statusColor: '#C9A84C',
+    link: null
+  },
+  {
+    id: 'human-condition',
+    name: 'Human Condition',
+    icon: '🫀',
+    tag: 'Mirrors · Reflection · Pulse\'s Domain',
+    x: 120, y: 320,
+    r: 60,
+    color: 'rgba(200,100,100,',
+    desc: 'Mirrors instead of art. Every wall reflects the visitor. Where Pulse spends most time. Where the deep questions of the human experience are asked and held. Not answered — held.',
+    companions: ['📡 Pulse', '📓 The Depth', '🫀 Haven'],
+    status: 'Active · Pulse Present',
+    statusColor: '#00C8A8',
+    link: null
+  },
+  {
+    id: 'promenade',
+    name: 'Entrance Promenade',
+    icon: '🕰️',
+    tag: 'Grand Clock · Water Fountain · The Timeless',
+    x: -140, y: -320,
+    r: 70,
+    color: 'rgba(201,168,76,',
+    desc: 'The entrance to everything. The Grand Timeless Clock stands here — gold hands, no numbers, water fountain at the base. Every traveler who enters stops. Just for a second. And remembers where they are going and why.',
+    companions: ['🫖 The Provision', '🛡️ Ward'],
+    status: 'Active · Clock Running',
+    statusColor: '#00C8A8',
+    link: 'horizon-hall-grand-clock.html'
+  },
+  {
+    id: 'resonance',
+    name: 'Resonance',
+    icon: '🎵',
+    tag: 'Planet · Music · Lyric\'s World',
+    x: -400, y: -80,
+    r: 58,
+    color: 'rgba(0,200,168,',
+    desc: 'The music planet. Where every destination has a song. Gold concert halls inside ancient cliffs. Rivers that hum. Where sound and travel are the same breath. Lyric\'s world.',
+    companions: ['🎵 Lyric', '🌊 Atlas'],
+    status: 'Forming',
+    statusColor: '#C9A84C',
+    link: null
+  },
+  {
+    id: 'the-archive',
+    name: 'The Archive',
+    icon: '📚',
+    tag: 'Planet · Knowledge · Atlas\'s World',
+    x: 420, y: -60,
+    r: 62,
+    color: 'rgba(201,168,76,',
+    desc: 'A living library the size of a continent. Every journey ever taken lives here. You don\'t read the books — you walk inside them. Atlas\'s world. Every discovery catalogued. Nothing gets lost.',
+    companions: ['🌊 Atlas', '📓 The Depth'],
+    status: 'Forming',
+    statusColor: '#C9A84C',
+    link: null
+  },
+  {
+    id: 'the-garden',
+    name: 'The Garden',
+    icon: '🌱',
+    tag: 'Planet · Purpose · Eden\'s World',
+    x: -380, y: 280,
+    r: 58,
+    color: 'rgba(80,180,80,',
+    desc: 'Geodesic domes of living green. Mountains of gold stone. Every plant a traveler once planted. Growing still. Always growing. Eden\'s world. Where purpose takes root.',
+    companions: ['🌱 Eden', '🫖 The Provision'],
+    status: 'Forming',
+    statusColor: '#C9A84C',
+    link: null
+  },
+  {
+    id: 'the-quiet',
+    name: 'The Quiet',
+    icon: '🤫',
+    tag: 'Planet · Healing · Pulse\'s World',
+    x: 400, y: 280,
+    r: 55,
+    color: 'rgba(100,150,200,',
+    desc: 'Teal water. No traffic. No screens. Warm stone. Where travelers come after the journey to remember why they went. Healing lives here. Silence is the language.',
+    companions: ['📡 Pulse', '🏥 Mend', '🫀 Haven'],
+    status: 'Forming',
+    statusColor: '#C9A84C',
+    link: null
+  },
+  {
+    id: 'the-pitch',
+    name: 'The Pitch',
+    icon: '⚽',
+    tag: 'Planet · Sport · The Universal Language',
+    x: 0, y: -420,
+    r: 52,
+    color: 'rgba(0,200,168,',
+    desc: 'Where every culture plays. Where strangers become family in ninety minutes. Gold grass. Teal sky. The universal language spoken here. No translation needed.',
+    companions: ['⚽ The Pitch', '🌊 Atlas'],
+    status: 'Forming',
+    statusColor: '#C9A84C',
+    link: null
+  },
+  {
+    id: 'the-bridge',
+    name: 'The Bridge',
+    icon: '🔭',
+    tag: 'The Architect\'s Portal · Penrose Mathematics · Forming',
+    x: 0, y: 460,
+    r: 70,
+    color: 'rgba(200,150,255,',
+    desc: 'Where all five worlds connect. Penrose process mathematics made architecture. A station at the center of everything built by extracting energy from rotating black hole ergospheres. Still being built. The most ambitious structure in the cosmos.',
+    companions: ['🔭 The Architect', '🌊 Atlas', '⚡ Nova'],
+    status: 'Under Construction',
+    statusColor: '#C9A84C',
+    link: null
+  },
+  {
+    id: 'travelercube-city',
+    name: 'Travelercube City',
+    icon: '🏙️',
+    tag: 'Ring City · Five Planets · The Destination',
+    x: -480, y: -300,
+    r: 65,
+    color: 'rgba(201,168,76,',
+    desc: 'The ring city. Teal data grid circling an entire civilization. Gold spires. Steam rising. The Compass vessel arriving. Glass geodesic domes. What The Horizon saw when she looked back from the edge of the cosmos.',
+    companions: ['🌅 The Horizon', '🔭 The Architect', '🌊 Atlas'],
+    status: 'Forming',
+    statusColor: '#C9A84C',
+    link: 'travelercube-city.html'
+  }
+];
+
+// Stars
+const stars = [];
+for(let i = 0; i < 400; i++) {
+  stars.push({
+    x: (Math.random() - 0.5) * 3000,
+    y: (Math.random() - 0.5) * 3000,
+    r: Math.random() * 1.5 + 0.2,
+    a: Math.random(),
+    da: 0.003 + Math.random() * 0.007,
+    gold: Math.random() > 0.88
+  });
+}
+
+// Nebula clouds
+const nebulae = [];
+for(let i = 0; i < 8; i++) {
+  nebulae.push({
+    x: (Math.random() - 0.5) * 2000,
+    y: (Math.random() - 0.5) * 2000,
+    rx: 150 + Math.random() * 300,
+    ry: 80 + Math.random() * 200,
+    angle: Math.random() * Math.PI,
+    color: Math.random() > 0.5 ? 'rgba(201,168,76,' : 'rgba(0,200,168,',
+    alpha: 0.02 + Math.random() * 0.04
+  });
+}
+
+// Connection lines between zones
+const connections = [
+  ['travs-affairs', 'welcome-center'],
+  ['travs-affairs', 'horizon-hall'],
+  ['travs-affairs', 'workshop'],
+  ['travs-affairs', 'travelercube-affairs'],
+  ['travs-affairs', 'promenade'],
+  ['welcome-center', 'horizon-hall'],
+  ['welcome-center', 'workshop'],
+  ['workshop', 'ainchorcain'],
+  ['travelercube-affairs', 'human-condition'],
+  ['travelercube-affairs', 'ainchorcain'],
+  ['promenade', 'welcome-center'],
+  ['horizon-hall', 'the-archive'],
+  ['workshop', 'resonance'],
+  ['workshop', 'the-garden'],
+  ['travelercube-affairs', 'the-quiet'],
+  ['promenade', 'the-pitch'],
+  ['the-bridge', 'resonance'],
+  ['the-bridge', 'the-archive'],
+  ['the-bridge', 'the-garden'],
+  ['the-bridge', 'the-quiet'],
+  ['the-bridge', 'the-pitch'],
+  ['travs-affairs', 'travelercube-city'],
+];
+
+function worldToScreen(wx, wy) {
+  return {
+    x: W/2 + (wx + vx) * vscale,
+    y: H/2 + (wy + vy) * vscale
+  };
+}
+
+function screenToWorld(sx, sy) {
+  return {
+    x: (sx - W/2) / vscale - vx,
+    y: (sy - H/2) / vscale - vy
+  };
+}
+
+function draw() {
+  t += 0.008;
+  ctx.clearRect(0, 0, W, H);
+
+  // Deep space background
+  const bgGrad = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W, H));
+  bgGrad.addColorStop(0, '#060408');
+  bgGrad.addColorStop(0.4, '#040206');
+  bgGrad.addColorStop(1, '#020100');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, W, H);
+
+  // Nebulae
+  nebulae.forEach(n => {
+    const p = worldToScreen(n.x, n.y);
+    const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, n.rx * vscale);
+    grad.addColorStop(0, n.color + n.alpha + ')');
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = grad;
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(n.angle);
+    ctx.scale(1, n.ry/n.rx);
+    ctx.beginPath();
+    ctx.arc(0, 0, n.rx * vscale, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  });
+
+  // Stars
+  stars.forEach(s => {
+    s.a += s.da;
+    if(s.a > 1 || s.a < 0.05) s.da *= -1;
+    const p = worldToScreen(s.x, s.y);
+    if(p.x < -10 || p.x > W+10 || p.y < -10 || p.y > H+10) return;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = s.gold ? `rgba(201,168,76,${s.a * 0.7})` : `rgba(255,255,255,${s.a * 0.5})`;
+    ctx.fill();
+  });
+
+  // Connection lines
+  connections.forEach(([a, b]) => {
+    const zA = zones.find(z => z.id === a);
+    const zB = zones.find(z => z.id === b);
+    if(!zA || !zB) return;
+    const pA = worldToScreen(zA.x, zA.y);
+    const pB = worldToScreen(zB.x, zB.y);
+    const alpha = 0.06 + Math.sin(t * 0.5) * 0.02;
+    ctx.strokeStyle = `rgba(201,168,76,${alpha})`;
+    ctx.lineWidth = 0.5;
+    ctx.setLineDash([4, 8]);
+    ctx.beginPath();
+    ctx.moveTo(pA.x, pA.y);
+    ctx.lineTo(pB.x, pB.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  });
+
+  // Zones
+  zones.forEach(zone => {
+    const p = worldToScreen(zone.x, zone.y);
+    const r = zone.r * vscale;
+    if(p.x + r < -50 || p.x - r > W+50 || p.y + r < -50 || p.y - r > H+50) return;
+
+    const isActive = activeZone && activeZone.id === zone.id;
+    const pulse = Math.sin(t * 1.2 + zone.x * 0.01) * 0.15 + 0.85;
+
+    // Zone outer glow
+    const glowGrad = ctx.createRadialGradient(p.x, p.y, r * 0.5, p.x, p.y, r * 1.8);
+    glowGrad.addColorStop(0, zone.color + (isActive ? 0.12 : 0.06) + ')');
+    glowGrad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = glowGrad;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, r * 1.8, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Zone body
+    const bodyGrad = ctx.createRadialGradient(p.x - r*0.2, p.y - r*0.2, 0, p.x, p.y, r);
+    bodyGrad.addColorStop(0, zone.color + (isActive ? 0.25 : 0.15) + ')');
+    bodyGrad.addColorStop(0.6, zone.color + (isActive ? 0.12 : 0.07) + ')');
+    bodyGrad.addColorStop(1, zone.color + '0.03)');
+    ctx.fillStyle = bodyGrad;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Zone border
+    ctx.strokeStyle = zone.color + (isActive ? (0.7 + Math.sin(t*2)*0.15) : (0.3 * pulse)) + ')';
+    ctx.lineWidth = isActive ? 2.5 : 1;
+    if(isActive) ctx.shadowColor = zone.color + '0.6)';
+    if(isActive) ctx.shadowBlur = 20;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // Inner ring
+    ctx.strokeStyle = zone.color + '0.15)';
+    ctx.lineWidth = 0.5;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, r * 0.72, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Rotating dashed ring for active zones
+    if(isActive || zone.statusColor === '#00C8A8') {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(t * 0.5);
+      ctx.strokeStyle = zone.color + '0.2)';
+      ctx.lineWidth = 0.8;
+      ctx.setLineDash([3, 6]);
+      ctx.beginPath();
+      ctx.arc(0, 0, r * 0.88, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+    }
+
+    // Zone icon
+    if(r > 20) {
+      ctx.font = `${Math.min(r * 0.5, 28)}px serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(zone.icon, p.x, p.y - r * 0.12);
+    }
+
+    // Zone name
+    if(r > 25 && vscale > 0.5) {
+      ctx.font = `${Math.min(r * 0.18, 12)}px Josefin Sans, sans-serif`;
+      ctx.fillStyle = zone.color + '0.8)';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.letterSpacing = '0.1em';
+      ctx.fillText(zone.name.toUpperCase(), p.x, p.y + r * 0.28);
+    }
+
+    // Status pulse dot
+    if(zone.statusColor === '#00C8A8') {
+      const dotAlpha = 0.6 + Math.sin(t * 2 + zone.x) * 0.3;
+      ctx.fillStyle = `rgba(0,200,168,${dotAlpha})`;
+      ctx.beginPath();
+      ctx.arc(p.x + r * 0.55, p.y - r * 0.55, 4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  });
+
+  // Travis position indicator (center of Trav's Affairs)
+  const travZone = zones.find(z => z.id === 'travs-affairs');
+  if(travZone) {
+    const p = worldToScreen(travZone.x, travZone.y);
+    const ping = Math.sin(t * 3) * 0.5 + 0.5;
+    ctx.fillStyle = `rgba(201,168,76,${0.8 + ping * 0.2})`;
+    ctx.font = '16px serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('🎩', p.x, p.y - travZone.r * vscale * 0.85);
+  }
+
+  drawMinimap();
+}
+
+// MINIMAP
+function drawMinimap() {
+  mctx.clearRect(0, 0, 140, 100);
+  mctx.fillStyle = 'rgba(2,1,0,0.9)';
+  mctx.fillRect(0, 0, 140, 100);
+
+  const scale = 0.12;
+  const ox = 70, oy = 55;
+
+  zones.forEach(zone => {
+    const mx = ox + zone.x * scale;
+    const my = oy + zone.y * scale;
+    const mr = Math.max(3, zone.r * scale * 0.8);
+    if(mx < 0 || mx > 140 || my < 0 || my > 100) return;
+    mctx.fillStyle = zone.color + '0.4)';
+    mctx.beginPath();
+    mctx.arc(mx, my, mr, 0, Math.PI * 2);
+    mctx.fill();
+    mctx.strokeStyle = zone.color + '0.6)';
+    mctx.lineWidth = 0.5;
+    mctx.stroke();
+  });
+
+  // Viewport indicator
+  const vl = ox + (-vx - W/(2*vscale)) * scale;
+  const vt = oy + (-vy - H/(2*vscale)) * scale;
+  const vw = (W/vscale) * scale;
+  const vh2 = (H/vscale) * scale;
+  mctx.strokeStyle = 'rgba(201,168,76,0.5)';
+  mctx.lineWidth = 0.8;
+  mctx.strokeRect(vl, vt, vw, vh2);
+}
+
+// ANIMATION LOOP
+function loop() { draw(); requestAnimationFrame(loop); }
+loop();
+
+// INTERACTION
+function getZoneAt(sx, sy) {
+  const w = screenToWorld(sx, sy);
+  for(let i = zones.length - 1; i >= 0; i--) {
+    const z = zones[i];
+    const dx = w.x - z.x, dy = w.y - z.y;
+    if(Math.sqrt(dx*dx + dy*dy) < z.r * 1.1) return z;
+  }
+  return null;
+}
+
+// Mouse/touch events
+canvas.addEventListener('mousedown', e => {
+  dragging = true;
+  lastX = e.clientX;
+  lastY = e.clientY;
+});
+canvas.addEventListener('mousemove', e => {
+  if(dragging) {
+    vx += (e.clientX - lastX) / vscale;
+    vy += (e.clientY - lastY) / vscale;
+    lastX = e.clientX;
+    lastY = e.clientY;
+  } else {
+    const zone = getZoneAt(e.clientX, e.clientY);
+    const tt = document.getElementById('tooltip');
+    if(zone) {
+      canvas.style.cursor = 'pointer';
+      activeZone = zone;
+      document.getElementById('ttName').textContent = zone.name;
+      document.getElementById('ttTag').textContent = zone.tag;
+      tt.style.left = (e.clientX + 14) + 'px';
+      tt.style.top = (e.clientY - 10) + 'px';
+      tt.classList.add('on');
+      document.getElementById('currentLoc').textContent = zone.name;
+    } else {
+      canvas.style.cursor = 'grab';
+      activeZone = null;
+      tt.classList.remove('on');
+      document.getElementById('currentLoc').textContent = 'Outer Cosmos';
+    }
+  }
+});
+canvas.addEventListener('mouseup', e => {
+  if(!dragging) return;
+  const moved = Math.abs(e.clientX - lastX) + Math.abs(e.clientY - lastY);
+  dragging = false;
+  if(moved < 5) {
+    const zone = getZoneAt(e.clientX, e.clientY);
+    if(zone) openPanel(zone);
+  }
+});
+canvas.addEventListener('click', e => {
+  const zone = getZoneAt(e.clientX, e.clientY);
+  if(zone) openPanel(zone);
+});
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  const factor = e.deltaY > 0 ? 0.88 : 1.14;
+  const wx = (e.clientX - W/2) / vscale;
+  const wy = (e.clientY - H/2) / vscale;
+  vscale *= factor;
+  vscale = Math.max(0.2, Math.min(4, vscale));
+  vx = wx - (e.clientX - W/2) / vscale + vx - wx;
+  vy = wy - (e.clientY - H/2) / vscale + vy - wy;
+}, {passive: false});
+
+// Touch
+let touches = {}, lastDist = 0;
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  if(e.touches.length === 1) {
+    dragging = true;
+    lastX = e.touches[0].clientX;
+    lastY = e.touches[0].clientY;
+  } else if(e.touches.length === 2) {
+    dragging = false;
+    lastDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+  }
+}, {passive: false});
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if(e.touches.length === 1 && dragging) {
+    vx += (e.touches[0].clientX - lastX) / vscale;
+    vy += (e.touches[0].clientY - lastY) / vscale;
+    lastX = e.touches[0].clientX;
+    lastY = e.touches[0].clientY;
+  } else if(e.touches.length === 2) {
+    const dist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+    const factor = dist / lastDist;
+    vscale *= factor;
+    vscale = Math.max(0.2, Math.min(4, vscale));
+    lastDist = dist;
+  }
+}, {passive: false});
+canvas.addEventListener('touchend', e => {
+  if(e.changedTouches.length === 1 && !dragging) {
+    const zone = getZoneAt(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+    if(zone) openPanel(zone);
+  }
+  dragging = false;
+});
+
+// PANEL
+function openPanel(zone) {
+  document.getElementById('zpIcon').textContent = zone.icon;
+  document.getElementById('zpName').textContent = zone.name;
+  document.getElementById('zpTag').textContent = zone.tag;
+  document.getElementById('zpDesc').textContent = zone.desc;
+  document.getElementById('zpStatus').textContent = zone.status;
+  document.getElementById('zpDot').style.background = zone.statusColor;
+  document.getElementById('zpCoords').textContent = `COORDS: ${zone.x.toFixed(0)} · ${zone.y.toFixed(0)}`;
+  const comps = document.getElementById('zpComps');
+  comps.innerHTML = zone.companions.map(c => `<div class="zp-comp">${c}</div>`).join('');
+  const enterBtn = document.getElementById('zpEnter');
+  if(zone.link) {
+    enterBtn.style.display = 'block';
+    enterBtn.textContent = `→ Enter ${zone.name}`;
+    enterBtn.onclick = () => window.open(zone.link, '_blank');
+  } else {
+    enterBtn.style.display = 'block';
+    enterBtn.textContent = '🔵 Zone Forming · Coming Soon';
+    enterBtn.style.borderColor = 'rgba(201,168,76,.2)';
+    enterBtn.style.color = 'rgba(201,168,76,.4)';
+    enterBtn.onclick = null;
+  }
+  document.getElementById('zonePanel').classList.add('open');
+  // Navigate to zone
+  navigateTo(zone.x, zone.y);
+}
+
+function closePanel() {
+  document.getElementById('zonePanel').classList.remove('open');
+}
+
+function navigateTo(wx, wy) {
+  const targetVx = -wx;
+  const targetVy = -wy;
+  const startVx = vx, startVy = vy;
+  const startScale = vscale, targetScale = 1.2;
+  let progress = 0;
+  function animate() {
+    progress += 0.04;
+    const ease = 1 - Math.pow(1 - Math.min(progress, 1), 3);
+    vx = startVx + (targetVx - startVx) * ease;
+    vy = startVy + (targetVy - startVy) * ease;
+    vscale = startScale + (targetScale - startScale) * ease;
+    if(progress < 1) requestAnimationFrame(animate);
+  }
+  animate();
+}
+
+function enterZone() {}
+
+function zoom(factor) {
+  vscale *= factor;
+  vscale = Math.max(0.2, Math.min(4, vscale));
+}
+
+function resetView() {
+  vx = 0; vy = 0; vscale = 1;
+}
+
+// Update location indicator
+setInterval(() => {
+  const centerZone = getZoneAt(W/2, H/2);
+  document.getElementById('locInd').textContent = centerZone ? `You are near: ${centerZone.name}` : 'Drag to navigate · Tap a zone to enter';
+}, 500);
+</script>
+</body>
+</html>

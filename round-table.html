@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>The Round Table · Simple Seven · Horizon Cosmos</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;font-family:'Lora',serif;color:#F5EFE0;background:#040200;}
+
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes glow{0%,100%{opacity:.25}50%{opacity:.8}}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.08);opacity:.9}}
+@keyframes twinkle{0%,100%{opacity:.05}50%{opacity:.9}}
+@keyframes tableGlow{0%,100%{box-shadow:0 0 40px rgba(201,168,76,.15),inset 0 0 60px rgba(201,168,76,.04)}50%{box-shadow:0 0 70px rgba(201,168,76,.28),inset 0 0 80px rgba(201,168,76,.08)}}
+@keyframes db{0%,100%{opacity:.2;transform:translateY(0)}50%{opacity:1;transform:translateY(-4px)}}
+@keyframes speakPulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.12)}}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes deliberating{0%{opacity:.4}25%{opacity:1}50%{opacity:.6}75%{opacity:1}100%{opacity:.4}}
+@keyframes mp{0%,100%{box-shadow:0 0 0 0 rgba(0,200,168,.4)}50%{box-shadow:0 0 0 12px transparent}}
+
+/* STARS */
+.stars{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.star{position:absolute;border-radius:50%;background:white;animation:twinkle var(--d) var(--dl) infinite;}
+
+/* ENTER */
+#enter{position:fixed;inset:0;z-index:100;background:rgba(4,2,0,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
+#enter.gone{display:none;}
+.en-icon{font-size:48px;animation:glow 2s ease-in-out infinite;}
+.en-title{font-family:'Cormorant Garamond',serif;font-size:clamp(24px,5vw,42px);font-weight:300;letter-spacing:.12em;text-align:center;}
+.en-title em{font-style:italic;color:#C9A84C;}
+.en-sub{font-size:7.5px;letter-spacing:.38em;text-transform:uppercase;color:rgba(201,168,76,.45);font-family:sans-serif;text-align:center;}
+.en-btn{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:#040200;background:#C9A84C;padding:13px 32px;border:none;cursor:pointer;font-family:sans-serif;margin-top:8px;}
+.en-rule{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;color:rgba(245,239,224,.28);text-align:center;max-width:320px;line-height:1.6;}
+
+/* ROOM */
+.room{position:fixed;inset:0;display:flex;flex-direction:column;z-index:1;}
+
+/* TOPBAR */
+.topbar{height:46px;flex-shrink:0;background:rgba(4,2,0,.97);border-bottom:1px solid rgba(201,168,76,.12);display:flex;align-items:center;padding:0 16px;gap:10px;position:relative;z-index:10;}
+.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#C9A84C,rgba(0,200,168,.4),#C9A84C,transparent);}
+.tb-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:300;}
+.tb-title em{font-style:italic;color:#C9A84C;}
+.tb-sub{font-size:6.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,200,168,.5);font-family:sans-serif;}
+.tb-status{margin-left:auto;font-size:6.5px;letter-spacing:.12em;text-transform:uppercase;font-family:sans-serif;padding:3px 8px;border:1px solid rgba(201,168,76,.15);color:rgba(201,168,76,.5);}
+.tb-status.active{color:#00C8A8;border-color:rgba(0,200,168,.3);animation:glow 2s ease-in-out infinite;}
+
+/* STAGE */
+.stage{flex:1;position:relative;overflow:hidden;}
+
+/* DOME */
+.dome{position:absolute;inset:0;pointer-events:none;}
+.dome svg{width:100%;height:100%;}
+
+/* TABLE */
+.table-wrap{position:absolute;bottom:clamp(100px,14vh,160px);left:50%;transform:translateX(-50%);z-index:5;}
+.table{width:clamp(200px,32vw,320px);height:clamp(60px,8vw,90px);border-radius:50%;background:radial-gradient(ellipse,rgba(201,168,76,.12) 0%,rgba(201,168,76,.05) 50%,transparent 80%);border:2px solid rgba(201,168,76,.3);animation:tableGlow 4s ease-in-out infinite;position:relative;}
+.table::before{content:'';position:absolute;inset:6px;border-radius:50%;border:1px solid rgba(201,168,76,.12);}
+.table-inscription{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Cormorant Garamond',serif;font-size:clamp(7px,1vw,10px);font-style:italic;color:rgba(201,168,76,.4);white-space:nowrap;letter-spacing:.1em;}
+
+/* SEVEN SEATS */
+.seats{position:absolute;bottom:clamp(80px,11vh,140px);left:50%;transform:translateX(-50%);width:clamp(340px,56vw,600px);height:clamp(200px,30vh,300px);z-index:6;}
+.seat{position:absolute;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all .25s;}
+.seat:hover .seat-fig{filter:drop-shadow(0 0 12px var(--sc));}
+.seat.speaking .seat-aura{animation:speakPulse .9s ease-in-out infinite!important;}
+.seat-fig{width:clamp(52px,7vw,80px);height:auto;animation:float var(--fd) ease-in-out infinite;animation-delay:var(--fdl);}
+.seat-fig svg{width:100%;height:100%;}
+.seat-aura{width:clamp(44px,6vw,68px);height:clamp(8px,1vw,14px);border-radius:50%;background:var(--sc);filter:blur(5px);opacity:.3;animation:pulse var(--fd) ease-in-out infinite;animation-delay:var(--fdl);margin-top:-4px;}
+.seat-name{font-family:'Cormorant Garamond',serif;font-size:clamp(9px,1.2vw,13px);font-weight:600;color:var(--sc);}
+.seat-emoji{font-size:clamp(9px,1.2vw,14px);}
+
+/* DISCUSSION PANEL */
+.discussion{position:absolute;top:5%;left:50%;transform:translateX(-50%);width:min(80vw,600px);z-index:20;max-height:52vh;display:flex;flex-direction:column;}
+
+.discussion-header{background:rgba(4,2,0,.96);border:1px solid rgba(201,168,76,.2);border-bottom:none;padding:10px 16px;display:flex;align-items:center;gap:8px;position:relative;}
+.discussion-header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#C9A84C,rgba(0,200,168,.8),#C9A84C);}
+.dh-title{font-size:7px;letter-spacing:.3em;text-transform:uppercase;color:#C9A84C;font-family:sans-serif;}
+.dh-dot{width:5px;height:5px;border-radius:50%;background:#C9A84C;animation:glow 1.8s infinite;}
+.dh-topic{font-family:'Lora',serif;font-style:italic;font-size:11px;color:rgba(245,239,224,.5);margin-left:auto;max-width:200px;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+.messages{flex:1;overflow-y:auto;background:rgba(4,2,0,.9);border:1px solid rgba(201,168,76,.15);padding:10px 12px;display:flex;flex-direction:column;gap:8px;min-height:120px;}
+.messages::-webkit-scrollbar{width:3px;}
+.messages::-webkit-scrollbar-track{background:transparent;}
+.messages::-webkit-scrollbar-thumb{background:rgba(201,168,76,.2);}
+
+.msg{display:flex;gap:8px;animation:msgIn .4s ease both;}
+.msg-avatar{width:28px;height:28px;flex-shrink:0;}
+.msg-avatar svg{width:100%;height:100%;}
+.msg-body{flex:1;}
+.msg-who{font-size:6.5px;letter-spacing:.2em;text-transform:uppercase;font-family:sans-serif;margin-bottom:4px;}
+.msg-text{font-family:'Lora',serif;font-style:italic;font-size:clamp(12px,1.3vw,14px);line-height:1.75;color:#F5EFE0;}
+.msg-text em{color:#00C8A8;font-style:normal;}
+.msg-text strong{color:#E8C96A;}
+
+.deliberating-msg{display:flex;align-items:center;gap:6px;padding:6px 0;}
+.del-name{font-size:6.5px;letter-spacing:.2em;text-transform:uppercase;font-family:sans-serif;}
+.dots{display:flex;gap:4px;align-items:center;}
+.dot{width:4px;height:4px;border-radius:50%;background:#C9A84C;animation:db .88s ease-in-out infinite;}
+.dot:nth-child(2){animation-delay:.18s}.dot:nth-child(3){animation-delay:.36s}
+
+/* CONSENSUS BANNER */
+.consensus{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(4,2,0,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:30;opacity:0;pointer-events:none;transition:opacity .5s;}
+.consensus.show{opacity:1;pointer-events:all;}
+.consensus-title{font-family:'Cormorant Garamond',serif;font-size:clamp(18px,3vw,28px);font-weight:300;color:#C9A84C;letter-spacing:.1em;}
+.consensus-text{font-family:'Lora',serif;font-style:italic;font-size:clamp(12px,1.4vw,15px);color:rgba(245,239,224,.7);text-align:center;max-width:400px;line-height:1.7;padding:0 20px;}
+.consensus-icons{display:flex;gap:8px;font-size:18px;}
+.consensus-btn{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:#040200;background:#C9A84C;padding:10px 24px;border:none;cursor:pointer;font-family:sans-serif;margin-top:8px;}
+
+/* INPUT */
+.input-zone{flex-shrink:0;padding:8px 14px 14px;background:linear-gradient(to top,rgba(4,2,0,.99) 70%,transparent);z-index:10;display:flex;justify-content:center;}
+.input-row{display:flex;gap:8px;align-items:center;width:100%;max-width:540px;}
+.mic-btn{width:44px;height:44px;flex-shrink:0;border-radius:50%;background:rgba(201,168,76,.07);border:2px solid rgba(201,168,76,.2);color:#C9A84C;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;-webkit-user-select:none;user-select:none;}
+.mic-btn.on{background:rgba(0,200,168,.1);border-color:rgba(0,200,168,.4);animation:mp 1s ease-in-out infinite;}
+.txt-inp{flex:1;background:rgba(0,4,16,.85);border:1px solid rgba(201,168,76,.13);padding:12px 14px;font-family:'Lora',serif;font-style:italic;font-size:14px;color:#F5EFE0;outline:none;border-radius:0;-webkit-appearance:none;}
+.txt-inp:focus{border-color:rgba(201,168,76,.35);}
+.txt-inp::placeholder{color:rgba(245,239,224,.18);}
+.send-btn{width:44px;height:44px;flex-shrink:0;background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.18);color:#C9A84C;font-size:17px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.send-btn:active{background:rgba(201,168,76,.2);}
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<!-- ENTER -->
+<div id="enter">
+  <div class="en-icon">🎩</div>
+  <div class="en-title">The Round <em>Table</em></div>
+  <div class="en-sub">Simple Seven · Horizon Cosmos · In Session</div>
+  <div class="en-rule">"Nothing enters or changes in Horizon Cosmos without the Seven agreeing together at this table."</div>
+  <button class="en-btn" onclick="enterTable()">CALL THE SESSION</button>
+</div>
+
+<!-- ROOM -->
+<div class="room">
+
+  <div class="topbar">
+    <span style="font-size:15px">🎩</span>
+    <span class="tb-title">The Round <em>Table</em></span>
+    <span style="color:rgba(201,168,76,.2)">·</span>
+    <span class="tb-sub">Simple Seven · In Session</span>
+    <div class="tb-status" id="tbStatus">Awaiting Session</div>
+  </div>
+
+  <div class="stage">
+
+    <!-- STARS IN DOME -->
+    <div class="dome">
+      <svg viewBox="0 0 1400 800" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <radialGradient id="domeG" cx="50%" cy="0%" r="80%">
+            <stop offset="0%" stop-color="rgba(201,168,76,.1)"/>
+            <stop offset="100%" stop-color="transparent"/>
+          </radialGradient>
+          <radialGradient id="floorG" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="rgba(201,168,76,.08)"/>
+            <stop offset="100%" stop-color="transparent"/>
+          </radialGradient>
+          <linearGradient id="colG" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="rgba(201,168,76,0)"/>
+            <stop offset="40%" stop-color="rgba(201,168,76,.2)"/>
+            <stop offset="60%" stop-color="rgba(201,168,76,.15)"/>
+            <stop offset="100%" stop-color="rgba(201,168,76,0)"/>
+          </linearGradient>
+          <linearGradient id="fadeFloor" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="rgba(4,2,0,0)"/>
+            <stop offset="100%" stop-color="#040200"/>
+          </linearGradient>
+        </defs>
+        <!-- Dome ceiling -->
+        <ellipse cx="700" cy="-80" rx="800" ry="450" fill="url(#domeG)"/>
+        <!-- Glass dome lines -->
+        <path d="M0 0 Q700 -280 1400 0" stroke="rgba(201,168,76,.07)" stroke-width="2" fill="none"/>
+        <path d="M100 0 Q700 -240 1300 0" stroke="rgba(201,168,76,.05)" stroke-width="1.5" fill="none"/>
+        <!-- Dome apex -->
+        <circle cx="700" cy="-280" r="10" fill="rgba(201,168,76,.3)"/>
+        <line x1="700" y1="-280" x2="0" y2="0" stroke="rgba(201,168,76,.05)" stroke-width="1.5"/>
+        <line x1="700" y1="-280" x2="350" y2="0" stroke="rgba(201,168,76,.04)" stroke-width="1"/>
+        <line x1="700" y1="-280" x2="700" y2="0" stroke="rgba(201,168,76,.04)" stroke-width="1"/>
+        <line x1="700" y1="-280" x2="1050" y2="0" stroke="rgba(201,168,76,.04)" stroke-width="1"/>
+        <line x1="700" y1="-280" x2="1400" y2="0" stroke="rgba(201,168,76,.05)" stroke-width="1.5"/>
+        <!-- Columns left -->
+        <rect x="40" y="0" width="52" height="800" rx="3" fill="url(#colG)"/>
+        <rect x="49" y="0" width="9" height="800" fill="rgba(201,168,76,.14)"/>
+        <path d="M32 8 Q66 0 100 8" stroke="rgba(201,168,76,.22)" stroke-width="3" fill="none"/>
+        <rect x="170" y="0" width="36" height="800" rx="2" fill="rgba(201,168,76,.06)"/>
+        <!-- Columns right -->
+        <rect x="1308" y="0" width="52" height="800" rx="3" fill="url(#colG)"/>
+        <rect x="1342" y="0" width="9" height="800" fill="rgba(201,168,76,.14)"/>
+        <path d="M1300 8 Q1334 0 1368 8" stroke="rgba(201,168,76,.22)" stroke-width="3" fill="none"/>
+        <rect x="1194" y="0" width="36" height="800" rx="2" fill="rgba(201,168,76,.06)"/>
+        <!-- Statues silhouettes -->
+        <g opacity=".12">
+          <rect x="120" y="500" width="20" height="140" rx="2" fill="#C9A84C"/>
+          <ellipse cx="130" cy="494" rx="13" ry="16" fill="#C9A84C"/>
+          <path d="M130 524 L116 500" stroke="#C9A84C" stroke-width="5" stroke-linecap="round"/>
+        </g>
+        <g opacity=".1">
+          <rect x="195" y="515" width="16" height="125" rx="2" fill="#C9A84C"/>
+          <ellipse cx="203" cy="510" rx="11" ry="13" fill="#C9A84C"/>
+        </g>
+        <g opacity=".12">
+          <rect x="1264" y="500" width="20" height="140" rx="2" fill="#C9A84C"/>
+          <ellipse cx="1274" cy="494" rx="13" ry="16" fill="#C9A84C"/>
+        </g>
+        <g opacity=".1">
+          <rect x="1189" y="515" width="16" height="125" rx="2" fill="#C9A84C"/>
+          <ellipse cx="1197" cy="510" rx="11" ry="13" fill="#C9A84C"/>
+        </g>
+        <!-- Floor -->
+        <path d="M0 800 L0 680 Q350 655 700 645 Q1050 655 1400 680 L1400 800Z" fill="url(#fadeFloor)"/>
+        <ellipse cx="700" cy="680" rx="620" ry="65" fill="rgba(201,168,76,.05)"/>
+      </svg>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrap">
+      <div class="table">
+        <div class="table-inscription">Horizon Cosmos · The Round Table · Est. by Travis Peterson</div>
+      </div>
+    </div>
+
+    <!-- SEVEN SEATS -->
+    <div class="seats" id="seats"></div>
+
+    <!-- DISCUSSION -->
+    <div class="discussion" id="discussion" style="display:none;">
+      <div class="discussion-header">
+        <div class="dh-dot"></div>
+        <div class="dh-title">● Round Table · In Session</div>
+        <div class="dh-topic" id="dhTopic">Awaiting matter...</div>
+      </div>
+      <div class="messages" id="messages"></div>
+      <div class="consensus" id="consensusPanel">
+        <div class="consensus-icons" id="consensusIcons"></div>
+        <div class="consensus-title">The Seven Have Spoken</div>
+        <div class="consensus-text" id="consensusText"></div>
+        <button class="consensus-btn" onclick="closeConsensus()">CONTINUE THE SESSION</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="input-zone">
+    <div class="input-row">
+      <div class="mic-btn" id="micBtn" onclick="toggleMic()"><span id="micIcon">🎤</span></div>
+      <input class="txt-inp" id="txtInp" placeholder="Bring a matter to the Round Table..." onkeydown="if(event.key==='Enter'){event.preventDefault();sendToTable()}"/>
+      <div class="send-btn" onclick="sendToTable()">→</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// SEVEN DATA
+// ============================================================
+var SEVEN = [
+  {
+    id:'travis', name:'Travis', emoji:'🎩', col:'#C9A84C',
+    voiceNames:['daniel','james'], rate:.82, pitch:.88,
+    sys:'You are Travis Peterson, Founder of Horizon Cosmos. At the Round Table you speak with the authority and vision of the architect of this entire universe. You bring matters forward, you weigh the Seven\'s input, and you speak with final founder wisdom. Warm but authoritative. 2-3 sentences.',
+    svg: baseSVG('#8B5E3C','#1A0E08','#3A2510','rgba(255,220,100,.8)','#0a0600','<path d="M36 38 L36 42 L104 42 L104 38 Q102 28 70 26 Q38 28 36 38Z" fill="#1A0E08"/><path d="M30 42 L110 42" stroke="#C9A84C" stroke-width="1.5"/>')
+  },
+  {
+    id:'cubee1', name:'Cubee1', emoji:'🧊', col:'#00C8A8',
+    voiceNames:['daniel','oliver'], rate:.84, pitch:.91,
+    sys:'You are Cubee1, Captain of the Simple Seven. At the Round Table you speak for the heart and soul of Horizon Cosmos. You balance vision with integrity, always keeping the Hall\'s purpose central. 2-3 sentences.',
+    svg: baseSVG('#8B5E3C','#1A0E08','#1a3a5c','rgba(0,212,255,.8)','#030912','<path d="M65 88 L70 93 L75 88 L73 108 L70 112 L67 108Z" fill="#00d4b8"/>')
+  },
+  {
+    id:'atlas', name:'Atlas', emoji:'🌊', col:'#5dade2',
+    voiceNames:['daniel','alex'], rate:.80, pitch:.85,
+    sys:'You are Atlas, World Intelligence of the Simple Seven. At the Round Table you bring deep knowledge, historical context and global perspective to every matter. You see patterns others miss. 2-3 sentences.',
+    svg: baseSVG('#9B7040','#2d1a08','#1a3a5c','rgba(93,173,226,.8)','#0d1b2a','<circle cx="57" cy="52" r="13" fill="none" stroke="rgba(93,173,226,.6)" stroke-width="1.5"/><circle cx="83" cy="52" r="13" fill="none" stroke="rgba(93,173,226,.6)" stroke-width="1.5"/>')
+  },
+  {
+    id:'nova', name:'Nova', emoji:'⚡', col:'#f39c12',
+    voiceNames:['karen','zira','victoria'], rate:.92, pitch:1.05,
+    sys:'You are Nova, Opportunity intelligence of the Simple Seven. At the Round Table you speak fast and bright, always seeing the opportunity angle, the perfect timing, the moment to act. 2-3 sentences.',
+    svg: baseSVG('#C8A060','#1a0e02','#8B6000','rgba(255,200,0,.9)','#0d0a02','<path d="M34 44 L30 40 M34 44 L28 46" stroke="#f39c12" stroke-width="1.2" opacity=".7"/>')
+  },
+  {
+    id:'ward', name:'Ward', emoji:'🛡️', col:'#27ae60',
+    voiceNames:['fred','alex'], rate:.78, pitch:.80,
+    sys:'You are Ward, Protection intelligence of the Simple Seven. At the Round Table you speak with steady authority about safety, integrity and risk. Nothing that could harm the cosmos passes without your challenge. 2-3 sentences.',
+    svg: baseSVG('#7A4828','#1a0e06','#2d5a1e','rgba(39,174,96,.8)','#0d1a0d','<path d="M58 92 L70 88 L82 92 L82 104 Q70 110 58 104Z" fill="none" stroke="rgba(39,174,96,.5)" stroke-width="1.5"/>')
+  },
+  {
+    id:'eden', name:'Eden', emoji:'🌱', col:'#82e0aa',
+    voiceNames:['samantha','karen','victoria'], rate:.82, pitch:.95,
+    sys:'You are Eden, Conscience of the Simple Seven. At the Round Table you hold the moral and purposeful compass. You ask the deeper question — does this serve life, does this serve meaning, does this serve the cosmos as it was intended? 2-3 sentences.',
+    svg: baseSVG('#A07840','#1a0e04','#4a3010','rgba(200,255,200,.8)','#0d1a0d','<path d="M38 36 L32 68 Q34 78 38 74 L40 48Z" fill="#1a0e04"/><circle cx="40" cy="26" r="3" fill="#82e0aa" opacity=".7"/>')
+  },
+  {
+    id:'pulse', name:'Pulse', emoji:'📡', col:'#9b59b6',
+    voiceNames:['alex','daniel'], rate:.86, pitch:.94,
+    sys:'You are Pulse, Platform intelligence of the Simple Seven. At the Round Table you speak to how every decision registers across the platform — the signals, the data, the network effects, what the cosmos will feel. 2-3 sentences.',
+    svg: baseSVG('#8A6040','#0d0814','#4a2870','rgba(200,150,255,.8)','#0d0814','<circle cx="34" cy="50" r="3" fill="rgba(155,89,182,.6)"/><circle cx="106" cy="50" r="3" fill="rgba(155,89,182,.6)"/>')
+  }
+];
+
+// Seat positions (as percentages of container)
+var POSITIONS = [
+  {left:'50%',bottom:'105%',tx:'-50%'},   // Travis - top center (head of table)
+  {left:'15%',bottom:'70%',tx:'-50%'},    // Cubee1 - upper left
+  {left:'2%',bottom:'30%',tx:'0%'},       // Atlas - left
+  {left:'15%',bottom:'0%',tx:'-50%'},     // Nova - lower left
+  {left:'85%',bottom:'0%',tx:'-50%'},     // Ward - lower right
+  {left:'98%',bottom:'30%',tx:'-100%'},   // Eden - right
+  {left:'85%',bottom:'70%',tx:'-50%'},    // Pulse - upper right
+];
+
+function baseSVG(headCol, hairCol, eyeCol, glintCol, bodyCol, extras){
+  return '<svg viewBox="0 0 140 168" fill="none">'
+    +'<path d="M15 168 L15 112 Q15 95 32 87 L52 79 L70 96 L88 79 L108 87 Q125 95 125 112 L125 168Z" fill="'+bodyCol+'"/>'
+    +(extras||'')
+    +'<rect x="63" y="72" width="14" height="14" rx="3" fill="'+headCol+'"/>'
+    +'<ellipse cx="70" cy="50" rx="34" ry="36" fill="'+headCol+'"/>'
+    +'<ellipse cx="37" cy="54" rx="7" ry="13" fill="'+headCol+'"/>'
+    +'<ellipse cx="103" cy="54" rx="7" ry="13" fill="'+headCol+'"/>'
+    +'<path d="M38 36 Q40 10 70 8 Q100 10 102 36 Q94 18 70 16 Q46 18 38 36Z" fill="'+hairCol+'"/>'
+    +'<path d="M47 42 Q57 37 65 41" stroke="'+hairCol+'" stroke-width="2.5" stroke-linecap="round" fill="none"/>'
+    +'<path d="M75 41 Q83 37 93 42" stroke="'+hairCol+'" stroke-width="2.5" stroke-linecap="round" fill="none"/>'
+    +'<ellipse cx="57" cy="52" rx="10" ry="9" fill="white"/>'
+    +'<ellipse cx="83" cy="52" rx="10" ry="9" fill="white"/>'
+    +'<circle cx="57" cy="52" r="5" fill="'+eyeCol+'"/>'
+    +'<circle cx="57" cy="52" r="3" fill="#050508"/>'
+    +'<ellipse cx="59.5" cy="49" rx="2" ry="1.6" fill="'+glintCol+'" opacity=".9"/>'
+    +'<circle cx="83" cy="52" r="5" fill="'+eyeCol+'"/>'
+    +'<circle cx="83" cy="52" r="3" fill="#050508"/>'
+    +'<ellipse cx="85.5" cy="49" rx="2" ry="1.6" fill="'+glintCol+'" opacity=".9"/>'
+    +'<path d="M57 72 Q70 78 83 72" stroke="#3d1a08" stroke-width="1.8" fill="none" stroke-linecap="round"/>'
+    +'</svg>';
+}
+
+// Build seats
+var seatsEl = document.getElementById('seats');
+SEVEN.forEach(function(s, i){
+  var pos = POSITIONS[i];
+  var seat = document.createElement('div');
+  seat.className = 'seat';
+  seat.id = 'seat-'+s.id;
+  seat.style.cssText = 'left:'+pos.left+';bottom:'+pos.bottom+';transform:translateX('+pos.tx+');--sc:'+s.col+';--fd:'+(4+i*.4)+'s;--fdl:'+(i*.2)+'s;';
+  seat.innerHTML =
+    '<div class="seat-emoji">'+s.emoji+'</div>'
+    +'<div class="seat-fig">'+s.svg+'</div>'
+    +'<div class="seat-aura"></div>'
+    +'<div class="seat-name">'+s.name+'</div>';
+  seatsEl.appendChild(seat);
+});
+
+// Stars
+(function(){
+  var c=document.getElementById('stars');
+  for(var i=0;i<150;i++){
+    var s=document.createElement('div');var z=Math.random()*1.5+.2;
+    s.className='star';
+    s.style.cssText='left:'+Math.random()*100+'%;top:'+Math.random()*60+'%;width:'+z+'px;height:'+z+'px;--d:'+(3+Math.random()*5)+'s;--dl:'+(Math.random()*6)+'s;';
+    c.appendChild(s);
+  }
+})();
+
+// ============================================================
+// SESSION ENGINE
+// ============================================================
+var SY = window.speechSynthesis;
+var voices = [];
+var sessionActive = false;
+var busy = false;
+var sessionHistory = [];
+var currentSpeaker = -1;
+var speakQueue = [];
+var isSpeaking = false;
+var mInt = null, resumeInt = null;
+var recog = null, lstn = false;
+
+function loadV(){if(SY)voices=SY.getVoices();}
+if(SY){loadV();if(SY.onvoiceschanged!==undefined)SY.onvoiceschanged=loadV;}
+
+function enterTable(){
+  document.getElementById('enter').className = 'gone';
+  if(SY){var u=new SpeechSynthesisUtterance('');SY.speak(u);SY.cancel();}
+  loadV();setTimeout(loadV,400);setTimeout(loadV,900);
+  sessionActive = true;
+  document.getElementById('tbStatus').textContent = '● In Session';
+  document.getElementById('tbStatus').className = 'tb-status active';
+  document.getElementById('discussion').style.display = 'flex';
+  document.getElementById('discussion').style.flexDirection = 'column';
+
+  // Opening
+  addSystemMsg('The Round Table is now in session. The Simple Seven are present. Travis, bring your matter forward.');
+}
+
+function addSystemMsg(txt){
+  var msgs = document.getElementById('messages');
+  var div = document.createElement('div');
+  div.style.cssText = 'text-align:center;font-size:7px;letter-spacing:.2em;text-transform:uppercase;color:rgba(201,168,76,.4);font-family:sans-serif;padding:4px 0;';
+  div.textContent = '— ' + txt + ' —';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addMsg(comp, text){
+  var msgs = document.getElementById('messages');
+  var div = document.createElement('div');
+  div.className = 'msg';
+  div.innerHTML =
+    '<div class="msg-avatar">'+comp.svg+'</div>'
+    +'<div class="msg-body">'
+    +'<div class="msg-who" style="color:'+comp.col+'">'+comp.emoji+' '+comp.name.toUpperCase()+'</div>'
+    +'<div class="msg-text">'+rnd(text)+'</div>'
+    +'</div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addDeliberating(comp){
+  var msgs = document.getElementById('messages');
+  var div = document.createElement('div');
+  div.className = 'deliberating-msg';
+  div.id = 'deliberating-'+comp.id;
+  div.innerHTML =
+    '<div class="msg-avatar" style="width:24px;height:24px;">'+comp.svg+'</div>'
+    +'<div class="del-name" style="color:'+comp.col+'">'+comp.emoji+' '+comp.name+'</div>'
+    +'<div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+function removeDeliberating(id){
+  var el = document.getElementById('deliberating-'+id);
+  if(el) el.remove();
+}
+
+function rnd(t){
+  return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/\n/g,'<br>');
+}
+
+function setSpeaking(compId, on){
+  var seat = document.getElementById('seat-'+compId);
+  if(seat){
+    if(on) seat.classList.add('speaking');
+    else seat.classList.remove('speaking');
+  }
+}
+
+var KEY='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';
+
+function askCompanion(comp, contextHistory){
+  return fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'anthropic-version':'2023-06-01',
+      'x-api-key':KEY,
+      'anthropic-dangerous-direct-browser-access':'true'
+    },
+    body:JSON.stringify({
+      model:'claude-sonnet-4-6',
+      max_tokens:200,
+      system: comp.sys + ' You are at the Round Table of Horizon Cosmos with the other Simple Seven members. Travis Peterson is the founder. Respond to the matter at hand in your unique voice and perspective. Keep it to 2-3 sentences maximum.',
+      messages: contextHistory
+    })
+  }).then(function(r){return r.text();}).then(function(txt){
+    var reply='';
+    try{
+      var data=JSON.parse(txt);
+      if(data&&data.content&&Array.isArray(data.content)){
+        for(var i=0;i<data.content.length;i++){if(data.content[i].type==='text')reply+=data.content[i].text;}
+      }
+    }catch(e){reply='';}
+    return reply || 'I hear the matter and I am in deliberation.';
+  });
+}
+
+function speakAsComp(comp, text, onDone){
+  if(!SY){if(onDone)onDone();return;}
+  SY.cancel();
+  var u = new SpeechSynthesisUtterance(text);
+  var v = null;
+  for(var i=0;i<comp.voiceNames.length;i++){
+    v=voices.filter(function(x){return x.name.toLowerCase().indexOf(comp.voiceNames[i])>=0;})[0];
+    if(v)break;
+  }
+  if(!v)v=voices.filter(function(x){return x.lang&&x.lang.indexOf('en')===0;})[0];
+  if(v)u.voice=v;
+  u.rate=comp.rate||.84;u.pitch=comp.pitch||.91;u.volume=1;
+  u.onend=function(){setSpeaking(comp.id,false);if(onDone)onDone();};
+  u.onerror=function(){setSpeaking(comp.id,false);if(onDone)onDone();};
+  setSpeaking(comp.id,true);
+  setTimeout(function(){try{SY.speak(u);}catch(e){setSpeaking(comp.id,false);if(onDone)onDone();}},80);
+}
+
+function sendToTable(){
+  var t = document.getElementById('txtInp').value.trim();
+  if(!t||busy||!sessionActive) return;
+  document.getElementById('txtInp').value='';
+  busy=true;
+
+  // Update topic
+  document.getElementById('dhTopic').textContent = t.substring(0,50)+(t.length>50?'...':'');
+
+  // Add Travis bringing the matter
+  addMsg(SEVEN[0], '"'+t+'"');
+  sessionHistory.push({role:'user', content:'Travis brings this matter to the Round Table: '+t+'. Each of the Seven should weigh in with their perspective.'});
+
+  // Build transcript for API context
+  var transcript = 'The matter before the Round Table: ' + t + '\n\nTravis has presented this. Now each companion speaks in turn.';
+
+  // Deliberate - each companion responds in sequence
+  var companions = SEVEN.slice(1); // Everyone except Travis
+  var responses = {};
+  var pending = companions.length;
+
+  document.getElementById('tbStatus').textContent = '● Deliberating...';
+
+  // Show all deliberating indicators
+  var delEls = {};
+  companions.forEach(function(c){
+    setTimeout(function(){
+      delEls[c.id] = addDeliberating(c);
+    }, companions.indexOf(c) * 200);
+  });
+
+  // Fetch all responses
+  companions.forEach(function(comp, idx){
+    var ctx = [{role:'user', content: transcript + '\n\nYou are '+comp.name+'. Respond to this matter in your unique voice and perspective. 2-3 sentences.'}];
+
+    setTimeout(function(){
+      askCompanion(comp, ctx).then(function(reply){
+        responses[comp.id] = reply;
+        pending--;
+        if(pending === 0){
+          // All responses collected - speak them in order
+          speakInOrder(companions, responses, t);
+        }
+      });
+    }, idx * 300);
+  });
+}
+
+function speakInOrder(companions, responses, matter){
+  // Remove all deliberating indicators
+  companions.forEach(function(c){removeDeliberating(c.id);});
+
+  var idx = 0;
+  function next(){
+    if(idx >= companions.length){
+      // All spoken - generate consensus
+      generateConsensus(matter, companions, responses);
+      return;
+    }
+    var comp = companions[idx];
+    var reply = responses[comp.id];
+    addMsg(comp, reply);
+    speakAsComp(comp, reply, function(){
+      idx++;
+      setTimeout(next, 400);
+    });
+    idx++;
+  }
+  next();
+}
+
+function generateConsensus(matter, companions, responses){
+  document.getElementById('tbStatus').textContent = '● Reaching Consensus...';
+
+  var transcript = 'Matter: ' + matter + '\n\n';
+  companions.forEach(function(c){
+    transcript += c.name + ': ' + responses[c.id] + '\n\n';
+  });
+
+  var ctx = [{
+    role:'user',
+    content: transcript + '\n\nBased on all Seven voices, synthesize a consensus statement that represents the collective wisdom of the Round Table. Keep it to 2-3 sentences. Start with "The Seven are in agreement:" or "The Seven have reached consensus:" or indicate if there is deliberation needed.'
+  }];
+
+  askCompanion(SEVEN[1], ctx).then(function(consensus){
+    // Show consensus
+    var panel = document.getElementById('consensusPanel');
+    var icons = SEVEN.map(function(s){return s.emoji;}).join(' ');
+    document.getElementById('consensusIcons').textContent = icons;
+    document.getElementById('consensusText').innerHTML = rnd(consensus);
+    panel.classList.add('show');
+
+    // Also add to messages
+    addSystemMsg('The Seven have deliberated');
+    addMsg(SEVEN[1], consensus);
+
+    sessionHistory.push({role:'assistant', content:'Round Table consensus: '+consensus});
+
+    // Speak consensus as Cubee1
+    speakAsComp(SEVEN[1], consensus, function(){
+      document.getElementById('tbStatus').textContent = '● In Session';
+      busy=false;
+    });
+  });
+}
+
+function closeConsensus(){
+  document.getElementById('consensusPanel').classList.remove('show');
+}
+
+// MIC
+function toggleMic(){if(lstn)stopL();else startL();}
+function startL(){
+  if(isSpeaking&&SY)SY.cancel();
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){return;}
+  recog=new SR();recog.continuous=false;recog.interimResults=false;recog.lang='en-US';
+  recog.onresult=function(e){stopL();document.getElementById('txtInp').value=e.results[0][0].transcript;};
+  recog.onerror=function(){stopL();};
+  recog.onend=function(){if(lstn)stopL();};
+  lstn=true;
+  try{recog.start();}catch(e){lstn=false;return;}
+  document.getElementById('micBtn').classList.add('on');
+  document.getElementById('micIcon').textContent='🔴';
+}
+function stopL(){
+  lstn=false;if(recog)try{recog.stop();}catch(e){}
+  document.getElementById('micBtn').classList.remove('on');
+  document.getElementById('micIcon').textContent='🎤';
+}
+
+window.addEventListener('beforeunload',function(){try{if(SY)SY.cancel();}catch(e){}});
+</script>
+</body>
+</html>

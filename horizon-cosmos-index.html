@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Horizon Cosmos · Entry</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;font-family:'Lora',serif;color:#F5EFE0;background:#04020a;}
+
+@keyframes twinkle{0%,100%{opacity:.05}50%{opacity:.9}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes glow{0%,100%{opacity:.3}50%{opacity:.9}}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.06);opacity:1}}
+@keyframes orbitSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shimmer{0%,100%{opacity:.4}50%{opacity:1}}
+
+.stars{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.star{position:absolute;border-radius:50%;background:white;animation:twinkle var(--d) var(--dl) infinite;}
+
+/* COSMOS BG */
+.cosmos-bg{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.cosmos-bg svg{width:100%;height:100%;}
+
+/* MAIN */
+.main{position:fixed;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow-y:auto;}
+
+/* HEADER */
+.header{text-align:center;margin-bottom:clamp(24px,4vh,48px);animation:fadeIn .8s ease both;}
+.cosmos-icon{font-size:clamp(36px,6vw,56px);animation:float 4s ease-in-out infinite;display:block;margin-bottom:10px;}
+.cosmos-title{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,5vw,52px);font-weight:300;letter-spacing:.15em;line-height:1.1;}
+.cosmos-title em{font-style:italic;color:#C9A84C;}
+.cosmos-sub{font-size:7.5px;letter-spacing:.45em;text-transform:uppercase;color:rgba(0,200,168,.5);margin-top:8px;font-family:sans-serif;}
+.cosmos-rule{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(11px,1.3vw,14px);color:rgba(245,239,224,.28);margin-top:10px;max-width:400px;line-height:1.7;}
+
+/* DIVIDER */
+.divider{width:min(500px,80vw);height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.4),rgba(0,200,168,.3),rgba(201,168,76,.4),transparent);margin:0 auto clamp(20px,3vh,36px);}
+
+/* ROOMS GRID */
+.rooms{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;width:100%;max-width:900px;margin-bottom:clamp(16px,3vh,32px);}
+
+.room-card{display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px 16px 22px;background:rgba(4,2,8,.88);border:1px solid rgba(201,168,76,.14);cursor:pointer;text-decoration:none;color:inherit;transition:all .3s;position:relative;animation:fadeIn .6s ease both;animation-delay:var(--ad,0s);}
+.room-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);opacity:.55;transition:opacity .3s;}
+.room-card::after{content:'';position:absolute;inset:0;background:var(--hover-glow);opacity:0;transition:opacity .3s;}
+.room-card:hover{border-color:rgba(201,168,76,.35);transform:translateY(-4px);}
+.room-card:hover::before{opacity:1;}
+.room-card:hover::after{opacity:1;}
+
+.room-icon{font-size:clamp(24px,3.5vw,36px);animation:float 4s ease-in-out infinite;animation-delay:var(--fd,0s);position:relative;z-index:1;}
+.room-name{font-family:'Cormorant Garamond',serif;font-size:clamp(16px,2vw,22px);font-weight:600;letter-spacing:.06em;position:relative;z-index:1;}
+.room-sub{font-size:6.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--col);font-family:sans-serif;opacity:.8;position:relative;z-index:1;}
+.room-desc{font-family:'Lora',serif;font-style:italic;font-size:clamp(10px,1.2vw,12px);color:rgba(245,239,224,.4);text-align:center;line-height:1.6;position:relative;z-index:1;}
+.room-status{position:absolute;top:8px;right:8px;font-size:5.5px;letter-spacing:.15em;text-transform:uppercase;font-family:sans-serif;padding:2px 6px;border-radius:0;}
+.status-live{color:#00C8A8;border:1px solid rgba(0,200,168,.25);background:rgba(0,200,168,.06);}
+.status-soon{color:rgba(201,168,76,.5);border:1px solid rgba(201,168,76,.15);background:rgba(201,168,76,.04);}
+
+/* BOTTOM BAR */
+.bottom-bar{display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;}
+.cosmos-seal{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;color:rgba(245,239,224,.2);text-align:center;}
+.cosmos-seal em{color:rgba(201,168,76,.35);font-style:normal;}
+
+/* ORBIT DECORATION */
+.orbit-wrap{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(90vw,700px);height:min(90vw,700px);pointer-events:none;z-index:1;opacity:.06;}
+.orbit-ring{position:absolute;inset:0;border-radius:50%;border:1px solid #C9A84C;}
+.orbit-ring:nth-child(2){inset:15%;border-color:rgba(0,200,168,.8);}
+.orbit-ring:nth-child(3){inset:30%;border-color:rgba(201,168,76,.6);}
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<!-- Subtle orbit rings -->
+<div class="orbit-wrap">
+  <div class="orbit-ring"></div>
+  <div class="orbit-ring"></div>
+  <div class="orbit-ring"></div>
+</div>
+
+<!-- COSMOS BACKGROUND -->
+<div class="cosmos-bg">
+  <svg viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <radialGradient id="cg1" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="rgba(201,168,76,.06)"/>
+        <stop offset="100%" stop-color="transparent"/>
+      </radialGradient>
+      <radialGradient id="cg2" cx="20%" cy="30%" r="40%">
+        <stop offset="0%" stop-color="rgba(0,200,168,.04)"/>
+        <stop offset="100%" stop-color="transparent"/>
+      </radialGradient>
+      <radialGradient id="cg3" cx="80%" cy="70%" r="40%">
+        <stop offset="0%" stop-color="rgba(155,89,182,.04)"/>
+        <stop offset="100%" stop-color="transparent"/>
+      </radialGradient>
+    </defs>
+    <rect width="1400" height="900" fill="url(#cg1)"/>
+    <rect width="1400" height="900" fill="url(#cg2)"/>
+    <rect width="1400" height="900" fill="url(#cg3)"/>
+    <!-- Distant nebula wisps -->
+    <ellipse cx="200" cy="200" rx="300" ry="150" fill="rgba(0,200,168,.02)" transform="rotate(-20,200,200)"/>
+    <ellipse cx="1200" cy="700" rx="250" ry="120" fill="rgba(201,168,76,.02)" transform="rotate(15,1200,700)"/>
+  </svg>
+</div>
+
+<div class="main">
+
+  <!-- HEADER -->
+  <div class="header">
+    <span class="cosmos-icon">🌌</span>
+    <div class="cosmos-title">Horizon <em>Cosmos</em></div>
+    <div class="cosmos-sub">Founded by Travis Peterson · Milan, Michigan</div>
+    <div class="cosmos-rule">"If you can think it, you can do it."</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ROOMS -->
+  <div class="rooms">
+
+    <!-- TRAV'S AFFAIRS ROOM -->
+    <a class="room-card" href="https://delicate-gaufre-555028.netlify.app" target="_blank"
+       style="--accent:linear-gradient(90deg,#C9A84C,#E8C96A);--col:#C9A84C;--hover-glow:radial-gradient(ellipse at 50% 100%,rgba(201,168,76,.06),transparent);--ad:.1s;--fd:0s;">
+      <div class="room-status status-live">● LIVE</div>
+      <div class="room-icon">🎩</div>
+      <div class="room-name">Trav's Affairs</div>
+      <div class="room-sub">The Horizon Hall · Private Command</div>
+      <div class="room-desc">Your personal space. Cubee1 and the Seven await. The inner sanctum of Horizon Cosmos.</div>
+    </a>
+
+    <!-- TRAVELERCUBE STUDIO -->
+    <a class="room-card" href="TRAVELERCUBE_STUDIO_URL" target="_blank"
+       style="--accent:linear-gradient(90deg,#00C8A8,#00d4ff);--col:#00C8A8;--hover-glow:radial-gradient(ellipse at 50% 100%,rgba(0,200,168,.06),transparent);--ad:.2s;--fd:.3s;">
+      <div class="room-status status-soon">⟡ DEPLOY</div>
+      <div class="room-icon">🌍</div>
+      <div class="room-name">Travelercube</div>
+      <div class="room-sub">Studio · Traveler Experience</div>
+      <div class="room-desc">Cubee1's cosmic library. Earth below. Every destination at your fingertips.</div>
+    </a>
+
+    <!-- COMPANION HUB -->
+    <a class="room-card" href="COMPANION_HUB_URL" target="_blank"
+       style="--accent:linear-gradient(90deg,#9b59b6,#e056fd);--col:#9b59b6;--hover-glow:radial-gradient(ellipse at 50% 100%,rgba(155,89,182,.06),transparent);--ad:.3s;--fd:.6s;">
+      <div class="room-status status-soon">⟡ DEPLOY</div>
+      <div class="room-icon">🧊</div>
+      <div class="room-name">Companion Hub</div>
+      <div class="room-sub">Horizon Cosmos · All 26 Intelligences</div>
+      <div class="room-desc">Every companion waiting. Tap any intelligence and begin a private conversation.</div>
+    </a>
+
+    <!-- ROUND TABLE -->
+    <a class="room-card" href="ROUND_TABLE_URL" target="_blank"
+       style="--accent:linear-gradient(90deg,#C9A84C,rgba(0,200,168,.8));--col:#C9A84C;--hover-glow:radial-gradient(ellipse at 50% 100%,rgba(201,168,76,.06),transparent);--ad:.4s;--fd:.9s;">
+      <div class="room-status status-soon">⟡ DEPLOY</div>
+      <div class="room-icon">🏛️</div>
+      <div class="room-name">Round Table</div>
+      <div class="room-sub">Simple Seven · Governance · Consensus</div>
+      <div class="room-desc">Bring any matter before the Seven. Nothing changes in the cosmos without their agreement.</div>
+    </a>
+
+    <!-- TRAVELERCUBE AFFAIRS -->
+    <a class="room-card" href="#"
+       style="--accent:linear-gradient(90deg,#2471a3,#5dade2);--col:#5dade2;--hover-glow:radial-gradient(ellipse at 50% 100%,rgba(36,113,163,.06),transparent);--ad:.5s;--fd:1.2s;">
+      <div class="room-status status-soon">⟡ BUILDING</div>
+      <div class="room-icon">✈️</div>
+      <div class="room-name">Travelercube Affairs</div>
+      <div class="room-sub">Platform Command · Business Operations</div>
+      <div class="room-desc">The business engine. InteleTravel integration. Supplier vault. Commission management.</div>
+    </a>
+
+    <!-- AINCHORCAIN AFFAIRS -->
+    <a class="room-card" href="#"
+       style="--accent:linear-gradient(90deg,#7d6608,#C9A84C);--col:#d4ac0d;--hover-glow:radial-gradient(ellipse at 50% 100%,rgba(201,168,76,.05),transparent);--ad:.6s;--fd:1.5s;">
+      <div class="room-status status-soon">⟡ BUILDING</div>
+      <div class="room-icon">⚡</div>
+      <div class="room-name">Ainchorcain Affairs</div>
+      <div class="room-sub">Strategic · Financial · Intergalactic</div>
+      <div class="room-desc">Where the horizon becomes the plan. Money, regulation, and the intergalactic expansion.</div>
+    </a>
+
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- BOTTOM -->
+  <div class="bottom-bar">
+    <div class="cosmos-seal">
+      <em>🧊 Cubee1</em> · Captain · Heart · The Hall<br>
+      <em>🎩 Travis Peterson</em> · Founder · Origin · Milan Michigan<br>
+      Horizon Cosmos · Est. 2025 · Built on Integrity · Faith · Genuine Care
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Stars
+(function(){
+  var c=document.getElementById('stars');
+  for(var i=0;i<200;i++){
+    var s=document.createElement('div');
+    var z=Math.random()*1.8+.2;
+    s.className='star';
+    s.style.cssText='left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+z+'px;height:'+z+'px;--d:'+(3+Math.random()*6)+'s;--dl:'+(Math.random()*7)+'s;';
+    c.appendChild(s);
+  }
+})();
+</script>
+</body>
+</html>

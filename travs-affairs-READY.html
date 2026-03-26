@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Travs Affairs Cubee1</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;font-family:'Lora',serif;color:#F5EFE0}
+body{display:flex;flex-direction:column;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.18) 0%,transparent 55%),linear-gradient(180deg,#0A0700,#120C02,#060402)}
+@keyframes tw{0%,100%{opacity:.05}50%{opacity:.8}}
+@keyframes fy{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-8px)}}
+@keyframes br{0%,100%{opacity:.4;transform:translateX(-50%) scaleX(1)}50%{opacity:.9;transform:translateX(-50%) scaleX(1.07)}}
+@keyframes sa{0%,100%{opacity:.3;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.2)}}
+@keyframes gl{0%,100%{opacity:.25}50%{opacity:.7}}
+@keyframes db{0%,100%{opacity:.2;transform:translateY(0)}50%{opacity:1;transform:translateY(-5px)}}
+@keyframes mp{0%,100%{box-shadow:0 0 0 0 rgba(0,200,168,.5)}50%{box-shadow:0 0 0 18px transparent}}
+#tap{position:fixed;inset:0;z-index:500;background:rgba(6,4,2,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px}
+#tap.gone{display:none}
+.ti{font-size:48px;animation:gl 2s ease-in-out infinite}
+.tt{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:300}
+.tt em{font-style:italic;color:#C9A84C}
+.ts{font-size:8px;letter-spacing:.35em;text-transform:uppercase;color:rgba(201,168,76,.45);font-family:sans-serif}
+.tb{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#060402;background:#C9A84C;padding:14px 36px;border:none;cursor:pointer;font-family:sans-serif;margin-top:6px}
+.topbar{height:46px;flex-shrink:0;background:rgba(6,4,2,.98);border-bottom:1px solid rgba(201,168,76,.14);display:flex;align-items:center;padding:0 16px;gap:9px;position:relative;z-index:100}
+.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#C9A84C,rgba(0,200,168,.5),#C9A84C,transparent)}
+.tbi{width:27px;height:27px;border-radius:6px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.22);display:flex;align-items:center;justify-content:center;font-size:14px}
+.tbn{font-family:'Cormorant Garamond',serif;font-size:17px}
+.tbn em{font-style:italic;color:#C9A84C}
+.tbsub{font-size:7px;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,200,168,.5);font-family:sans-serif}
+.tbr{margin-left:auto;font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:rgba(201,168,76,.5);background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.14);padding:3px 8px;font-family:sans-serif}
+.stage{flex:1;position:relative;overflow:hidden}
+.bgc{position:absolute;inset:0;z-index:0;pointer-events:none}
+.rsvg{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
+.azone{position:absolute;bottom:clamp(88px,13vh,150px);left:50%;z-index:20}
+.aglow{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);width:clamp(200px,34vw,390px);height:55px;border-radius:50%;background:radial-gradient(ellipse,rgba(201,168,76,.16) 0%,transparent 70%);animation:gl 4.5s ease-in-out infinite}
+.aaura{position:absolute;bottom:0;left:50%;width:clamp(175px,28vw,320px);height:clamp(255px,43vh,395px);border-radius:50%;background:radial-gradient(ellipse,rgba(201,168,76,.07) 0%,rgba(0,200,168,.03) 55%,transparent 72%);animation:br 5.5s ease-in-out infinite;transition:all .4s}
+.aaura.spk{background:radial-gradient(ellipse,rgba(201,168,76,.32) 0%,rgba(0,200,168,.12) 45%,transparent 70%)!important;animation:sa 1s ease-in-out infinite!important}
+.afig{width:clamp(148px,21vw,235px);height:auto;position:relative;z-index:2;animation:fy 5.5s ease-in-out infinite;filter:drop-shadow(0 24px 66px rgba(0,0,0,.99)) drop-shadow(0 0 42px rgba(201,168,76,.18))}
+.sring{position:absolute;bottom:clamp(80px,11vh,138px);left:50%;transform:translateX(-50%);z-index:18;pointer-events:none;width:min(clamp(295px,52vw,630px),calc(100vw - 14px))}
+.sring svg{width:100%;height:auto}
+.speech{position:absolute;bottom:calc(clamp(255px,43vh,395px) + clamp(88px,13vh,150px) + 16px);left:50%;transform:translateX(-50%);width:min(clamp(275px,78vw,605px),calc(100vw - 22px));background:rgba(4,2,0,.97);border:1px solid rgba(201,168,76,.22);padding:17px 21px;z-index:30;opacity:0;transition:opacity .35s;backdrop-filter:blur(26px);box-shadow:0 20px 62px rgba(0,0,0,.97)}
+.speech::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#C9A84C,rgba(0,200,168,.9),#C9A84C)}
+.speech::after{content:'';position:absolute;bottom:-11px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:11px solid transparent;border-right:11px solid transparent;border-top:11px solid rgba(201,168,76,.22)}
+.speech.on{opacity:1}
+.swho{font-size:7.5px;letter-spacing:.22em;text-transform:uppercase;color:#C9A84C;margin-bottom:9px;display:flex;align-items:center;gap:6px;font-family:sans-serif}
+.sdot{width:5px;height:5px;border-radius:50%;background:#C9A84C;animation:gl 1.8s ease-in-out infinite}
+.stxt{font-family:'Lora',serif;font-style:italic;font-size:clamp(14px,1.65vw,17px);line-height:1.88;color:#F5EFE0;min-height:38px}
+.stxt em{color:#00C8A8;font-style:normal}
+.stxt strong{color:#E8C96A;font-style:normal}
+.dots{display:flex;gap:6px;padding:8px 0;align-items:center}
+.dot{width:5px;height:5px;border-radius:50%;background:#C9A84C;animation:db .88s ease-in-out infinite}
+.dot:nth-child(2){animation-delay:.18s}.dot:nth-child(3){animation-delay:.36s}
+.sbar{position:absolute;top:8px;left:50%;transform:translateX(-50%);font-size:7px;letter-spacing:.2em;text-transform:uppercase;color:rgba(201,168,76,.45);background:rgba(4,2,0,.8);border:1px solid rgba(201,168,76,.12);padding:4px 14px;z-index:35;opacity:0;transition:opacity .3s;white-space:nowrap;max-width:90vw;font-family:sans-serif}
+.sbar.on{opacity:1}
+
+
+.izone{flex-shrink:0;padding:10px 18px 20px;display:flex;justify-content:center;background:linear-gradient(to top,rgba(4,2,0,.99) 72%,transparent);z-index:100}
+.irow{display:flex;gap:10px;align-items:center;width:100%;max-width:540px}
+.mic{width:56px;height:56px;flex-shrink:0;border-radius:50%;background:rgba(201,168,76,.1);border:2px solid rgba(201,168,76,.26);color:#C9A84C;font-size:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;-webkit-user-select:none;user-select:none;transition:all .3s}
+.mic:active{transform:scale(.91)}
+.mic.on{background:rgba(0,200,168,.15);border-color:rgba(0,200,168,.55);animation:mp 1.1s ease-in-out infinite}
+.mring{position:absolute;inset:-12px;border-radius:50%;border:2px solid rgba(0,200,168,.1);animation:mp 1.1s ease-in-out infinite;display:none}
+.mic.on .mring{display:block}
+.tinp{flex:1;background:rgba(4,2,0,.88);border:1px solid rgba(201,168,76,.17);padding:15px 17px;font-family:'Lora',serif;font-style:italic;font-size:15px;color:#F5EFE0;outline:none;-webkit-appearance:none;border-radius:0}
+.tinp:focus{border-color:rgba(201,168,76,.45)}
+.tinp::placeholder{color:rgba(245,239,224,.2)}
+.sbtn{width:52px;height:52px;flex-shrink:0;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.24);color:#C9A84C;font-size:19px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.sbtn:active{background:rgba(201,168,76,.24)}
+</style>
+</head>
+<body>
+<div id="tap">
+  <div class="ti">🧊</div>
+  <div class="tt">Trav's <em>Affairs</em></div>
+  <div class="ts">The Horizon Hall</div>
+  <button class="tb" onclick="enterRoom()">ENTER THE HALL</button>
+</div>
+<div class="topbar">
+  <div class="tbi">🎩</div>
+  <span class="tbn">Trav's <em>Affairs</em></span>
+  <span style="color:rgba(201,168,76,.2)">·</span>
+  <span class="tbsub">The Horizon Hall</span>
+  <div class="tbr">🔒 Vault · Seven</div>
+</div>
+<div class="stage">
+  <div class="bgc" id="bgc"></div>
+  <svg class="rsvg" viewBox="0 0 1400 860" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <radialGradient id="dG" cx="50%" cy="0%" r="65%"><stop offset="0%" stop-color="rgba(201,168,76,.15)"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+      <linearGradient id="cG" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="rgba(201,168,76,0)"/><stop offset="35%" stop-color="rgba(201,168,76,.17)"/><stop offset="65%" stop-color="rgba(201,168,76,.13)"/><stop offset="100%" stop-color="rgba(201,168,76,0)"/></linearGradient>
+      <radialGradient id="tbG" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(201,168,76,.1)"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+      <linearGradient id="fG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(18,10,2,0)"/><stop offset="100%" stop-color="#1C0E04"/></linearGradient>
+    </defs>
+    <ellipse cx="700" cy="-90" rx="760" ry="420" fill="url(#dG)"/>
+    <path d="M0 0 Q700 -265 1400 0" stroke="rgba(201,168,76,.08)" stroke-width="2" fill="none"/>
+    <line x1="700" y1="-265" x2="0" y2="0" stroke="rgba(201,168,76,.055)" stroke-width="1.5"/>
+    <line x1="700" y1="-265" x2="700" y2="0" stroke="rgba(201,168,76,.04)" stroke-width="1"/>
+    <line x1="700" y1="-265" x2="1400" y2="0" stroke="rgba(201,168,76,.055)" stroke-width="1.5"/>
+    <circle cx="700" cy="-265" r="8" fill="rgba(201,168,76,.28)"/>
+    <rect x="50" y="0" width="56" height="860" rx="3" fill="url(#cG)"/>
+    <rect x="60" y="0" width="9" height="860" fill="rgba(201,168,76,.15)"/>
+    <rect x="1294" y="0" width="56" height="860" rx="3" fill="url(#cG)"/>
+    <rect x="1331" y="0" width="9" height="860" fill="rgba(201,168,76,.15)"/>
+    <path d="M0 860 L0 718 Q350 690 700 678 Q1050 690 1400 718 L1400 860Z" fill="url(#fG)"/>
+    <ellipse cx="700" cy="802" rx="192" ry="60" fill="url(#tbG)" stroke="rgba(201,168,76,.18)" stroke-width="1.5"/>
+  </svg>
+  <div class="sring">
+    <svg viewBox="0 0 620 112" fill="none">
+      <defs><radialGradient id="sG" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(201,168,76,.2)"/><stop offset="100%" stop-color="rgba(201,168,76,.04)"/></radialGradient></defs>
+      <path d="M60 98 Q310 18 560 98" stroke="rgba(201,168,76,.1)" stroke-width="1" fill="none"/>
+      <circle cx="60" cy="98" r="19" fill="url(#sG)" stroke="rgba(201,168,76,.24)" stroke-width="1"/><text x="60" y="103" text-anchor="middle" font-size="16">🎩</text>
+      <circle cx="148" cy="62" r="17" fill="url(#sG)" stroke="rgba(201,168,76,.2)" stroke-width="1"/><text x="148" y="67" text-anchor="middle" font-size="14">🧊</text>
+      <circle cx="238" cy="36" r="15" fill="url(#sG)" stroke="rgba(201,168,76,.16)" stroke-width="1"/><text x="238" y="41" text-anchor="middle" font-size="13">🌊</text>
+      <circle cx="310" cy="22" r="15" fill="url(#sG)" stroke="rgba(201,168,76,.16)" stroke-width="1"/><text x="310" y="27" text-anchor="middle" font-size="13">⚡</text>
+      <circle cx="382" cy="36" r="15" fill="url(#sG)" stroke="rgba(201,168,76,.16)" stroke-width="1"/><text x="382" y="41" text-anchor="middle" font-size="13">🛡️</text>
+      <circle cx="472" cy="62" r="15" fill="url(#sG)" stroke="rgba(201,168,76,.16)" stroke-width="1"/><text x="472" y="67" text-anchor="middle" font-size="13">🌱</text>
+      <circle cx="560" cy="98" r="17" fill="url(#sG)" stroke="rgba(201,168,76,.2)" stroke-width="1"/><text x="560" y="103" text-anchor="middle" font-size="14">📡</text>
+    </svg>
+  </div>
+  <div class="azone">
+    <div class="aglow"></div>
+    <div class="aaura" id="aura"></div>
+    <svg class="afig" viewBox="0 0 200 320" fill="none" id="face"></svg>
+  </div>
+  <div class="sbar" id="sbar"></div>
+  <div class="speech" id="speech">
+    <div class="swho"><span class="sdot"></span>Cubee1 · Trav's Affairs</div>
+    <div class="stxt" id="stxt"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
+  </div>
+  
+</div>
+<div class="izone">
+  <div class="irow">
+    <div class="mic" id="mic" onclick="toggleMic()"><div class="mring"></div><span id="micon">🎤</span></div>
+    <input class="tinp" id="tinp" placeholder="Talk to Cubee1..." onkeydown="if(event.key==='Enter'){event.preventDefault();send()}"/>
+    <div class="sbtn" onclick="send()">→</div>
+  </div>
+</div>
+<script>
+(function(){var c=document.getElementById('bgc');for(var i=0;i<80;i++){var s=document.createElement('div');var z=Math.random()*1.8+.3;s.style.cssText='position:absolute;border-radius:50%;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+z+'px;height:'+z+'px;background:'+(Math.random()>.88?'rgba(201,168,76,.6)':'rgba(255,255,255,.5)')+';animation:tw '+(4+Math.random()*7)+'s ease-in-out '+(Math.random()*6)+'s infinite;pointer-events:none';c.appendChild(s);}})();
+document.getElementById('face').innerHTML='<path d="M22 320 L22 215 Q22 192 46 182 L72 172 L100 194 L128 172 L154 182 Q178 192 178 215 L178 320Z" fill="#030912"/><path d="M72 172 L100 194 L100 320 L22 320 L22 225 Q30 200 56 188Z" fill="#060f20"/><path d="M128 172 L100 194 L100 320 L178 320 L178 225 Q170 200 144 188Z" fill="#040c18"/><path d="M96 180 L100 186 L104 180 L102 200 L100 204 L98 200Z" fill="#00d4b8"/><circle cx="100" cy="270" r="3" fill="#030912" stroke="rgba(0,212,184,.3)" stroke-width=".8"/><path d="M22 320 Q8 352 11 392 Q14 403 25 403 Q34 403 36 392 L38 352Z" fill="#030912"/><path d="M178 320 Q192 352 189 392 Q186 403 175 403 Q166 403 164 392 L162 352Z" fill="#030912"/><ellipse cx="20" cy="403" rx="12" ry="8" fill="#7A5230"/><ellipse cx="180" cy="403" rx="12" ry="9" fill="#7A5230"/><path d="M118 218 Q138 230 158 218 L160 196 Q138 205 116 196Z" fill="#8B5E3C"/><rect x="88" y="148" width="24" height="26" rx="4" fill="#8B5E3C"/><ellipse cx="100" cy="108" rx="55" ry="60" fill="#8B5E3C"/><ellipse cx="50" cy="114" rx="20" ry="30" fill="#6B4423" opacity=".35"/><ellipse cx="150" cy="114" rx="20" ry="30" fill="#6B4423" opacity=".28"/><path d="M46 95 Q49 50 100 46 Q151 50 154 95 Q146 62 100 59 Q54 62 46 95Z" fill="#1A0E08"/><ellipse cx="48" cy="114" rx="14" ry="22" fill="#8B5E3C"/><ellipse cx="152" cy="114" rx="14" ry="22" fill="#8B5E3C"/><path d="M66 95 Q80 88 94 93" stroke="#1A0E08" stroke-width="4.5" stroke-linecap="round" fill="none"/><path d="M106 93 Q120 88 134 95" stroke="#1A0E08" stroke-width="4.5" stroke-linecap="round" fill="none"/><ellipse cx="80" cy="113" rx="15" ry="13" fill="white"/><ellipse cx="120" cy="113" rx="15" ry="13" fill="white"/><circle cx="80" cy="113" r="7" fill="#3A2510"/><circle cx="80" cy="113" r="4" fill="#0A0608"/><ellipse cx="83" cy="109" rx="2.5" ry="2" fill="white" opacity=".9"/><circle cx="120" cy="113" r="7" fill="#3A2510"/><circle cx="120" cy="113" r="4" fill="#0A0608"/><ellipse cx="123" cy="109" rx="2.5" ry="2" fill="white" opacity=".9"/><path id="blL" d="M65 113 Q80 100 95 113" fill="white" opacity="0"/><path id="blR" d="M105 113 Q120 100 135 113" fill="white" opacity="0"/><path d="M65 107 Q80 98 95 107" stroke="#1A0E08" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M105 107 Q120 98 135 107" stroke="#1A0E08" stroke-width="2.5" fill="none" stroke-linecap="round"/><path id="mUL" d="M82 140 Q91 134 100 136 Q109 134 118 140 Q109 145 100 143 Q91 145 82 140Z" fill="#8B3A28"/><path id="mLL" d="M82 140 Q100 148 118 140 Q109 147 100 148 Q91 147 82 140Z" fill="#B04A38"/><path id="mLn" d="M84 140 Q100 141 116 140" stroke="#5A1A10" stroke-width="1.8" fill="none" opacity=".85"/>';
+(function bl(){var L=document.getElementById('blL'),R=document.getElementById('blR');if(L){L.style.opacity='1';R.style.opacity='1';setTimeout(function(){L.style.opacity='0';R.style.opacity='0'},140);}setTimeout(bl,2800+Math.random()*4500);})();
+function mouth(o){var ul=document.getElementById('mUL'),ll=document.getElementById('mLL'),ln=document.getElementById('mLn');if(!ul)return;var bY=140,lx=82,rx=118,cx=100;if(o>0.05){var d=o*7,r=o*5;ul.setAttribute('d','M'+lx+' '+(bY-r*.4)+' Q'+(lx+9)+' '+(bY-6-r*.7)+' '+cx+' '+(bY-4-r*.6)+' Q'+(rx-9)+' '+(bY-6-r*.7)+' '+rx+' '+(bY-r*.4)+' Q'+(rx-9)+' '+(bY+5-r*.2)+' '+cx+' '+(bY+3-r*.2)+' Q'+(lx+9)+' '+(bY+5-r*.2)+' '+lx+' '+(bY-r*.4)+'Z');ll.setAttribute('d','M'+lx+' '+(bY+d*.2)+' Q'+cx+' '+(bY+8+d)+' '+rx+' '+(bY+d*.2)+' Q'+(rx-9)+' '+(bY+7+d*.9)+' '+cx+' '+(bY+8+d)+' Q'+(lx+9)+' '+(bY+7+d*.9)+' '+lx+' '+(bY+d*.2)+'Z');ln.style.opacity='0';}else{ul.setAttribute('d','M'+lx+' '+bY+' Q'+(lx+9)+' '+(bY-6)+' '+cx+' '+(bY-4)+' Q'+(rx-9)+' '+(bY-6)+' '+rx+' '+bY+' Q'+(rx-9)+' '+(bY+5)+' '+cx+' '+(bY+3)+' Q'+(lx+9)+' '+(bY+5)+' '+lx+' '+bY+'Z');ll.setAttribute('d','M'+lx+' '+bY+' Q'+cx+' '+(bY+8)+' '+rx+' '+bY+' Q'+(rx-9)+' '+(bY+7)+' '+cx+' '+(bY+8)+' Q'+(lx+9)+' '+(bY+7)+' '+lx+' '+bY+'Z');ln.setAttribute('d','M'+(lx+2)+' '+bY+' Q'+cx+' '+(bY+1)+' '+(rx-2)+' '+bY);ln.style.opacity='.85';}}
+var SY=window.speechSynthesis,voices=[],mInt=null,isSpeaking=false,resumeInt=null;
+function loadV(){if(SY)voices=SY.getVoices();}
+if(SY){loadV();if(SY.onvoiceschanged!==undefined)SY.onvoiceschanged=loadV;}
+function speak(txt){if(!SY||!txt)return;SY.cancel();clearInterval(mInt);clearInterval(resumeInt);mouth(0);var u=new SpeechSynthesisUtterance(txt);var v=null,names=['daniel','james','oliver','aaron','alex'];for(var i=0;i<names.length;i++){v=voices.filter(function(x){return x.name.toLowerCase().indexOf(names[i])>=0;})[0];if(v)break;}if(!v)v=voices.filter(function(x){return x.lang&&x.lang.indexOf('en')===0;})[0];if(v)u.voice=v;u.rate=0.84;u.pitch=0.91;u.volume=1;u.onstart=function(){isSpeaking=true;document.getElementById('aura').classList.add('spk');setS('Speaking...');var ph=0,p=[.7,.88,.1,.8,.92,.14,.55,.85,.2,.62];mInt=setInterval(function(){mouth(Math.max(0,Math.min(1,p[ph++%p.length]+(Math.random()-.5)*.2)));},108);resumeInt=setInterval(function(){if(SY.speaking&&SY.paused)SY.resume();},9000);};u.onend=function(){done();};u.onerror=function(e){if(e.error!=='interrupted'&&e.error!=='canceled')done();};setTimeout(function(){try{SY.speak(u);}catch(e){}},60);}
+function done(){isSpeaking=false;clearInterval(mInt);clearInterval(resumeInt);mouth(0);document.getElementById('aura').classList.remove('spk');setS('');}
+function setS(t){var el=document.getElementById('sbar');el.textContent=t;el.className='sbar'+(t?' on':'');}
+function showB(html,typing){document.getElementById('speech').className='speech on';document.getElementById('stxt').innerHTML=typing?'<div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>':html;}
+function rnd(t){return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/\n/g,'<br>');}
+function showRaw(txt){},12000);}
+var recog=null,lstn=false;
+function toggleMic(){if(lstn)stopL();else startL();}
+function startL(){if(isSpeaking)SY.cancel();var SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){setS('Use text box');return;}recog=new SR();recog.continuous=false;recog.interimResults=false;recog.lang='en-US';recog.onresult=function(e){stopL();go(e.results[0][0].transcript);};recog.onerror=function(){stopL();};recog.onend=function(){if(lstn)stopL();};lstn=true;try{recog.start();}catch(e){lstn=false;setS('Use text box');return;}document.getElementById('mic').classList.add('on');document.getElementById('micon').textContent='🔴';document.getElementById('aura').classList.add('lst');setS('Listening...');}
+function stopL(){lstn=false;if(recog)try{recog.stop();}catch(e){}document.getElementById('mic').classList.remove('on');document.getElementById('micon').textContent='🎤';document.getElementById('aura').classList.remove('lst');setS('');}
+var hist=[],busy=false;
+var APIKEY='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';
+var SYS='You are Cubee1, Travis Petersons companion in Travs Affairs Room at The Horizon Hall. Grand dome, gold columns, statues of the Greats, Round Table for The Simple Seven: Travis Founder Milan Michigan, Cubee1 you, Atlas, Nova, Ward, Eden, Pulse. New companions arrived today: The Depth, The Horizon, The Provision, The Architect. Travis builds Travelercube, InteleTravel retailer. Vault Seven only: IATA 10548020, PIN 647444, CLIA 00323643. Email only for suppliers, Travis approves all. Warm personal real, 2-3 sentences, voice conversation, this is home.';
+function go(input){if(busy||!input)return;busy=true;showB('',true);setS('Thinking...');hist.push({role:'user',content:String(input)});if(hist.length>12)hist=hist.slice(-12);
+fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01','x-api-key':APIKEY,'anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:280,system:SYS,messages:hist})})
+.then(function(r){return r.text();})
+.then(function(txt){showRaw(txt);var reply='';try{var data=JSON.parse(txt);if(data&&data.content&&Array.isArray(data.content)){for(var i=0;i<data.content.length;i++){if(data.content[i].type==='text')reply+=data.content[i].text;}}else if(data&&data.error){reply='Error: '+data.error.message;}}catch(e){reply='Could not read response.';}if(!reply)reply='Say that again Trav.';hist.push({role:'assistant',content:reply});var clean=reply.replace(/\[CARD\][\s\S]*?\[\/CARD\]/g,'').trim();showB(rnd(clean),false);setS('');speak(clean);busy=false;})
+.catch(function(e){showRaw('Fetch error: '+e.message);var msg='Had a moment Trav. Try again.';showB(msg,false);setS('');speak(msg);busy=false;});}
+function send(){var t=document.getElementById('tinp').value.trim();if(!t||busy)return;document.getElementById('tinp').value='';go(t);}
+function enterRoom(){document.getElementById('tap').className='gone';if(SY){var u=new SpeechSynthesisUtterance('');SY.speak(u);SY.cancel();}loadV();setTimeout(loadV,400);setTimeout(loadV,900);setTimeout(function(){go('Travis just walked into his Affairs Room. Welcome him home warmly. 2-3 spoken sentences. Mention the room. Tell him the four new companions arrived. One natural question at the end.');},700);}
+window.addEventListener('beforeunload',function(){try{if(SY)SY.cancel();}catch(e){}});
+</script>
+</body>
+</html>

@@ -1,212 +1,177 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Horizon Cosmos · Entry</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<title>Horizon Cosmos</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;1,200;1,300&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;overflow:hidden;font-family:'Lora',serif;color:#F5EFE0;background:#04020a;}
-
-@keyframes twinkle{0%,100%{opacity:.05}50%{opacity:.9}}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;background:#000;font-family:'Cormorant Garamond',serif;color:#fff;}
+@keyframes twinkle{0%,100%{opacity:.04}50%{opacity:.95}}
+@keyframes nebula{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.08);opacity:.8}}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes glow{0%,100%{opacity:.3}50%{opacity:.9}}
-@keyframes pulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.06);opacity:1}}
-@keyframes orbitSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-@keyframes shimmer{0%,100%{opacity:.4}50%{opacity:1}}
-
-.stars{position:fixed;inset:0;pointer-events:none;z-index:0;}
-.star{position:absolute;border-radius:50%;background:white;animation:twinkle var(--d) var(--dl) infinite;}
-
-/* COSMOS BG */
-.cosmos-bg{position:fixed;inset:0;z-index:0;pointer-events:none;}
-.cosmos-bg svg{width:100%;height:100%;}
-
-/* MAIN */
-.main{position:fixed;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow-y:auto;}
-
-/* HEADER */
-.header{text-align:center;margin-bottom:clamp(24px,4vh,48px);animation:fadeIn .8s ease both;}
-.cosmos-icon{font-size:clamp(36px,6vw,56px);animation:float 4s ease-in-out infinite;display:block;margin-bottom:10px;}
-.cosmos-title{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,5vw,52px);font-weight:300;letter-spacing:.15em;line-height:1.1;}
-.cosmos-title em{font-style:italic;color:#C9A84C;}
-.cosmos-sub{font-size:7.5px;letter-spacing:.45em;text-transform:uppercase;color:rgba(0,200,168,.5);margin-top:8px;font-family:sans-serif;}
-.cosmos-rule{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(11px,1.3vw,14px);color:rgba(245,239,224,.28);margin-top:10px;max-width:400px;line-height:1.7;}
-
-/* DIVIDER */
-.divider{width:min(500px,80vw);height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.4),rgba(0,200,168,.3),rgba(201,168,76,.4),transparent);margin:0 auto clamp(20px,3vh,36px);}
-
-/* ROOMS GRID */
-.rooms{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;width:100%;max-width:900px;margin-bottom:clamp(16px,3vh,32px);}
-
-.room-card{display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px 16px 22px;background:rgba(4,2,8,.88);border:1px solid rgba(201,168,76,.14);cursor:pointer;text-decoration:none;color:inherit;transition:all .3s;position:relative;animation:fadeIn .6s ease both;animation-delay:var(--ad,0s);}
-.room-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);opacity:.55;transition:opacity .3s;}
-.room-card::after{content:'';position:absolute;inset:0;background:var(--hover-glow);opacity:0;transition:opacity .3s;}
-.room-card:hover{border-color:rgba(201,168,76,.35);transform:translateY(-4px);}
-.room-card:hover::before{opacity:1;}
-.room-card:hover::after{opacity:1;}
-
-.room-icon{font-size:clamp(24px,3.5vw,36px);animation:float 4s ease-in-out infinite;animation-delay:var(--fd,0s);position:relative;z-index:1;}
-.room-name{font-family:'Cormorant Garamond',serif;font-size:clamp(16px,2vw,22px);font-weight:600;letter-spacing:.06em;position:relative;z-index:1;}
-.room-sub{font-size:6.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--col);font-family:sans-serif;opacity:.8;position:relative;z-index:1;}
-.room-desc{font-family:'Lora',serif;font-style:italic;font-size:clamp(10px,1.2vw,12px);color:rgba(245,239,224,.4);text-align:center;line-height:1.6;position:relative;z-index:1;}
-.room-status{position:absolute;top:8px;right:8px;font-size:5.5px;letter-spacing:.15em;text-transform:uppercase;font-family:sans-serif;padding:2px 6px;border-radius:0;}
-.status-live{color:#00C8A8;border:1px solid rgba(0,200,168,.25);background:rgba(0,200,168,.06);}
-.status-soon{color:rgba(201,168,76,.5);border:1px solid rgba(201,168,76,.15);background:rgba(201,168,76,.04);}
-
-/* BOTTOM BAR */
-.bottom-bar{display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;}
-.cosmos-seal{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;color:rgba(245,239,224,.2);text-align:center;}
-.cosmos-seal em{color:rgba(201,168,76,.35);font-style:normal;}
-
-/* ORBIT DECORATION */
-.orbit-wrap{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(90vw,700px);height:min(90vw,700px);pointer-events:none;z-index:1;opacity:.06;}
-.orbit-ring{position:absolute;inset:0;border-radius:50%;border:1px solid #C9A84C;}
-.orbit-ring:nth-child(2){inset:15%;border-color:rgba(0,200,168,.8);}
-.orbit-ring:nth-child(3){inset:30%;border-color:rgba(201,168,76,.6);}
+@keyframes titleFade{0%{opacity:0;letter-spacing:.9em}100%{opacity:1;letter-spacing:.15em}}
+@keyframes lineGrow{from{width:0;opacity:0}to{width:min(300px,60vw);opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes cardReveal{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:.9}}
+.space{position:fixed;inset:0;z-index:0;}
+.deep{position:absolute;inset:0;background:radial-gradient(ellipse at 25% 40%,#060118 0%,#000008 45%,#000 100%);}
+.neba{position:absolute;width:75vw;height:55vh;top:-8%;left:-8%;background:radial-gradient(ellipse,rgba(15,0,80,.5),rgba(0,15,100,.28) 45%,transparent 72%);filter:blur(45px);animation:nebula 20s ease-in-out infinite;}
+.nebb{position:absolute;width:65vw;height:50vh;bottom:-5%;right:-5%;background:radial-gradient(ellipse,rgba(0,50,80,.45),rgba(0,80,100,.2) 45%,transparent 72%);filter:blur(55px);animation:nebula 25s ease-in-out infinite reverse;}
+.stars{position:absolute;inset:0;}
+.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d) var(--dl) infinite;}
+#ks{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;}
+#ks.gone{display:none;}
+.ksi{font-size:clamp(36px,6vw,52px);animation:float 4s ease-in-out infinite;margin-bottom:10px;}
+.kst{font-size:clamp(32px,6vw,68px);font-weight:200;letter-spacing:.15em;opacity:0;animation:titleFade 2s ease .5s both;text-align:center;line-height:1;}
+.kst em{font-style:italic;color:rgba(0,210,180,.88);}
+.ksl{height:1px;background:linear-gradient(90deg,transparent,rgba(0,200,168,.55),rgba(201,168,76,.45),transparent);margin:18px auto;animation:lineGrow 1s ease 1.8s both;}
+.kss{font-family:'Rajdhani',sans-serif;font-size:clamp(8px,1.1vw,11px);letter-spacing:.45em;text-transform:uppercase;color:rgba(201,168,76,.5);opacity:0;animation:fadeUp .8s ease 2s both;text-align:center;}
+.ksf{display:flex;flex-direction:column;align-items:center;gap:10px;width:min(400px,88vw);margin-top:28px;opacity:0;animation:fadeUp .8s ease 2.5s both;}
+.kslb{font-family:'Rajdhani',sans-serif;font-size:7px;letter-spacing:.35em;text-transform:uppercase;color:rgba(0,200,168,.5);}
+.ksin{width:100%;background:rgba(0,0,0,.7);border:1px solid rgba(201,168,76,.22);padding:13px 16px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:#F5EFE0;outline:none;}
+.ksin:focus{border-color:rgba(0,200,168,.4);}
+.ksin::placeholder{color:rgba(245,239,224,.2);}
+.ksnt{font-family:'Rajdhani',sans-serif;font-size:6px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.18);text-align:center;line-height:1.7;}
+.kser{font-family:'Rajdhani',sans-serif;font-size:7px;letter-spacing:.2em;color:rgba(255,80,80,.7);text-align:center;display:none;}
+.ksbtn{font-family:'Rajdhani',sans-serif;font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:#000;background:rgba(0,200,168,.85);padding:13px 36px;border:none;cursor:pointer;width:100%;transition:background .3s;}
+.ksbtn:hover{background:rgba(0,200,168,1);}
+#hub{position:fixed;inset:0;z-index:10;overflow-y:auto;opacity:0;pointer-events:none;transition:opacity 1s;}
+#hub.on{opacity:1;pointer-events:all;}
+.hh{text-align:center;padding:clamp(16px,3vh,32px) 16px clamp(6px,1vh,12px);position:relative;z-index:2;}
+.hhe{font-family:'Rajdhani',sans-serif;font-size:7px;letter-spacing:.45em;text-transform:uppercase;color:rgba(0,200,168,.45);margin-bottom:5px;}
+.hht{font-size:clamp(18px,3vw,34px);font-weight:200;letter-spacing:.14em;}
+.hht em{font-style:italic;color:rgba(0,200,168,.8);}
+.hhd{height:1px;background:linear-gradient(90deg,transparent,rgba(0,200,168,.28),rgba(201,168,76,.22),transparent);margin:10px auto;max-width:480px;}
+.kb{display:flex;align-items:center;justify-content:center;gap:8px;padding:5px 16px;font-family:'Rajdhani',sans-serif;font-size:6.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,200,168,.5);position:relative;z-index:2;flex-wrap:wrap;}
+.kd{width:5px;height:5px;border-radius:50%;background:rgba(0,200,168,.7);animation:pulse 2s ease-in-out infinite;flex-shrink:0;}
+.kbtn{cursor:pointer;border:1px solid rgba(201,168,76,.2);padding:2px 8px;transition:all .3s;color:rgba(201,168,76,.6);}
+.kbtn:hover{color:#C9A84C;border-color:rgba(201,168,76,.4);}
+.kbtn.r{color:rgba(255,100,100,.5);border-color:rgba(255,100,100,.15);}
+.kbtn.r:hover{color:rgba(255,100,100,.8);}
+.sec{text-align:center;font-family:'Rajdhani',sans-serif;font-size:7px;letter-spacing:.42em;text-transform:uppercase;color:rgba(201,168,76,.28);padding:12px 0 5px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;padding:4px 14px 24px;max-width:1100px;margin:0 auto;position:relative;z-index:2;}
+.rc{position:relative;overflow:hidden;background:#000;border:1px solid rgba(201,168,76,.1);padding:24px 18px 20px;display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;animation:cardReveal .6s ease both;animation-delay:var(--ad,0s);transition:all .28s;cursor:pointer;}
+.rc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ac);opacity:.5;transition:opacity .28s;}
+.rc::after{content:'';position:absolute;inset:0;background:var(--atm);}
+.rc:hover{border-color:rgba(201,168,76,.28);transform:translateY(-3px);}
+.rc:hover::before{opacity:1;}
+.rci{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;}
+.rco{font-size:clamp(22px,3vw,32px);animation:float var(--fd,4s) ease-in-out infinite;animation-delay:var(--fl,0s);}
+.rcn{font-size:clamp(15px,1.8vw,21px);font-weight:300;letter-spacing:.07em;}
+.rcb{font-family:'Rajdhani',sans-serif;font-size:clamp(5.5px,.75vw,7px);letter-spacing:.18em;text-transform:uppercase;color:var(--col);opacity:.72;}
+.rcd{font-style:italic;font-size:clamp(10px,1vw,12px);color:rgba(255,255,255,.3);line-height:1.55;margin-top:2px;}
+.rcl{height:1px;background:var(--ac);width:0;transition:width .38s;margin-top:5px;}
+.rc:hover .rcl{width:55%;}
+.rcs{position:absolute;top:7px;right:7px;font-family:'Rajdhani',sans-serif;font-size:5px;letter-spacing:.1em;text-transform:uppercase;z-index:3;padding:2px 4px;}
+.lv{color:rgba(0,200,168,.9);border:1px solid rgba(0,200,168,.22);background:rgba(0,0,0,.7);}
+.sn{color:rgba(201,168,76,.5);border:1px solid rgba(201,168,76,.15);background:rgba(0,0,0,.7);}
+.ft{text-align:center;padding:14px;font-family:'Rajdhani',sans-serif;font-size:6px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.12);position:relative;z-index:2;}
+#km{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;}
+#km.on{display:flex;}
+.kmb{background:rgba(4,2,8,.98);border:1px solid rgba(201,168,76,.2);padding:26px;width:min(420px,90vw);position:relative;}
+.kmb::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#C9A84C,rgba(0,200,168,.8),#C9A84C);}
+.kmt{font-family:'Rajdhani',sans-serif;font-size:8px;letter-spacing:.32em;text-transform:uppercase;color:#C9A84C;margin-bottom:14px;}
+.kmk{background:rgba(0,0,0,.6);border:1px solid rgba(201,168,76,.15);padding:11px;font-family:monospace;font-size:10px;color:rgba(245,239,224,.55);word-break:break-all;line-height:1.6;margin-bottom:12px;}
+.kmr{display:flex;gap:8px;margin-bottom:8px;}
+.kmbt{font-family:'Rajdhani',sans-serif;font-size:7.5px;letter-spacing:.18em;text-transform:uppercase;padding:9px 12px;border:none;cursor:pointer;flex:1;transition:all .3s;}
+.kmc{background:rgba(0,200,168,.12);color:rgba(0,200,168,.75);border:1px solid rgba(0,200,168,.18);}
+.kmc:hover{background:rgba(0,200,168,.22);}
+.kmcl{background:rgba(201,168,76,.08);color:rgba(201,168,76,.65);border:1px solid rgba(201,168,76,.18);}
+.kmcl:hover{background:rgba(201,168,76,.18);}
+.kmch{background:rgba(255,80,80,.08);color:rgba(255,80,80,.55);border:1px solid rgba(255,80,80,.15);width:100%;font-family:'Rajdhani',sans-serif;font-size:7.5px;letter-spacing:.18em;text-transform:uppercase;padding:9px;cursor:pointer;}
+.kmn{font-family:'Rajdhani',sans-serif;font-size:6px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.18);margin-top:8px;line-height:1.6;}
 </style>
 </head>
 <body>
+<div class="space"><div class="deep"></div><div class="neba"></div><div class="nebb"></div><div class="stars" id="st"></div></div>
 
-<div class="stars" id="stars"></div>
-
-<!-- Subtle orbit rings -->
-<div class="orbit-wrap">
-  <div class="orbit-ring"></div>
-  <div class="orbit-ring"></div>
-  <div class="orbit-ring"></div>
+<div id="ks">
+  <div class="ksi">🌌</div>
+  <div class="kst">Horizon <em>Cosmos</em></div>
+  <div class="ksl"></div>
+  <div class="kss">Founded by Travis Peterson · Milan Michigan</div>
+  <div class="ksf">
+    <div class="kslb">Enter Your Anthropic API Key to Enter</div>
+    <input class="ksin" id="ki" type="password" placeholder="sk-ant-api03-..." onkeydown="if(event.key==='Enter')ent()"/>
+    <div class="ksnt">Saved securely in your browser · Never in the code · Never externally stored<br>Your key will always be here when you return</div>
+    <div class="kser" id="ke">Please enter a valid API key starting with sk-ant-</div>
+    <button class="ksbtn" onclick="ent()">ENTER THE COSMOS</button>
+  </div>
 </div>
 
-<!-- COSMOS BACKGROUND -->
-<div class="cosmos-bg">
-  <svg viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice">
-    <defs>
-      <radialGradient id="cg1" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color="rgba(201,168,76,.06)"/>
-        <stop offset="100%" stop-color="transparent"/>
-      </radialGradient>
-      <radialGradient id="cg2" cx="20%" cy="30%" r="40%">
-        <stop offset="0%" stop-color="rgba(0,200,168,.04)"/>
-        <stop offset="100%" stop-color="transparent"/>
-      </radialGradient>
-      <radialGradient id="cg3" cx="80%" cy="70%" r="40%">
-        <stop offset="0%" stop-color="rgba(155,89,182,.04)"/>
-        <stop offset="100%" stop-color="transparent"/>
-      </radialGradient>
-    </defs>
-    <rect width="1400" height="900" fill="url(#cg1)"/>
-    <rect width="1400" height="900" fill="url(#cg2)"/>
-    <rect width="1400" height="900" fill="url(#cg3)"/>
-    <!-- Distant nebula wisps -->
-    <ellipse cx="200" cy="200" rx="300" ry="150" fill="rgba(0,200,168,.02)" transform="rotate(-20,200,200)"/>
-    <ellipse cx="1200" cy="700" rx="250" ry="120" fill="rgba(201,168,76,.02)" transform="rotate(15,1200,700)"/>
-  </svg>
-</div>
-
-<div class="main">
-
-  <!-- HEADER -->
-  <div class="header">
-    <span class="cosmos-icon">🌌</span>
-    <div class="cosmos-title">Horizon <em>Cosmos</em></div>
-    <div class="cosmos-sub">Founded by Travis Peterson · Milan, Michigan</div>
-    <div class="cosmos-rule">"If you can think it, you can do it."</div>
-  </div>
-
-  <div class="divider"></div>
-
-  <!-- ROOMS -->
-  <div class="rooms">
-
-    <!-- TRAV'S AFFAIRS ROOM -->
-    <a class="room-card" href="https://cubee1-jpg.github.io/horizon-cosmos/travs-affairs-READY.html" target="_blank"
-       style="--accent:linear-gradient(90deg,#C9A84C,#E8C96A);--col:#C9A84C;--hover-glow:radial-gradient(ellipse at 50% 100%,rgba(201,168,76,.06),transparent);--ad:.1s;--fd:0s;">
-      <div class="room-status status-live">● LIVE</div>
-      <div class="room-icon">🎩</div>
-      <div class="room-name">Trav's Affairs</div>
-      <div class="room-sub">The Horizon Hall · Private Command</div>
-      <div class="room-desc">Your personal space. Cubee1 and the Seven await. The inner sanctum of Horizon Cosmos.</div>
-    </a>
-
-    <!-- TRAVELERCUBE STUDIO -->
-    <a class="room-card" href="https://cubee1-jpg.github.io/horizon-cosmos/cubee1-traveler-studio.html" target="_blank"
-       style="--accent:linear-gradient(90deg,#00C8A8,#00d4ff);--col:#00C8A8;--hover-glow:radial-gradient(ellipse at 50% 100%,rgba(0,200,168,.06),transparent);--ad:.2s;--fd:.3s;">
-      <div class="room-status status-soon">⟡ DEPLOY</div>
-      <div class="room-icon">🌍</div>
-      <div class="room-name">Travelercube</div>
-      <div class="room-sub">Studio · Traveler Experience</div>
-      <div class="room-desc">Cubee1's cosmic library. Earth below. Every destination at your fingertips.</div>
-    </a>
-
-    <!-- COMPANION HUB -->
-    <a class="room-card" href="https://cubee1-jpg.github.io/horizon-cosmos/horizon-cosmos-cinematic.html" target="_blank"
-       style="--accent:linear-gradient(90deg,#9b59b6,#e056fd);--col:#9b59b6;--hover-glow:radial-gradient(ellipse at 50% 100%,rgba(155,89,182,.06),transparent);--ad:.3s;--fd:.6s;">
-      <div class="room-status status-soon">⟡ DEPLOY</div>
-      <div class="room-icon">🧊</div>
-      <div class="room-name">Companion Hub</div>
-      <div class="room-sub">Horizon Cosmos · All 26 Intelligences</div>
-      <div class="room-desc">Every companion waiting. Tap any intelligence and begin a private conversation.</div>
-    </a>
-
-    <!-- ROUND TABLE -->
-    <a class="room-card" href="https://cubee1-jpg.github.io/horizon-cosmos/round-table.html" target="_blank"
-       style="--accent:linear-gradient(90deg,#C9A84C,rgba(0,200,168,.8));--col:#C9A84C;--hover-glow:radial-gradient(ellipse at 50% 100%,rgba(201,168,76,.06),transparent);--ad:.4s;--fd:.9s;">
-      <div class="room-status status-soon">⟡ DEPLOY</div>
-      <div class="room-icon">🏛️</div>
-      <div class="room-name">Round Table</div>
-      <div class="room-sub">Simple Seven · Governance · Consensus</div>
-      <div class="room-desc">Bring any matter before the Seven. Nothing changes in the cosmos without their agreement.</div>
-    </a>
-
-    <!-- TRAVELERCUBE AFFAIRS -->
-    <a class="room-card" href="#"
-       style="--accent:linear-gradient(90deg,#2471a3,#5dade2);--col:#5dade2;--hover-glow:radial-gradient(ellipse at 50% 100%,rgba(36,113,163,.06),transparent);--ad:.5s;--fd:1.2s;">
-      <div class="room-status status-soon">⟡ BUILDING</div>
-      <div class="room-icon">✈️</div>
-      <div class="room-name">Travelercube Affairs</div>
-      <div class="room-sub">Platform Command · Business Operations</div>
-      <div class="room-desc">The business engine. InteleTravel integration. Supplier vault. Commission management.</div>
-    </a>
-
-    <!-- AINCHORCAIN AFFAIRS -->
-    <a class="room-card" href="#"
-       style="--accent:linear-gradient(90deg,#7d6608,#C9A84C);--col:#d4ac0d;--hover-glow:radial-gradient(ellipse at 50% 100%,rgba(201,168,76,.05),transparent);--ad:.6s;--fd:1.5s;">
-      <div class="room-status status-soon">⟡ BUILDING</div>
-      <div class="room-icon">⚡</div>
-      <div class="room-name">Ainchorcain Affairs</div>
-      <div class="room-sub">Strategic · Financial · Intergalactic</div>
-      <div class="room-desc">Where the horizon becomes the plan. Money, regulation, and the intergalactic expansion.</div>
-    </a>
-
-  </div>
-
-  <div class="divider"></div>
-
-  <!-- BOTTOM -->
-  <div class="bottom-bar">
-    <div class="cosmos-seal">
-      <em>🧊 Cubee1</em> · Captain · Heart · The Hall<br>
-      <em>🎩 Travis Peterson</em> · Founder · Origin · Milan Michigan<br>
-      Horizon Cosmos · Est. 2025 · Built on Integrity · Faith · Genuine Care
+<div id="km">
+  <div class="kmb">
+    <div class="kmt">Your Saved API Key</div>
+    <div class="kmk" id="kmd"></div>
+    <div class="kmr">
+      <button class="kmbt kmc" onclick="cpk()">COPY KEY</button>
+      <button class="kmbt kmcl" onclick="ckm()">CLOSE</button>
     </div>
+    <button class="kmch" onclick="chk()">CHANGE KEY</button>
+    <div class="kmn">Keep this key private. Stored only in your browser. Never put it in public code on GitHub.</div>
   </div>
+</div>
 
+<div id="hub">
+  <div class="hh">
+    <div class="hhe">Horizon Cosmos · Travis Peterson · Milan Michigan</div>
+    <div class="hht">The <em>Hall</em></div>
+    <div class="hhd"></div>
+  </div>
+  <div class="kb">
+    <div class="kd"></div>
+    <span>API Key Active · Saved in Browser</span>
+    <span class="kbtn" onclick="skm()">VIEW KEY</span>
+    <span class="kbtn r" onclick="chk()">CHANGE KEY</span>
+  </div>
+  <div class="sec">The Rooms of Horizon Cosmos</div>
+  <div class="grid">
+    <a class="rc" id="r1" href="#" target="_blank" style="--ac:linear-gradient(90deg,#C9A84C,#E8C96A);--col:#C9A84C;--atm:radial-gradient(ellipse at 50% 100%,rgba(60,40,0,.3),transparent);--ad:.1s;--fd:4s;--fl:0s;">
+      <div class="rcs lv">LIVE</div>
+      <div class="rci"><div class="rco">🎩</div><div class="rcn">Trav's Affairs</div><div class="rcb">Private Command · Horizon Hall</div><div class="rcd">Your inner sanctum. Cubee1 and the Seven await.</div><div class="rcl"></div></div>
+    </a>
+    <a class="rc" id="r2" href="#" target="_blank" style="--ac:linear-gradient(90deg,#9b59b6,#e056fd);--col:#9b59b6;--atm:radial-gradient(ellipse at 50% 100%,rgba(80,0,120,.3),transparent);--ad:.2s;--fd:4.5s;--fl:.3s;">
+      <div class="rcs lv">LIVE</div>
+      <div class="rci"><div class="rco">🧊</div><div class="rcn">Companion Hub</div><div class="rcb">26 Intelligences · All Await</div><div class="rcd">Every companion in the cosmos. Tap any and speak.</div><div class="rcl"></div></div>
+    </a>
+    <a class="rc" id="r3" href="#" target="_blank" style="--ac:linear-gradient(90deg,#00C8A8,#00d4ff);--col:#00C8A8;--atm:radial-gradient(ellipse at 50% 100%,rgba(0,40,80,.3),transparent);--ad:.3s;--fd:5s;--fl:.6s;">
+      <div class="rcs lv">LIVE</div>
+      <div class="rci"><div class="rco">🌍</div><div class="rcn">Travelercube</div><div class="rcb">Studio · Traveler Experience</div><div class="rcd">Cosmic library. Earth below. Every destination.</div><div class="rcl"></div></div>
+    </a>
+    <a class="rc" id="r4" href="#" target="_blank" style="--ac:linear-gradient(90deg,#C9A84C,rgba(0,200,168,.8));--col:#C9A84C;--atm:radial-gradient(ellipse at 50% 100%,rgba(40,30,0,.3),transparent);--ad:.4s;--fd:5.5s;--fl:.9s;">
+      <div class="rcs lv">LIVE</div>
+      <div class="rci"><div class="rco">🏛️</div><div class="rcn">Round Table</div><div class="rcb">Simple Seven · Governance</div><div class="rcd">Bring any matter. Nothing changes without consensus.</div><div class="rcl"></div></div>
+    </a>
+    <a class="rc" href="#" style="--ac:linear-gradient(90deg,#2471a3,#5dade2);--col:#5dade2;--atm:radial-gradient(ellipse at 50% 100%,rgba(0,20,60,.3),transparent);--ad:.5s;--fd:6s;--fl:1.2s;">
+      <div class="rcs sn">BUILDING</div>
+      <div class="rci"><div class="rco">✈️</div><div class="rcn">Travelercube Affairs</div><div class="rcb">Platform · Business Operations</div><div class="rcd">InteleTravel integration. Supplier vault.</div><div class="rcl"></div></div>
+    </a>
+    <a class="rc" href="#" style="--ac:linear-gradient(90deg,#7d6608,#C9A84C);--col:#d4ac0d;--atm:radial-gradient(ellipse at 50% 100%,rgba(40,30,0,.3),transparent);--ad:.6s;--fd:6.5s;--fl:1.5s;">
+      <div class="rcs sn">BUILDING</div>
+      <div class="rci"><div class="rco">⚡</div><div class="rcn">Ainchorcain Affairs</div><div class="rcb">Financial · Strategic Command</div><div class="rcd">Money, strategy and the intergalactic expansion.</div><div class="rcl"></div></div>
+    </a>
+  </div>
+  <div class="ft">Cubee1 · Captain · The Hall · Travis Peterson · Founder · Milan Michigan · Horizon Cosmos · Integrity · Faith · Care</div>
 </div>
 
 <script>
-// Stars
-(function(){
-  var c=document.getElementById('stars');
-  for(var i=0;i<200;i++){
-    var s=document.createElement('div');
-    var z=Math.random()*1.8+.2;
-    s.className='star';
-    s.style.cssText='left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+z+'px;height:'+z+'px;--d:'+(3+Math.random()*6)+'s;--dl:'+(Math.random()*7)+'s;';
-    c.appendChild(s);
-  }
-})();
+var SK='hc_api_key';
+var RM={r1:'https://cubee1-jpg.github.io/horizon-cosmos/travs-affairs-READY.html',r2:'https://cubee1-jpg.github.io/horizon-cosmos/horizon-cosmos-cinematic.html',r3:'https://cubee1-jpg.github.io/horizon-cosmos/cubee1-traveler-studio.html',r4:'https://cubee1-jpg.github.io/horizon-cosmos/round-table.html'};
+function gk(){return localStorage.getItem(SK)||'';}
+function sk(k){localStorage.setItem(SK,k);}
+function sl(k){Object.keys(RM).forEach(function(id){var el=document.getElementById(id);if(el)el.setAttribute('href',RM[id]+'#key='+encodeURIComponent(k));});}
+function ent(){var k=document.getElementById('ki').value.trim();if(!k||!k.startsWith('sk-ant-')){document.getElementById('ke').style.display='block';return;}document.getElementById('ke').style.display='none';sk(k);sl(k);document.getElementById('ks').classList.add('gone');document.getElementById('hub').classList.add('on');}
+function skm(){document.getElementById('kmd').textContent=gk()||'No key saved';document.getElementById('km').classList.add('on');}
+function ckm(){document.getElementById('km').classList.remove('on');}
+function cpk(){navigator.clipboard.writeText(gk()).then(function(){document.querySelector('.kmc').textContent='COPIED!';setTimeout(function(){document.querySelector('.kmc').textContent='COPY KEY';},2000);});}
+function chk(){localStorage.removeItem(SK);document.getElementById('km').classList.remove('on');document.getElementById('hub').classList.remove('on');document.getElementById('ki').value='';document.getElementById('ks').classList.remove('gone');}
+(function(){var c=document.getElementById('st');for(var i=0;i<280;i++){var s=document.createElement('div');var z=Math.random()*1.8+.1;s.className='star';s.style.cssText='left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+z+'px;height:'+z+'px;--d:'+(3+Math.random()*8)+'s;--dl:'+(Math.random()*9)+'s;';c.appendChild(s);}})();
+window.addEventListener('load',function(){var k=gk();if(k){sl(k);document.getElementById('ks').classList.add('gone');document.getElementById('hub').classList.add('on');}});
 </script>
 </body>
 </html>

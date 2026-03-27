@@ -446,7 +446,7 @@ function setSpeaking(compId, on){
   }
 }
 
-var KEY='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';
+var KEY=sessionStorage.getItem('hcKey')||localStorage.getItem('horizonCosmosKey')||'';
 
 function askCompanion(comp, contextHistory){
   return fetch('https://api.anthropic.com/v1/messages',{

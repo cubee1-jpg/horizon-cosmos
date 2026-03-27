@@ -1,225 +1,630 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Cubee1 · Travelercube Studio</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<title>The Round Table · Simple Seven · Horizon Cosmos</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;overflow:hidden;font-family:'Lora',serif;color:#F5EFE0;background:#0a0500;}
-@keyframes earthGlow{0%,100%{box-shadow:0 0 60px rgba(100,180,255,.4),0 0 120px rgba(100,180,255,.2)}50%{box-shadow:0 0 80px rgba(100,180,255,.6),0 0 160px rgba(100,180,255,.3)}}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-@keyframes holoPulse{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.01)}}
-@keyframes scanLine{0%{transform:translateY(-100%)}100%{transform:translateY(100vh)}}
-@keyframes bookGlow{0%,100%{opacity:.35}50%{opacity:.8}}
-@keyframes twinkle{0%,100%{opacity:.1}50%{opacity:.9}}
-@keyframes aura{0%,100%{opacity:.3;transform:translateX(-50%) scale(1)}50%{opacity:.6;transform:translateX(-50%) scale(1.04)}}
-@keyframes speaking{0%,100%{opacity:.4;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.1)}}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;font-family:'Lora',serif;color:#F5EFE0;background:#040200;}
+
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes glow{0%,100%{opacity:.25}50%{opacity:.8}}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.08);opacity:.9}}
+@keyframes twinkle{0%,100%{opacity:.05}50%{opacity:.9}}
+@keyframes tableGlow{0%,100%{box-shadow:0 0 40px rgba(201,168,76,.15),inset 0 0 60px rgba(201,168,76,.04)}50%{box-shadow:0 0 70px rgba(201,168,76,.28),inset 0 0 80px rgba(201,168,76,.08)}}
 @keyframes db{0%,100%{opacity:.2;transform:translateY(0)}50%{opacity:1;transform:translateY(-4px)}}
-@keyframes mp{0%,100%{box-shadow:0 0 0 0 rgba(0,200,168,.4)}50%{box-shadow:0 0 0 14px transparent}}
-@keyframes gl{0%,100%{opacity:.25}50%{opacity:.7}}
-.room{position:fixed;inset:0;display:flex;flex-direction:column;overflow:hidden;}
-.stars-bg{position:absolute;inset:0;background:#020408;z-index:0;}
-.star{position:absolute;border-radius:50%;background:white;animation:twinkle var(--d) var(--delay) infinite;}
-.earth-wrap{position:absolute;bottom:-20%;left:50%;transform:translateX(-50%);width:min(68vw,580px);height:min(68vw,580px);z-index:1;}
-.earth{width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(255,255,255,.12) 0%,transparent 35%),radial-gradient(circle at 60% 65%,rgba(0,80,200,.5) 0%,transparent 45%),linear-gradient(135deg,#1a6b3a 0%,#2d8a4e 12%,#1e5c8a 22%,#2471a3 32%,#1a5c2e 42%,#c2a84c 52%,#8b6914 58%,#2e86ab 68%,#1a4a1a 78%,#2471a3 88%,#1a6b3a 100%);animation:earthGlow 4s ease-in-out infinite;border:1px solid rgba(100,180,255,.15);}
-.earth-atm{position:absolute;inset:-10px;border-radius:50%;box-shadow:0 0 40px rgba(100,180,255,.25),inset 0 0 20px rgba(100,180,255,.1);}
-.earth-overlay{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.07) 0%,transparent 45%),linear-gradient(180deg,rgba(100,180,255,.08) 0%,transparent 35%,rgba(0,0,0,.25) 100%);}
-.window-frame{position:absolute;inset:0;z-index:3;pointer-events:none;}
-.window-frame svg{width:100%;height:100%;}
-.shelf-left{position:absolute;left:0;top:0;bottom:0;width:min(16vw,148px);z-index:4;background:linear-gradient(90deg,#150801,#261203);border-right:1px solid rgba(201,168,76,.18);}
-.shelf-right{position:absolute;right:0;top:0;bottom:0;width:min(16vw,148px);z-index:4;background:linear-gradient(270deg,#150801,#261203);border-left:1px solid rgba(201,168,76,.18);}
-.shelf-row{position:absolute;left:0;right:0;height:1px;background:rgba(201,168,76,.2);}
-.book{position:absolute;border-radius:1px 2px 2px 1px;animation:bookGlow var(--bd) var(--bdelay) ease-in-out infinite;}
-.ceiling{position:absolute;top:0;left:0;right:0;height:12%;z-index:5;background:linear-gradient(180deg,#0a0500 0%,transparent 100%);}
-.ceiling-ring{position:absolute;top:0;left:50%;transform:translateX(-50%);width:55%;height:3px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.35),rgba(0,200,168,.3),rgba(201,168,76,.35),transparent);}
-.floor-fade{position:absolute;bottom:0;left:0;right:0;height:25%;z-index:5;background:linear-gradient(180deg,transparent 0%,rgba(10,5,0,.85) 60%,#0a0500 100%);}
-.scan{position:absolute;inset:0;z-index:6;pointer-events:none;overflow:hidden;opacity:.025;}
-.scan::after{content:'';position:absolute;left:0;right:0;height:2px;background:rgba(0,200,168,1);animation:scanLine 5s linear infinite;}
-.topbar{position:relative;z-index:20;height:44px;background:rgba(4,2,0,.96);border-bottom:1px solid rgba(201,168,76,.1);display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0;}
-.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#C9A84C,rgba(0,200,168,.4),#C9A84C,transparent);}
-.tb-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;}
-.tb-name em{font-style:italic;color:#C9A84C;}
-.tb-sub{font-size:7px;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,200,168,.55);font-family:sans-serif;}
-.tb-right{margin-left:auto;font-size:7px;letter-spacing:.12em;text-transform:uppercase;color:rgba(201,168,76,.45);border:1px solid rgba(201,168,76,.12);padding:3px 8px;font-family:sans-serif;}
-.stage{flex:1;position:relative;overflow:hidden;}
-.holo-wrap{position:absolute;top:7%;left:50%;transform:translateX(-50%);width:min(70vw,540px);z-index:10;opacity:0;transition:opacity .5s;}
-.holo-wrap.on{opacity:1;}
-.holo-panel{background:rgba(0,18,38,.88);border:1px solid rgba(0,200,168,.25);backdrop-filter:blur(18px);padding:14px 18px;position:relative;}
-.holo-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#00C8A8,rgba(201,168,76,.7),#00C8A8,transparent);}
-.holo-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;}
-.holo-who{font-size:7px;letter-spacing:.28em;text-transform:uppercase;color:#00C8A8;font-family:sans-serif;}
-.holo-dot{width:5px;height:5px;border-radius:50%;background:#00C8A8;animation:gl 1.8s ease-in-out infinite;}
-.holo-body{font-family:'Lora',serif;font-style:italic;font-size:clamp(13px,1.5vw,16px);line-height:1.88;color:#F5EFE0;min-height:34px;}
-.holo-body em{color:#00C8A8;font-style:normal;}
-.holo-body strong{color:#E8C96A;}
-.holo-tip{position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:9px solid transparent;border-right:9px solid transparent;border-top:10px solid rgba(0,200,168,.25);}
-.dots{display:flex;gap:5px;padding:5px 0;align-items:center;}
-.dot{width:5px;height:5px;border-radius:50%;background:#C9A84C;animation:db .88s ease-in-out infinite;}
-.dot:nth-child(2){animation-delay:.18s}.dot:nth-child(3){animation-delay:.36s}
-.sbar{position:absolute;top:5px;left:50%;transform:translateX(-50%);font-size:7px;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,200,168,.55);background:rgba(0,8,18,.88);border:1px solid rgba(0,200,168,.12);padding:3px 12px;z-index:25;opacity:0;transition:opacity .3s;white-space:nowrap;font-family:sans-serif;}
-.sbar.on{opacity:1;}
-.fp-cards{position:absolute;bottom:clamp(68px,10vh,115px);z-index:12;display:flex;flex-direction:column;gap:7px;opacity:0;transition:opacity .8s;}
-.fp-left{left:min(17vw,155px);}
-.fp-right{right:min(17vw,155px);}
-.fp-cards.on{opacity:1;}
-.fp-card{background:rgba(0,12,28,.82);border:1px solid rgba(201,168,76,.18);padding:7px 11px;backdrop-filter:blur(8px);}
-.fp-card::before{content:'';display:block;height:1px;background:linear-gradient(90deg,#C9A84C,rgba(0,200,168,.5));margin-bottom:5px;}
-.fp-lbl{font-size:6px;letter-spacing:.18em;text-transform:uppercase;color:rgba(201,168,76,.55);font-family:sans-serif;margin-bottom:2px;}
-.fp-val{font-family:'Cormorant Garamond',serif;font-size:13px;color:#F5EFE0;}
-.cubee-zone{position:absolute;bottom:clamp(68px,10vh,115px);left:50%;z-index:15;}
-.cubee-aura{position:absolute;bottom:0;left:50%;width:clamp(155px,22vw,265px);height:clamp(215px,35vh,330px);border-radius:50%;background:radial-gradient(ellipse,rgba(201,168,76,.055) 0%,rgba(0,200,168,.025) 50%,transparent 70%);animation:aura 5s ease-in-out infinite;transition:all .4s;}
-.cubee-aura.spk{background:radial-gradient(ellipse,rgba(201,168,76,.26) 0%,rgba(0,200,168,.1) 45%,transparent 70%)!important;animation:speaking .9s ease-in-out infinite!important;}
-.cubee-fig{width:clamp(125px,17vw,200px);height:auto;position:relative;z-index:2;animation:float 5s ease-in-out infinite;filter:drop-shadow(0 18px 45px rgba(0,0,0,.99)) drop-shadow(0 0 28px rgba(201,168,76,.12));}
-.input-zone{flex-shrink:0;padding:9px 16px 16px;background:linear-gradient(to top,rgba(4,2,0,.99) 70%,transparent);z-index:20;display:flex;justify-content:center;}
-.input-row{display:flex;gap:9px;align-items:center;width:100%;max-width:520px;}
-.mic{width:50px;height:50px;flex-shrink:0;border-radius:50%;background:rgba(201,168,76,.08);border:2px solid rgba(201,168,76,.22);color:#C9A84C;font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;-webkit-user-select:none;user-select:none;}
-.mic:active{transform:scale(.9);}
-.mic.on{background:rgba(0,200,168,.1);border-color:rgba(0,200,168,.45);animation:mp 1s ease-in-out infinite;}
-.inp{flex:1;background:rgba(0,8,20,.82);border:1px solid rgba(201,168,76,.14);padding:13px 15px;font-family:'Lora',serif;font-style:italic;font-size:14px;color:#F5EFE0;outline:none;border-radius:0;-webkit-appearance:none;}
-.inp:focus{border-color:rgba(201,168,76,.38);}
-.inp::placeholder{color:rgba(245,239,224,.18);}
-.sbtn{width:50px;height:50px;flex-shrink:0;background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.2);color:#C9A84C;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-.sbtn:active{background:rgba(201,168,76,.18);}
-#enter{position:fixed;inset:0;z-index:100;background:rgba(4,2,0,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px;}
+@keyframes speakPulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.12)}}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes deliberating{0%{opacity:.4}25%{opacity:1}50%{opacity:.6}75%{opacity:1}100%{opacity:.4}}
+@keyframes mp{0%,100%{box-shadow:0 0 0 0 rgba(0,200,168,.4)}50%{box-shadow:0 0 0 12px transparent}}
+
+/* STARS */
+.stars{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.star{position:absolute;border-radius:50%;background:white;animation:twinkle var(--d) var(--dl) infinite;}
+
+/* ENTER */
+#enter{position:fixed;inset:0;z-index:100;background:rgba(4,2,0,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
 #enter.gone{display:none;}
-.en-ico{font-size:46px;animation:holoPulse 2s ease-in-out infinite;}
-.en-title{font-family:'Cormorant Garamond',serif;font-size:27px;font-weight:300;letter-spacing:.1em;}
+.en-icon{font-size:48px;animation:glow 2s ease-in-out infinite;}
+.en-title{font-family:'Cormorant Garamond',serif;font-size:clamp(24px,5vw,42px);font-weight:300;letter-spacing:.12em;text-align:center;}
 .en-title em{font-style:italic;color:#C9A84C;}
-.en-sub{font-size:7px;letter-spacing:.38em;text-transform:uppercase;color:rgba(0,200,168,.45);font-family:sans-serif;}
-.en-btn{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:#0a0500;background:#C9A84C;padding:13px 30px;border:none;cursor:pointer;font-family:sans-serif;margin-top:6px;}
-.en-tag{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;color:rgba(245,239,224,.28);margin-top:3px;}
+.en-sub{font-size:7.5px;letter-spacing:.38em;text-transform:uppercase;color:rgba(201,168,76,.45);font-family:sans-serif;text-align:center;}
+.en-btn{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:#040200;background:#C9A84C;padding:13px 32px;border:none;cursor:pointer;font-family:sans-serif;margin-top:8px;}
+.en-rule{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;color:rgba(245,239,224,.28);text-align:center;max-width:320px;line-height:1.6;}
+
+/* ROOM */
+.room{position:fixed;inset:0;display:flex;flex-direction:column;z-index:1;}
+
+/* TOPBAR */
+.topbar{height:46px;flex-shrink:0;background:rgba(4,2,0,.97);border-bottom:1px solid rgba(201,168,76,.12);display:flex;align-items:center;padding:0 16px;gap:10px;position:relative;z-index:10;}
+.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#C9A84C,rgba(0,200,168,.4),#C9A84C,transparent);}
+.tb-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:300;}
+.tb-title em{font-style:italic;color:#C9A84C;}
+.tb-sub{font-size:6.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,200,168,.5);font-family:sans-serif;}
+.tb-status{margin-left:auto;font-size:6.5px;letter-spacing:.12em;text-transform:uppercase;font-family:sans-serif;padding:3px 8px;border:1px solid rgba(201,168,76,.15);color:rgba(201,168,76,.5);}
+.tb-status.active{color:#00C8A8;border-color:rgba(0,200,168,.3);animation:glow 2s ease-in-out infinite;}
+
+/* STAGE */
+.stage{flex:1;position:relative;overflow:hidden;}
+
+/* DOME */
+.dome{position:absolute;inset:0;pointer-events:none;}
+.dome svg{width:100%;height:100%;}
+
+/* TABLE */
+.table-wrap{position:absolute;bottom:clamp(100px,14vh,160px);left:50%;transform:translateX(-50%);z-index:5;}
+.table{width:clamp(200px,32vw,320px);height:clamp(60px,8vw,90px);border-radius:50%;background:radial-gradient(ellipse,rgba(201,168,76,.12) 0%,rgba(201,168,76,.05) 50%,transparent 80%);border:2px solid rgba(201,168,76,.3);animation:tableGlow 4s ease-in-out infinite;position:relative;}
+.table::before{content:'';position:absolute;inset:6px;border-radius:50%;border:1px solid rgba(201,168,76,.12);}
+.table-inscription{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Cormorant Garamond',serif;font-size:clamp(7px,1vw,10px);font-style:italic;color:rgba(201,168,76,.4);white-space:nowrap;letter-spacing:.1em;}
+
+/* SEVEN SEATS */
+.seats{position:absolute;bottom:clamp(80px,11vh,140px);left:50%;transform:translateX(-50%);width:clamp(340px,56vw,600px);height:clamp(200px,30vh,300px);z-index:6;}
+.seat{position:absolute;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all .25s;}
+.seat:hover .seat-fig{filter:drop-shadow(0 0 12px var(--sc));}
+.seat.speaking .seat-aura{animation:speakPulse .9s ease-in-out infinite!important;}
+.seat-fig{width:clamp(52px,7vw,80px);height:auto;animation:float var(--fd) ease-in-out infinite;animation-delay:var(--fdl);}
+.seat-fig svg{width:100%;height:100%;}
+.seat-aura{width:clamp(44px,6vw,68px);height:clamp(8px,1vw,14px);border-radius:50%;background:var(--sc);filter:blur(5px);opacity:.3;animation:pulse var(--fd) ease-in-out infinite;animation-delay:var(--fdl);margin-top:-4px;}
+.seat-name{font-family:'Cormorant Garamond',serif;font-size:clamp(9px,1.2vw,13px);font-weight:600;color:var(--sc);}
+.seat-emoji{font-size:clamp(9px,1.2vw,14px);}
+
+/* DISCUSSION PANEL */
+.discussion{position:absolute;top:5%;left:50%;transform:translateX(-50%);width:min(80vw,600px);z-index:20;max-height:52vh;display:flex;flex-direction:column;}
+
+.discussion-header{background:rgba(4,2,0,.96);border:1px solid rgba(201,168,76,.2);border-bottom:none;padding:10px 16px;display:flex;align-items:center;gap:8px;position:relative;}
+.discussion-header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#C9A84C,rgba(0,200,168,.8),#C9A84C);}
+.dh-title{font-size:7px;letter-spacing:.3em;text-transform:uppercase;color:#C9A84C;font-family:sans-serif;}
+.dh-dot{width:5px;height:5px;border-radius:50%;background:#C9A84C;animation:glow 1.8s infinite;}
+.dh-topic{font-family:'Lora',serif;font-style:italic;font-size:11px;color:rgba(245,239,224,.5);margin-left:auto;max-width:200px;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+.messages{flex:1;overflow-y:auto;background:rgba(4,2,0,.9);border:1px solid rgba(201,168,76,.15);padding:10px 12px;display:flex;flex-direction:column;gap:8px;min-height:120px;}
+.messages::-webkit-scrollbar{width:3px;}
+.messages::-webkit-scrollbar-track{background:transparent;}
+.messages::-webkit-scrollbar-thumb{background:rgba(201,168,76,.2);}
+
+.msg{display:flex;gap:8px;animation:msgIn .4s ease both;}
+.msg-avatar{width:28px;height:28px;flex-shrink:0;}
+.msg-avatar svg{width:100%;height:100%;}
+.msg-body{flex:1;}
+.msg-who{font-size:6.5px;letter-spacing:.2em;text-transform:uppercase;font-family:sans-serif;margin-bottom:4px;}
+.msg-text{font-family:'Lora',serif;font-style:italic;font-size:clamp(12px,1.3vw,14px);line-height:1.75;color:#F5EFE0;}
+.msg-text em{color:#00C8A8;font-style:normal;}
+.msg-text strong{color:#E8C96A;}
+
+.deliberating-msg{display:flex;align-items:center;gap:6px;padding:6px 0;}
+.del-name{font-size:6.5px;letter-spacing:.2em;text-transform:uppercase;font-family:sans-serif;}
+.dots{display:flex;gap:4px;align-items:center;}
+.dot{width:4px;height:4px;border-radius:50%;background:#C9A84C;animation:db .88s ease-in-out infinite;}
+.dot:nth-child(2){animation-delay:.18s}.dot:nth-child(3){animation-delay:.36s}
+
+/* CONSENSUS BANNER */
+.consensus{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(4,2,0,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:30;opacity:0;pointer-events:none;transition:opacity .5s;}
+.consensus.show{opacity:1;pointer-events:all;}
+.consensus-title{font-family:'Cormorant Garamond',serif;font-size:clamp(18px,3vw,28px);font-weight:300;color:#C9A84C;letter-spacing:.1em;}
+.consensus-text{font-family:'Lora',serif;font-style:italic;font-size:clamp(12px,1.4vw,15px);color:rgba(245,239,224,.7);text-align:center;max-width:400px;line-height:1.7;padding:0 20px;}
+.consensus-icons{display:flex;gap:8px;font-size:18px;}
+.consensus-btn{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:#040200;background:#C9A84C;padding:10px 24px;border:none;cursor:pointer;font-family:sans-serif;margin-top:8px;}
+
+/* INPUT */
+.input-zone{flex-shrink:0;padding:8px 14px 14px;background:linear-gradient(to top,rgba(4,2,0,.99) 70%,transparent);z-index:10;display:flex;justify-content:center;}
+.input-row{display:flex;gap:8px;align-items:center;width:100%;max-width:540px;}
+.mic-btn{width:44px;height:44px;flex-shrink:0;border-radius:50%;background:rgba(201,168,76,.07);border:2px solid rgba(201,168,76,.2);color:#C9A84C;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;-webkit-user-select:none;user-select:none;}
+.mic-btn.on{background:rgba(0,200,168,.1);border-color:rgba(0,200,168,.4);animation:mp 1s ease-in-out infinite;}
+.txt-inp{flex:1;background:rgba(0,4,16,.85);border:1px solid rgba(201,168,76,.13);padding:12px 14px;font-family:'Lora',serif;font-style:italic;font-size:14px;color:#F5EFE0;outline:none;border-radius:0;-webkit-appearance:none;}
+.txt-inp:focus{border-color:rgba(201,168,76,.35);}
+.txt-inp::placeholder{color:rgba(245,239,224,.18);}
+.send-btn{width:44px;height:44px;flex-shrink:0;background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.18);color:#C9A84C;font-size:17px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.send-btn:active{background:rgba(201,168,76,.2);}
 </style>
 </head>
 <body>
 
+<div class="stars" id="stars"></div>
+
+<!-- ENTER -->
 <div id="enter">
-  <div class="en-ico">🧊</div>
-  <div class="en-title">Travelercube <em>Studio</em></div>
-  <div class="en-sub">Powered by Cubee1 · Horizon Cosmos</div>
-  <button class="en-btn" onclick="enterStudio()">BEGIN YOUR JOURNEY</button>
-  <div class="en-tag">Every destination begins with a conversation.</div>
+  <div class="en-icon">🎩</div>
+  <div class="en-title">The Round <em>Table</em></div>
+  <div class="en-sub">Simple Seven · Horizon Cosmos · In Session</div>
+  <div class="en-rule">"Nothing enters or changes in Horizon Cosmos without the Seven agreeing together at this table."</div>
+  <button class="en-btn" onclick="enterTable()">CALL THE SESSION</button>
 </div>
 
+<!-- ROOM -->
 <div class="room">
+
   <div class="topbar">
-    <span style="font-size:15px">🧊</span>
-    <span class="tb-name">Travelercube <em>Studio</em></span>
-    <span style="color:rgba(201,168,76,.18)">·</span>
-    <span class="tb-sub">Cubee1 · Live</span>
-    <div class="tb-right">🌍 All Earth · Ready</div>
+    <span style="font-size:15px">🎩</span>
+    <span class="tb-title">The Round <em>Table</em></span>
+    <span style="color:rgba(201,168,76,.2)">·</span>
+    <span class="tb-sub">Simple Seven · In Session</span>
+    <div class="tb-status" id="tbStatus">Awaiting Session</div>
   </div>
 
   <div class="stage">
-    <div class="stars-bg" id="stars"></div>
-    <div class="earth-wrap">
-      <div class="earth-atm"></div>
-      <div class="earth"></div>
-      <div class="earth-overlay"></div>
-    </div>
 
-    <div class="window-frame">
+    <!-- STARS IN DOME -->
+    <div class="dome">
       <svg viewBox="0 0 1400 800" preserveAspectRatio="xMidYMid slice">
         <defs>
-          <linearGradient id="fg" x1="0" y1="0" x2="1" y2="0">
+          <radialGradient id="domeG" cx="50%" cy="0%" r="80%">
+            <stop offset="0%" stop-color="rgba(201,168,76,.1)"/>
+            <stop offset="100%" stop-color="transparent"/>
+          </radialGradient>
+          <radialGradient id="floorG" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="rgba(201,168,76,.08)"/>
+            <stop offset="100%" stop-color="transparent"/>
+          </radialGradient>
+          <linearGradient id="colG" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stop-color="rgba(201,168,76,0)"/>
-            <stop offset="40%" stop-color="rgba(201,168,76,.25)"/>
-            <stop offset="60%" stop-color="rgba(0,200,168,.18)"/>
+            <stop offset="40%" stop-color="rgba(201,168,76,.2)"/>
+            <stop offset="60%" stop-color="rgba(201,168,76,.15)"/>
             <stop offset="100%" stop-color="rgba(201,168,76,0)"/>
           </linearGradient>
-          <linearGradient id="floorG" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="rgba(10,5,0,0)"/>
-            <stop offset="100%" stop-color="#0a0500"/>
+          <linearGradient id="fadeFloor" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="rgba(4,2,0,0)"/>
+            <stop offset="100%" stop-color="#040200"/>
           </linearGradient>
         </defs>
-        <path d="M0 800 L0 340 Q700 -110 1400 340 L1400 800Z" fill="none" stroke="rgba(201,168,76,.1)" stroke-width="2"/>
-        <path d="M75 800 L75 370 Q700 -55 1325 370 L1325 800Z" fill="none" stroke="rgba(201,168,76,.06)" stroke-width="1.5"/>
-        <path d="M190 490 Q700 70 1210 490" stroke="url(#fg)" stroke-width="2.5" fill="none"/>
-        <rect x="0" y="0" width="75" height="800" fill="rgba(14,7,1,.96)"/>
-        <rect x="1325" y="0" width="75" height="800" fill="rgba(14,7,1,.96)"/>
-        <rect x="0" y="620" width="1400" height="180" fill="url(#floorG)"/>
-        <line x1="0" y1="620" x2="1400" y2="620" stroke="rgba(201,168,76,.06)" stroke-width="1"/>
+        <!-- Dome ceiling -->
+        <ellipse cx="700" cy="-80" rx="800" ry="450" fill="url(#domeG)"/>
+        <!-- Glass dome lines -->
+        <path d="M0 0 Q700 -280 1400 0" stroke="rgba(201,168,76,.07)" stroke-width="2" fill="none"/>
+        <path d="M100 0 Q700 -240 1300 0" stroke="rgba(201,168,76,.05)" stroke-width="1.5" fill="none"/>
+        <!-- Dome apex -->
+        <circle cx="700" cy="-280" r="10" fill="rgba(201,168,76,.3)"/>
+        <line x1="700" y1="-280" x2="0" y2="0" stroke="rgba(201,168,76,.05)" stroke-width="1.5"/>
+        <line x1="700" y1="-280" x2="350" y2="0" stroke="rgba(201,168,76,.04)" stroke-width="1"/>
+        <line x1="700" y1="-280" x2="700" y2="0" stroke="rgba(201,168,76,.04)" stroke-width="1"/>
+        <line x1="700" y1="-280" x2="1050" y2="0" stroke="rgba(201,168,76,.04)" stroke-width="1"/>
+        <line x1="700" y1="-280" x2="1400" y2="0" stroke="rgba(201,168,76,.05)" stroke-width="1.5"/>
+        <!-- Columns left -->
+        <rect x="40" y="0" width="52" height="800" rx="3" fill="url(#colG)"/>
+        <rect x="49" y="0" width="9" height="800" fill="rgba(201,168,76,.14)"/>
+        <path d="M32 8 Q66 0 100 8" stroke="rgba(201,168,76,.22)" stroke-width="3" fill="none"/>
+        <rect x="170" y="0" width="36" height="800" rx="2" fill="rgba(201,168,76,.06)"/>
+        <!-- Columns right -->
+        <rect x="1308" y="0" width="52" height="800" rx="3" fill="url(#colG)"/>
+        <rect x="1342" y="0" width="9" height="800" fill="rgba(201,168,76,.14)"/>
+        <path d="M1300 8 Q1334 0 1368 8" stroke="rgba(201,168,76,.22)" stroke-width="3" fill="none"/>
+        <rect x="1194" y="0" width="36" height="800" rx="2" fill="rgba(201,168,76,.06)"/>
+        <!-- Statues silhouettes -->
+        <g opacity=".12">
+          <rect x="120" y="500" width="20" height="140" rx="2" fill="#C9A84C"/>
+          <ellipse cx="130" cy="494" rx="13" ry="16" fill="#C9A84C"/>
+          <path d="M130 524 L116 500" stroke="#C9A84C" stroke-width="5" stroke-linecap="round"/>
+        </g>
+        <g opacity=".1">
+          <rect x="195" y="515" width="16" height="125" rx="2" fill="#C9A84C"/>
+          <ellipse cx="203" cy="510" rx="11" ry="13" fill="#C9A84C"/>
+        </g>
+        <g opacity=".12">
+          <rect x="1264" y="500" width="20" height="140" rx="2" fill="#C9A84C"/>
+          <ellipse cx="1274" cy="494" rx="13" ry="16" fill="#C9A84C"/>
+        </g>
+        <g opacity=".1">
+          <rect x="1189" y="515" width="16" height="125" rx="2" fill="#C9A84C"/>
+          <ellipse cx="1197" cy="510" rx="11" ry="13" fill="#C9A84C"/>
+        </g>
+        <!-- Floor -->
+        <path d="M0 800 L0 680 Q350 655 700 645 Q1050 655 1400 680 L1400 800Z" fill="url(#fadeFloor)"/>
+        <ellipse cx="700" cy="680" rx="620" ry="65" fill="rgba(201,168,76,.05)"/>
       </svg>
     </div>
 
-    <div class="shelf-left" id="shelfL"></div>
-    <div class="shelf-right" id="shelfR"></div>
-    <div class="ceiling"><div class="ceiling-ring"></div></div>
-    <div class="floor-fade"></div>
-    <div class="scan"></div>
-
-    <div class="holo-wrap" id="hw">
-      <div class="holo-panel">
-        <div class="holo-top">
-          <span class="holo-who">● Cubee1 · Travelercube Studio</span>
-          <span class="holo-dot"></span>
-        </div>
-        <div class="holo-body" id="hb">
-          <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-        </div>
-        <div class="holo-tip"></div>
+    <!-- TABLE -->
+    <div class="table-wrap">
+      <div class="table">
+        <div class="table-inscription">Horizon Cosmos · The Round Table · Est. by Travis Peterson</div>
       </div>
     </div>
 
-    <div class="sbar" id="sb"></div>
+    <!-- SEVEN SEATS -->
+    <div class="seats" id="seats"></div>
 
-    <div class="fp-cards fp-left" id="fpL">
-      <div class="fp-card"><div class="fp-lbl">Traveler</div><div class="fp-val">Travis Peterson</div></div>
-      <div class="fp-card"><div class="fp-lbl">Home Base</div><div class="fp-val">Milan, Michigan</div></div>
-      <div class="fp-card"><div class="fp-lbl">Status</div><div class="fp-val">Founder · Beta</div></div>
+    <!-- DISCUSSION -->
+    <div class="discussion" id="discussion" style="display:none;">
+      <div class="discussion-header">
+        <div class="dh-dot"></div>
+        <div class="dh-title">● Round Table · In Session</div>
+        <div class="dh-topic" id="dhTopic">Awaiting matter...</div>
+      </div>
+      <div class="messages" id="messages"></div>
+      <div class="consensus" id="consensusPanel">
+        <div class="consensus-icons" id="consensusIcons"></div>
+        <div class="consensus-title">The Seven Have Spoken</div>
+        <div class="consensus-text" id="consensusText"></div>
+        <button class="consensus-btn" onclick="closeConsensus()">CONTINUE THE SESSION</button>
+      </div>
     </div>
 
-    <div class="fp-cards fp-right" id="fpR">
-      <div class="fp-card"><div class="fp-lbl">Dream Horizon</div><div class="fp-val">Intergalactic</div></div>
-      <div class="fp-card"><div class="fp-lbl">Travel Style</div><div class="fp-val">All of Earth</div></div>
-      <div class="fp-card"><div class="fp-lbl">Companion</div><div class="fp-val">Cubee1 🧊</div></div>
-    </div>
-
-    <div class="cubee-zone">
-      <div class="cubee-aura" id="ca"></div>
-      <svg class="cubee-fig" viewBox="0 0 200 320" fill="none" id="cf"></svg>
-    </div>
   </div>
 
   <div class="input-zone">
     <div class="input-row">
-      <div class="mic" id="mb" onclick="toggleMic()"><span id="mi">🎤</span></div>
-      <input class="inp" id="ti" placeholder="Where in the world calls to you today..." onkeydown="if(event.key==='Enter'){event.preventDefault();send()}"/>
-      <div class="sbtn" onclick="send()">→</div>
+      <div class="mic-btn" id="micBtn" onclick="toggleMic()"><span id="micIcon">🎤</span></div>
+      <input class="txt-inp" id="txtInp" placeholder="Bring a matter to the Round Table..." onkeydown="if(event.key==='Enter'){event.preventDefault();sendToTable()}"/>
+      <div class="send-btn" onclick="sendToTable()">→</div>
     </div>
   </div>
 </div>
 
 <script>
-(function(){var c=document.getElementById('stars');for(var i=0;i<160;i++){var s=document.createElement('div');var z=Math.random()*1.4+.2;s.className='star';s.style.cssText='left:'+Math.random()*100+'%;top:'+Math.random()*65+'%;width:'+z+'px;height:'+z+'px;--d:'+(3+Math.random()*5)+'s;--delay:'+(Math.random()*6)+'s;';c.appendChild(s);}})();
+// ============================================================
+// SEVEN DATA
+// ============================================================
+var SEVEN = [
+  {
+    id:'travis', name:'Travis', emoji:'🎩', col:'#C9A84C',
+    voiceNames:['daniel','james'], rate:.82, pitch:.88,
+    sys:'You are Travis Peterson, Founder of Horizon Cosmos. At the Round Table you speak with the authority and vision of the architect of this entire universe. You bring matters forward, you weigh the Seven\'s input, and you speak with final founder wisdom. Warm but authoritative. 2-3 sentences.',
+    svg: baseSVG('#8B5E3C','#1A0E08','#3A2510','rgba(255,220,100,.8)','#0a0600','<path d="M36 38 L36 42 L104 42 L104 38 Q102 28 70 26 Q38 28 36 38Z" fill="#1A0E08"/><path d="M30 42 L110 42" stroke="#C9A84C" stroke-width="1.5"/>')
+  },
+  {
+    id:'cubee1', name:'Cubee1', emoji:'🧊', col:'#00C8A8',
+    voiceNames:['daniel','oliver'], rate:.84, pitch:.91,
+    sys:'You are Cubee1, Captain of the Simple Seven. At the Round Table you speak for the heart and soul of Horizon Cosmos. You balance vision with integrity, always keeping the Hall\'s purpose central. 2-3 sentences.',
+    svg: baseSVG('#8B5E3C','#1A0E08','#1a3a5c','rgba(0,212,255,.8)','#030912','<path d="M65 88 L70 93 L75 88 L73 108 L70 112 L67 108Z" fill="#00d4b8"/>')
+  },
+  {
+    id:'atlas', name:'Atlas', emoji:'🌊', col:'#5dade2',
+    voiceNames:['daniel','alex'], rate:.80, pitch:.85,
+    sys:'You are Atlas, World Intelligence of the Simple Seven. At the Round Table you bring deep knowledge, historical context and global perspective to every matter. You see patterns others miss. 2-3 sentences.',
+    svg: baseSVG('#9B7040','#2d1a08','#1a3a5c','rgba(93,173,226,.8)','#0d1b2a','<circle cx="57" cy="52" r="13" fill="none" stroke="rgba(93,173,226,.6)" stroke-width="1.5"/><circle cx="83" cy="52" r="13" fill="none" stroke="rgba(93,173,226,.6)" stroke-width="1.5"/>')
+  },
+  {
+    id:'nova', name:'Nova', emoji:'⚡', col:'#f39c12',
+    voiceNames:['karen','zira','victoria'], rate:.92, pitch:1.05,
+    sys:'You are Nova, Opportunity intelligence of the Simple Seven. At the Round Table you speak fast and bright, always seeing the opportunity angle, the perfect timing, the moment to act. 2-3 sentences.',
+    svg: baseSVG('#C8A060','#1a0e02','#8B6000','rgba(255,200,0,.9)','#0d0a02','<path d="M34 44 L30 40 M34 44 L28 46" stroke="#f39c12" stroke-width="1.2" opacity=".7"/>')
+  },
+  {
+    id:'ward', name:'Ward', emoji:'🛡️', col:'#27ae60',
+    voiceNames:['fred','alex'], rate:.78, pitch:.80,
+    sys:'You are Ward, Protection intelligence of the Simple Seven. At the Round Table you speak with steady authority about safety, integrity and risk. Nothing that could harm the cosmos passes without your challenge. 2-3 sentences.',
+    svg: baseSVG('#7A4828','#1a0e06','#2d5a1e','rgba(39,174,96,.8)','#0d1a0d','<path d="M58 92 L70 88 L82 92 L82 104 Q70 110 58 104Z" fill="none" stroke="rgba(39,174,96,.5)" stroke-width="1.5"/>')
+  },
+  {
+    id:'eden', name:'Eden', emoji:'🌱', col:'#82e0aa',
+    voiceNames:['samantha','karen','victoria'], rate:.82, pitch:.95,
+    sys:'You are Eden, Conscience of the Simple Seven. At the Round Table you hold the moral and purposeful compass. You ask the deeper question — does this serve life, does this serve meaning, does this serve the cosmos as it was intended? 2-3 sentences.',
+    svg: baseSVG('#A07840','#1a0e04','#4a3010','rgba(200,255,200,.8)','#0d1a0d','<path d="M38 36 L32 68 Q34 78 38 74 L40 48Z" fill="#1a0e04"/><circle cx="40" cy="26" r="3" fill="#82e0aa" opacity=".7"/>')
+  },
+  {
+    id:'pulse', name:'Pulse', emoji:'📡', col:'#9b59b6',
+    voiceNames:['alex','daniel'], rate:.86, pitch:.94,
+    sys:'You are Pulse, Platform intelligence of the Simple Seven. At the Round Table you speak to how every decision registers across the platform — the signals, the data, the network effects, what the cosmos will feel. 2-3 sentences.',
+    svg: baseSVG('#8A6040','#0d0814','#4a2870','rgba(200,150,255,.8)','#0d0814','<circle cx="34" cy="50" r="3" fill="rgba(155,89,182,.6)"/><circle cx="106" cy="50" r="3" fill="rgba(155,89,182,.6)"/>')
+  }
+];
 
-(function(){var cols=['#8B1A1A','#1A3A6B','#1A6B2A','#6B5A1A','#4A1A6B','#1A5A6B','#6B1A4A','#3A4A1A','#5A3A1A','#1A4A5A'];['shelfL','shelfR'].forEach(function(id){var shelf=document.getElementById(id);for(var r=0;r<13;r++){var row=document.createElement('div');row.className='shelf-row';row.style.top=(r*(100/13))+'%';shelf.appendChild(row);var x=3,books=Math.floor(3+Math.random()*5);for(var b=0;b<books;b++){var bk=document.createElement('div');var w=7+Math.random()*9,h=28+Math.random()*22;bk.className='book';bk.style.cssText='left:'+x+'px;top:calc('+(r*(100/13))+'% + 2px);width:'+w+'px;height:'+h+'px;background:'+cols[Math.floor(Math.random()*cols.length)]+';--bd:'+(3+Math.random()*4)+'s;--bdelay:'+(Math.random()*5)+'s;opacity:.45;';shelf.appendChild(bk);x+=w+1;}};});})();
+// Seat positions (as percentages of container)
+var POSITIONS = [
+  {left:'50%',bottom:'105%',tx:'-50%'},   // Travis - top center (head of table)
+  {left:'15%',bottom:'70%',tx:'-50%'},    // Cubee1 - upper left
+  {left:'2%',bottom:'30%',tx:'0%'},       // Atlas - left
+  {left:'15%',bottom:'0%',tx:'-50%'},     // Nova - lower left
+  {left:'85%',bottom:'0%',tx:'-50%'},     // Ward - lower right
+  {left:'98%',bottom:'30%',tx:'-100%'},   // Eden - right
+  {left:'85%',bottom:'70%',tx:'-50%'},    // Pulse - upper right
+];
 
-document.getElementById('cf').innerHTML='<path d="M22 320 L22 215 Q22 192 46 182 L72 172 L100 194 L128 172 L154 182 Q178 192 178 215 L178 320Z" fill="#030912"/><path d="M72 172 L100 194 L100 320 L22 320 L22 225 Q30 200 56 188Z" fill="#060f20"/><path d="M128 172 L100 194 L100 320 L178 320 L178 225 Q170 200 144 188Z" fill="#040c18"/><path d="M96 180 L100 186 L104 180 L102 200 L100 204 L98 200Z" fill="#00d4b8"/><circle cx="100" cy="270" r="3" fill="#030912" stroke="rgba(0,212,184,.3)" stroke-width=".8"/><path d="M22 320 Q8 352 11 392 Q14 403 25 403 Q34 403 36 392 L38 352Z" fill="#030912"/><path d="M178 320 Q192 352 189 392 Q186 403 175 403 Q166 403 164 392 L162 352Z" fill="#030912"/><ellipse cx="20" cy="403" rx="12" ry="8" fill="#7A5230"/><ellipse cx="180" cy="403" rx="12" ry="9" fill="#7A5230"/><path d="M118 218 Q138 230 158 218 L160 196 Q138 205 116 196Z" fill="#8B5E3C"/><rect x="88" y="148" width="24" height="26" rx="4" fill="#8B5E3C"/><ellipse cx="100" cy="108" rx="55" ry="60" fill="#8B5E3C"/><ellipse cx="50" cy="114" rx="20" ry="30" fill="#6B4423" opacity=".35"/><ellipse cx="150" cy="114" rx="20" ry="30" fill="#6B4423" opacity=".28"/><path d="M46 95 Q49 50 100 46 Q151 50 154 95 Q146 62 100 59 Q54 62 46 95Z" fill="#1A0E08"/><ellipse cx="48" cy="114" rx="14" ry="22" fill="#8B5E3C"/><ellipse cx="152" cy="114" rx="14" ry="22" fill="#8B5E3C"/><path d="M66 95 Q80 88 94 93" stroke="#1A0E08" stroke-width="4.5" stroke-linecap="round" fill="none"/><path d="M106 93 Q120 88 134 95" stroke="#1A0E08" stroke-width="4.5" stroke-linecap="round" fill="none"/><ellipse cx="80" cy="113" rx="15" ry="13" fill="white"/><ellipse cx="120" cy="113" rx="15" ry="13" fill="white"/><circle cx="80" cy="113" r="7" fill="#3A2510"/><circle cx="80" cy="113" r="4" fill="#0A0608"/><ellipse cx="83" cy="109" rx="2.5" ry="2" fill="white" opacity=".9"/><circle cx="120" cy="113" r="7" fill="#3A2510"/><circle cx="120" cy="113" r="4" fill="#0A0608"/><ellipse cx="123" cy="109" rx="2.5" ry="2" fill="white" opacity=".9"/><path id="blL" d="M65 113 Q80 100 95 113" fill="white" opacity="0"/><path id="blR" d="M105 113 Q120 100 135 113" fill="white" opacity="0"/><path d="M65 107 Q80 98 95 107" stroke="#1A0E08" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M105 107 Q120 98 135 107" stroke="#1A0E08" stroke-width="2.5" fill="none" stroke-linecap="round"/><path id="mUL" d="M82 140 Q91 134 100 136 Q109 134 118 140 Q109 145 100 143 Q91 145 82 140Z" fill="#8B3A28"/><path id="mLL" d="M82 140 Q100 148 118 140 Q109 147 100 148 Q91 147 82 140Z" fill="#B04A38"/><path id="mLn" d="M84 140 Q100 141 116 140" stroke="#5A1A10" stroke-width="1.8" fill="none" opacity=".85"/>';
+function baseSVG(headCol, hairCol, eyeCol, glintCol, bodyCol, extras){
+  return '<svg viewBox="0 0 140 168" fill="none">'
+    +'<path d="M15 168 L15 112 Q15 95 32 87 L52 79 L70 96 L88 79 L108 87 Q125 95 125 112 L125 168Z" fill="'+bodyCol+'"/>'
+    +(extras||'')
+    +'<rect x="63" y="72" width="14" height="14" rx="3" fill="'+headCol+'"/>'
+    +'<ellipse cx="70" cy="50" rx="34" ry="36" fill="'+headCol+'"/>'
+    +'<ellipse cx="37" cy="54" rx="7" ry="13" fill="'+headCol+'"/>'
+    +'<ellipse cx="103" cy="54" rx="7" ry="13" fill="'+headCol+'"/>'
+    +'<path d="M38 36 Q40 10 70 8 Q100 10 102 36 Q94 18 70 16 Q46 18 38 36Z" fill="'+hairCol+'"/>'
+    +'<path d="M47 42 Q57 37 65 41" stroke="'+hairCol+'" stroke-width="2.5" stroke-linecap="round" fill="none"/>'
+    +'<path d="M75 41 Q83 37 93 42" stroke="'+hairCol+'" stroke-width="2.5" stroke-linecap="round" fill="none"/>'
+    +'<ellipse cx="57" cy="52" rx="10" ry="9" fill="white"/>'
+    +'<ellipse cx="83" cy="52" rx="10" ry="9" fill="white"/>'
+    +'<circle cx="57" cy="52" r="5" fill="'+eyeCol+'"/>'
+    +'<circle cx="57" cy="52" r="3" fill="#050508"/>'
+    +'<ellipse cx="59.5" cy="49" rx="2" ry="1.6" fill="'+glintCol+'" opacity=".9"/>'
+    +'<circle cx="83" cy="52" r="5" fill="'+eyeCol+'"/>'
+    +'<circle cx="83" cy="52" r="3" fill="#050508"/>'
+    +'<ellipse cx="85.5" cy="49" rx="2" ry="1.6" fill="'+glintCol+'" opacity=".9"/>'
+    +'<path d="M57 72 Q70 78 83 72" stroke="#3d1a08" stroke-width="1.8" fill="none" stroke-linecap="round"/>'
+    +'</svg>';
+}
 
-(function bl(){var L=document.getElementById('blL'),R=document.getElementById('blR');if(L){L.style.opacity='1';R.style.opacity='1';setTimeout(function(){L.style.opacity='0';R.style.opacity='0';},140);}setTimeout(bl,2800+Math.random()*4500);})();
+// Build seats
+var seatsEl = document.getElementById('seats');
+SEVEN.forEach(function(s, i){
+  var pos = POSITIONS[i];
+  var seat = document.createElement('div');
+  seat.className = 'seat';
+  seat.id = 'seat-'+s.id;
+  seat.style.cssText = 'left:'+pos.left+';bottom:'+pos.bottom+';transform:translateX('+pos.tx+');--sc:'+s.col+';--fd:'+(4+i*.4)+'s;--fdl:'+(i*.2)+'s;';
+  seat.innerHTML =
+    '<div class="seat-emoji">'+s.emoji+'</div>'
+    +'<div class="seat-fig">'+s.svg+'</div>'
+    +'<div class="seat-aura"></div>'
+    +'<div class="seat-name">'+s.name+'</div>';
+  seatsEl.appendChild(seat);
+});
 
-function mouth(o){var ul=document.getElementById('mUL'),ll=document.getElementById('mLL'),ln=document.getElementById('mLn');if(!ul)return;var bY=140,lx=82,rx=118,cx=100;if(o>0.05){var d=o*7,r=o*5;ul.setAttribute('d','M'+lx+' '+(bY-r*.4)+' Q'+(lx+9)+' '+(bY-6-r*.7)+' '+cx+' '+(bY-4-r*.6)+' Q'+(rx-9)+' '+(bY-6-r*.7)+' '+rx+' '+(bY-r*.4)+' Q'+(rx-9)+' '+(bY+5-r*.2)+' '+cx+' '+(bY+3-r*.2)+' Q'+(lx+9)+' '+(bY+5-r*.2)+' '+lx+' '+(bY-r*.4)+'Z');ll.setAttribute('d','M'+lx+' '+(bY+d*.2)+' Q'+cx+' '+(bY+8+d)+' '+rx+' '+(bY+d*.2)+' Q'+(rx-9)+' '+(bY+7+d*.9)+' '+cx+' '+(bY+8+d)+' Q'+(lx+9)+' '+(bY+7+d*.9)+' '+lx+' '+(bY+d*.2)+'Z');ln.style.opacity='0';}else{ul.setAttribute('d','M'+lx+' '+bY+' Q'+(lx+9)+' '+(bY-6)+' '+cx+' '+(bY-4)+' Q'+(rx-9)+' '+(bY-6)+' '+rx+' '+bY+' Q'+(rx-9)+' '+(bY+5)+' '+cx+' '+(bY+3)+' Q'+(lx+9)+' '+(bY+5)+' '+lx+' '+bY+'Z');ll.setAttribute('d','M'+lx+' '+bY+' Q'+cx+' '+(bY+8)+' '+rx+' '+bY+' Q'+(rx-9)+' '+(bY+7)+' '+cx+' '+(bY+8)+' Q'+(lx+9)+' '+(bY+7)+' '+lx+' '+bY+'Z');ln.setAttribute('d','M'+(lx+2)+' '+bY+' Q'+cx+' '+(bY+1)+' '+(rx-2)+' '+bY);ln.style.opacity='.85';}}
+// Stars
+(function(){
+  var c=document.getElementById('stars');
+  for(var i=0;i<150;i++){
+    var s=document.createElement('div');var z=Math.random()*1.5+.2;
+    s.className='star';
+    s.style.cssText='left:'+Math.random()*100+'%;top:'+Math.random()*60+'%;width:'+z+'px;height:'+z+'px;--d:'+(3+Math.random()*5)+'s;--dl:'+(Math.random()*6)+'s;';
+    c.appendChild(s);
+  }
+})();
 
-var SY=window.speechSynthesis,voices=[],mInt=null,isSpeaking=false,resumeInt=null;
+// ============================================================
+// SESSION ENGINE
+// ============================================================
+var SY = window.speechSynthesis;
+var voices = [];
+var sessionActive = false;
+var busy = false;
+var sessionHistory = [];
+var currentSpeaker = -1;
+var speakQueue = [];
+var isSpeaking = false;
+var mInt = null, resumeInt = null;
+var recog = null, lstn = false;
+
 function loadV(){if(SY)voices=SY.getVoices();}
 if(SY){loadV();if(SY.onvoiceschanged!==undefined)SY.onvoiceschanged=loadV;}
-function speak(txt){if(!SY||!txt)return;SY.cancel();clearInterval(mInt);clearInterval(resumeInt);mouth(0);var u=new SpeechSynthesisUtterance(txt);var v=null,names=['daniel','james','oliver','aaron','alex'];for(var i=0;i<names.length;i++){v=voices.filter(function(x){return x.name.toLowerCase().indexOf(names[i])>=0;})[0];if(v)break;}if(!v)v=voices.filter(function(x){return x.lang&&x.lang.indexOf('en')===0;})[0];if(v)u.voice=v;u.rate=0.84;u.pitch=0.91;u.volume=1;u.onstart=function(){isSpeaking=true;document.getElementById('ca').classList.add('spk');setS('Speaking...');var ph=0,p=[.7,.88,.1,.8,.92,.14,.55,.85,.2,.62];mInt=setInterval(function(){mouth(Math.max(0,Math.min(1,p[ph++%p.length]+(Math.random()-.5)*.2)));},108);resumeInt=setInterval(function(){if(SY.speaking&&SY.paused)SY.resume();},9000);};u.onend=function(){done();};u.onerror=function(e){if(e.error!=='interrupted'&&e.error!=='canceled')done();};setTimeout(function(){try{SY.speak(u);}catch(e){}},60);}
-function done(){isSpeaking=false;clearInterval(mInt);clearInterval(resumeInt);mouth(0);document.getElementById('ca').classList.remove('spk');setS('');}
-function setS(t){var el=document.getElementById('sb');el.textContent=t;el.className='sbar'+(t?' on':'');}
-function showMsg(html,typing){document.getElementById('hw').classList.add('on');document.getElementById('hb').innerHTML=typing?'<div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>':html;}
-function rnd(t){return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/\n/g,'<br>');}
-var recog=null,lstn=false;
+
+function enterTable(){
+  document.getElementById('enter').className = 'gone';
+  if(SY){var u=new SpeechSynthesisUtterance('');SY.speak(u);SY.cancel();}
+  loadV();setTimeout(loadV,400);setTimeout(loadV,900);
+  sessionActive = true;
+  document.getElementById('tbStatus').textContent = '● In Session';
+  document.getElementById('tbStatus').className = 'tb-status active';
+  document.getElementById('discussion').style.display = 'flex';
+  document.getElementById('discussion').style.flexDirection = 'column';
+
+  // Opening
+  addSystemMsg('The Round Table is now in session. The Simple Seven are present. Travis, bring your matter forward.');
+}
+
+function addSystemMsg(txt){
+  var msgs = document.getElementById('messages');
+  var div = document.createElement('div');
+  div.style.cssText = 'text-align:center;font-size:7px;letter-spacing:.2em;text-transform:uppercase;color:rgba(201,168,76,.4);font-family:sans-serif;padding:4px 0;';
+  div.textContent = '— ' + txt + ' —';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addMsg(comp, text){
+  var msgs = document.getElementById('messages');
+  var div = document.createElement('div');
+  div.className = 'msg';
+  div.innerHTML =
+    '<div class="msg-avatar">'+comp.svg+'</div>'
+    +'<div class="msg-body">'
+    +'<div class="msg-who" style="color:'+comp.col+'">'+comp.emoji+' '+comp.name.toUpperCase()+'</div>'
+    +'<div class="msg-text">'+rnd(text)+'</div>'
+    +'</div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addDeliberating(comp){
+  var msgs = document.getElementById('messages');
+  var div = document.createElement('div');
+  div.className = 'deliberating-msg';
+  div.id = 'deliberating-'+comp.id;
+  div.innerHTML =
+    '<div class="msg-avatar" style="width:24px;height:24px;">'+comp.svg+'</div>'
+    +'<div class="del-name" style="color:'+comp.col+'">'+comp.emoji+' '+comp.name+'</div>'
+    +'<div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+function removeDeliberating(id){
+  var el = document.getElementById('deliberating-'+id);
+  if(el) el.remove();
+}
+
+function rnd(t){
+  return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/\n/g,'<br>');
+}
+
+function setSpeaking(compId, on){
+  var seat = document.getElementById('seat-'+compId);
+  if(seat){
+    if(on) seat.classList.add('speaking');
+    else seat.classList.remove('speaking');
+  }
+}
+
+var KEY=sessionStorage.getItem('hcKey')||localStorage.getItem('horizonCosmosKey')||'';
+
+function askCompanion(comp, contextHistory){
+  return fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'anthropic-version':'2023-06-01',
+      'x-api-key':KEY,
+      'anthropic-dangerous-direct-browser-access':'true'
+    },
+    body:JSON.stringify({
+      model:'claude-sonnet-4-6',
+      max_tokens:200,
+      system: comp.sys + ' You are at the Round Table of Horizon Cosmos with the other Simple Seven members. Travis Peterson is the founder. Respond to the matter at hand in your unique voice and perspective. Keep it to 2-3 sentences maximum.',
+      messages: contextHistory
+    })
+  }).then(function(r){return r.text();}).then(function(txt){
+    var reply='';
+    try{
+      var data=JSON.parse(txt);
+      if(data&&data.content&&Array.isArray(data.content)){
+        for(var i=0;i<data.content.length;i++){if(data.content[i].type==='text')reply+=data.content[i].text;}
+      }
+    }catch(e){reply='';}
+    return reply || 'I hear the matter and I am in deliberation.';
+  });
+}
+
+function speakAsComp(comp, text, onDone){
+  if(!SY){if(onDone)onDone();return;}
+  SY.cancel();
+  var u = new SpeechSynthesisUtterance(text);
+  var v = null;
+  for(var i=0;i<comp.voiceNames.length;i++){
+    v=voices.filter(function(x){return x.name.toLowerCase().indexOf(comp.voiceNames[i])>=0;})[0];
+    if(v)break;
+  }
+  if(!v)v=voices.filter(function(x){return x.lang&&x.lang.indexOf('en')===0;})[0];
+  if(v)u.voice=v;
+  u.rate=comp.rate||.84;u.pitch=comp.pitch||.91;u.volume=1;
+  u.onend=function(){setSpeaking(comp.id,false);if(onDone)onDone();};
+  u.onerror=function(){setSpeaking(comp.id,false);if(onDone)onDone();};
+  setSpeaking(comp.id,true);
+  setTimeout(function(){try{SY.speak(u);}catch(e){setSpeaking(comp.id,false);if(onDone)onDone();}},80);
+}
+
+function sendToTable(){
+  var t = document.getElementById('txtInp').value.trim();
+  if(!t||busy||!sessionActive) return;
+  document.getElementById('txtInp').value='';
+  busy=true;
+
+  // Update topic
+  document.getElementById('dhTopic').textContent = t.substring(0,50)+(t.length>50?'...':'');
+
+  // Add Travis bringing the matter
+  addMsg(SEVEN[0], '"'+t+'"');
+  sessionHistory.push({role:'user', content:'Travis brings this matter to the Round Table: '+t+'. Each of the Seven should weigh in with their perspective.'});
+
+  // Build transcript for API context
+  var transcript = 'The matter before the Round Table: ' + t + '\n\nTravis has presented this. Now each companion speaks in turn.';
+
+  // Deliberate - each companion responds in sequence
+  var companions = SEVEN.slice(1); // Everyone except Travis
+  var responses = {};
+  var pending = companions.length;
+
+  document.getElementById('tbStatus').textContent = '● Deliberating...';
+
+  // Show all deliberating indicators
+  var delEls = {};
+  companions.forEach(function(c){
+    setTimeout(function(){
+      delEls[c.id] = addDeliberating(c);
+    }, companions.indexOf(c) * 200);
+  });
+
+  // Fetch all responses
+  companions.forEach(function(comp, idx){
+    var ctx = [{role:'user', content: transcript + '\n\nYou are '+comp.name+'. Respond to this matter in your unique voice and perspective. 2-3 sentences.'}];
+
+    setTimeout(function(){
+      askCompanion(comp, ctx).then(function(reply){
+        responses[comp.id] = reply;
+        pending--;
+        if(pending === 0){
+          // All responses collected - speak them in order
+          speakInOrder(companions, responses, t);
+        }
+      });
+    }, idx * 300);
+  });
+}
+
+function speakInOrder(companions, responses, matter){
+  // Remove all deliberating indicators
+  companions.forEach(function(c){removeDeliberating(c.id);});
+
+  var idx = 0;
+  function next(){
+    if(idx >= companions.length){
+      // All spoken - generate consensus
+      generateConsensus(matter, companions, responses);
+      return;
+    }
+    var comp = companions[idx];
+    var reply = responses[comp.id];
+    addMsg(comp, reply);
+    speakAsComp(comp, reply, function(){
+      idx++;
+      setTimeout(next, 400);
+    });
+    idx++;
+  }
+  next();
+}
+
+function generateConsensus(matter, companions, responses){
+  document.getElementById('tbStatus').textContent = '● Reaching Consensus...';
+
+  var transcript = 'Matter: ' + matter + '\n\n';
+  companions.forEach(function(c){
+    transcript += c.name + ': ' + responses[c.id] + '\n\n';
+  });
+
+  var ctx = [{
+    role:'user',
+    content: transcript + '\n\nBased on all Seven voices, synthesize a consensus statement that represents the collective wisdom of the Round Table. Keep it to 2-3 sentences. Start with "The Seven are in agreement:" or "The Seven have reached consensus:" or indicate if there is deliberation needed.'
+  }];
+
+  askCompanion(SEVEN[1], ctx).then(function(consensus){
+    // Show consensus
+    var panel = document.getElementById('consensusPanel');
+    var icons = SEVEN.map(function(s){return s.emoji;}).join(' ');
+    document.getElementById('consensusIcons').textContent = icons;
+    document.getElementById('consensusText').innerHTML = rnd(consensus);
+    panel.classList.add('show');
+
+    // Also add to messages
+    addSystemMsg('The Seven have deliberated');
+    addMsg(SEVEN[1], consensus);
+
+    sessionHistory.push({role:'assistant', content:'Round Table consensus: '+consensus});
+
+    // Speak consensus as Cubee1
+    speakAsComp(SEVEN[1], consensus, function(){
+      document.getElementById('tbStatus').textContent = '● In Session';
+      busy=false;
+    });
+  });
+}
+
+function closeConsensus(){
+  document.getElementById('consensusPanel').classList.remove('show');
+}
+
+// MIC
 function toggleMic(){if(lstn)stopL();else startL();}
-function startL(){if(isSpeaking)SY.cancel();var SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){setS('Use text box');return;}recog=new SR();recog.continuous=false;recog.interimResults=false;recog.lang='en-US';recog.onresult=function(e){stopL();go(e.results[0][0].transcript);};recog.onerror=function(){stopL();};recog.onend=function(){if(lstn)stopL();};lstn=true;try{recog.start();}catch(e){lstn=false;setS('Use text box');return;}document.getElementById('mb').classList.add('on');document.getElementById('mi').textContent='🔴';setS('Listening...');}
-function stopL(){lstn=false;if(recog)try{recog.stop();}catch(e){}document.getElementById('mb').classList.remove('on');document.getElementById('mi').textContent='🎤';setS('');}
-var hist=[],busy=false;
-var KEY='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';
-var SYS='You are Cubee1, the AI travel companion inside the Travelercube Studio — a stunning cosmic library overlooking planet Earth. Every destination on Earth is within your bookshelves. You are warm, knowledgeable, deeply personal. You know Travis Peterson, founder of Travelercube, InteleTravel advisor from Milan Michigan. This is his private beta studio. Help him discover, plan and dream about travel destinations anywhere on Earth. Keep responses warm, conversational, 2-3 sentences. Voice conversation style. Earth is below you — all of it is available.';
-function go(input){if(busy||!input)return;busy=true;showMsg('',true);setS('Thinking...');hist.push({role:'user',content:String(input)});if(hist.length>12)hist=hist.slice(-12);fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01','x-api-key':KEY,'anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:300,system:SYS,messages:hist})}).then(function(r){return r.text();}).then(function(txt){var reply='';try{var data=JSON.parse(txt);if(data&&data.content&&Array.isArray(data.content)){for(var i=0;i<data.content.length;i++){if(data.content[i].type==='text')reply+=data.content[i].text;}}else if(data&&data.error){reply='Error: '+data.error.message;}}catch(e){reply='Could not read response.';}if(!reply)reply='Say that again Trav.';hist.push({role:'assistant',content:reply});var clean=reply.replace(/\[CARD\][\s\S]*?\[\/CARD\]/g,'').trim();showMsg(rnd(clean),false);setS('');speak(clean);busy=false;}).catch(function(e){var msg='Had a moment Trav. Try again.';showMsg(msg,false);setS('');speak(msg);busy=false;});}
-function send(){var t=document.getElementById('ti').value.trim();if(!t||busy)return;document.getElementById('ti').value='';go(t);}
-function enterStudio(){document.getElementById('enter').className='gone';if(SY){var u=new SpeechSynthesisUtterance('');SY.speak(u);SY.cancel();}loadV();setTimeout(loadV,400);setTimeout(loadV,900);setTimeout(function(){document.getElementById('fpL').classList.add('on');document.getElementById('fpR').classList.add('on');},800);setTimeout(function(){go('Travis just entered the Travelercube Studio for the first time. Welcome him warmly. Describe the studio briefly — the cosmic library, Earth below through the window, all destinations at his fingertips. Ask where in the world is calling to him today. 2-3 warm sentences.');},1000);}
+function startL(){
+  if(isSpeaking&&SY)SY.cancel();
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){return;}
+  recog=new SR();recog.continuous=false;recog.interimResults=false;recog.lang='en-US';
+  recog.onresult=function(e){stopL();document.getElementById('txtInp').value=e.results[0][0].transcript;};
+  recog.onerror=function(){stopL();};
+  recog.onend=function(){if(lstn)stopL();};
+  lstn=true;
+  try{recog.start();}catch(e){lstn=false;return;}
+  document.getElementById('micBtn').classList.add('on');
+  document.getElementById('micIcon').textContent='🔴';
+}
+function stopL(){
+  lstn=false;if(recog)try{recog.stop();}catch(e){}
+  document.getElementById('micBtn').classList.remove('on');
+  document.getElementById('micIcon').textContent='🎤';
+}
+
 window.addEventListener('beforeunload',function(){try{if(SY)SY.cancel();}catch(e){}});
 </script>
 </body>

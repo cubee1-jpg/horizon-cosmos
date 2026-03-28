@@ -36,8 +36,8 @@ html,body{height:100%;overflow:hidden;background:#000;font-family:'Cormorant Gar
 .p-ring{position:absolute;width:clamp(90px,13vw,190px);height:clamp(18px,2.5vw,38px);top:4.5%;right:4.5%;border-radius:50%;border:2.5px solid rgba(200,180,100,.28);transform:rotateX(70deg);pointer-events:none;opacity:.5;}
 
 /* HALL */
-#hall{position:fixed;inset:0;z-index:10;perspective:1200px;perspective-origin:50% 46%;overflow:hidden;animation:hallEnter 2s ease .4s both;}
-#world{position:absolute;width:100%;height:100%;transform-style:preserve-3d;transition:transform .14s cubic-bezier(.25,.46,.45,.94);}
+#hall{position:fixed;inset:0;z-index:10;perspective:1200px;perspective-origin:50% 46%;overflow:hidden;animation:hallEnter 2s ease .4s both;cursor:grab;}
+#world{position:absolute;width:100%;height:100%;transform-style:preserve-3d;transition:transform .08s cubic-bezier(.25,.46,.45,.94);}
 
 /* FLOOR */
 .floor{position:absolute;bottom:0;left:-300%;width:700%;height:52%;transform:rotateX(85deg);transform-origin:50% 0%;
@@ -329,7 +329,7 @@ html,body{height:100%;overflow:hidden;background:#000;font-family:'Cormorant Gar
     <div class="hbtn" id="hb" ontouchstart="sm('b');event.preventDefault();" ontouchend="st()" onmousedown="sm('b')" onmouseup="st()" onmouseleave="st()">▼</div>
     <div class="hbtn" id="hr" ontouchstart="sm('r');event.preventDefault();" ontouchend="st()" onmousedown="sm('r')" onmouseup="st()" onmouseleave="st()">►</div>
   </div>
-  <div class="hlbl">Walk The Hall · Arrow Keys or Touch</div>
+  <div class="hlbl">Arrow Keys · Walk &nbsp;|&nbsp; Drag · Look Around &nbsp;|&nbsp; Double-click · Reset View</div>
 </div>
 
 <script>
@@ -362,9 +362,51 @@ function fillW(id){
 
 // Nav
 var pz=0,px=0,mi=null,STEP=60,SX=25,MNZ=-600,MXZ=5000,MNX=-500,MXX=500;
+// Look-around
+var rotY=0,rotX=0;
+var isDragging=false,lastMX=0,lastMY=0;
+var SENSITIVITY=0.25;
+var MAX_ROTX=50,MIN_ROTX=-50;
 
 function apply(){
-  document.getElementById('world').style.transform='translateZ('+pz+'px) translateX('+px+'px)';
+  document.getElementById('world').style.transform=
+    'translateZ('+pz+'px) translateX('+px+'px) rotateY('+rotY+'deg) rotateX('+rotX+'deg)';
+  updPos();chkDoors();
+}
+
+// MOUSE LOOK
+var hallEl=document.getElementById('hall');
+hallEl.addEventListener('mousedown',function(e){
+  // Only drag if not clicking a door
+  if(e.target.closest('.door'))return;
+  isDragging=true;lastMX=e.clientX;lastMY=e.clientY;
+  hallEl.classList.add('looking');
+  e.preventDefault();
+});
+document.addEventListener('mousemove',function(e){
+  if(!isDragging)return;
+  var dx=e.clientX-lastMX;
+  var dy=e.clientY-lastMY;
+  rotY+=dx*SENSITIVITY;
+  rotX-=dy*SENSITIVITY;
+  rotX=Math.max(MIN_ROTX,Math.min(MAX_ROTX,rotX));
+  lastMX=e.clientX;lastMY=e.clientY;
+  apply();
+});
+document.addEventListener('mouseup',function(){
+  isDragging=false;
+  hallEl.classList.remove('looking');
+});
+
+// LOOK HINT
+var lookHint=document.createElement('div');
+lookHint.style.cssText='position:fixed;top:46px;left:50%;transform:translateX(-50%);z-index:60;font-family:Rajdhani,sans-serif;font-size:6px;letter-spacing:.28em;text-transform:uppercase;color:rgba(0,200,168,.4);background:rgba(0,0,0,.65);border:1px solid rgba(0,200,168,.08);padding:3px 12px;white-space:nowrap;';
+lookHint.textContent='DRAG TO LOOK AROUND · ARROWS TO WALK';
+document.body.appendChild(lookHint);
+// Look rotation already declared above
+function apply(){
+  document.getElementById('world').style.transform=
+    'translateZ('+pz+'px) translateX('+px+'px) rotateY('+rotY+'deg) rotateX('+rotX+'deg)';
   updPos();chkDoors();
 }
 function mv(d){
@@ -429,15 +471,44 @@ function goRoom(r){
   setTimeout(function(){window.location.href='https://cubee1-jpg.github.io/horizon-cosmos/'+r;},220);
 }
 
-// Touch swipe
-var tx=0,ty=0;
-document.getElementById('hall').addEventListener('touchstart',function(e){tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+// Touch swipe for WALK
+var tx=0,ty=0,tDragging=false;
+document.getElementById('hall').addEventListener('touchstart',function(e){
+  tx=e.touches[0].clientX;ty=e.touches[0].clientY;tDragging=false;
+},{passive:true});
 document.getElementById('hall').addEventListener('touchmove',function(e){
   var dx=e.touches[0].clientX-tx,dy=e.touches[0].clientY-ty;
-  if(Math.abs(dy)>Math.abs(dx)){if(dy<-4)mv('f');else if(dy>4)mv('b');}
-  else{if(dx<-4)mv('r');else if(dx>4)mv('l');}
-  tx=e.touches[0].clientX;ty=e.touches[0].clientY;e.preventDefault();
+  // Rotate on drag
+  rotY+=dx*.25;
+  rotX-=dy*.18;
+  rotX=Math.max(-60,Math.min(60,rotX));
+  tx=e.touches[0].clientX;ty=e.touches[0].clientY;
+  apply();
+  e.preventDefault();
 },{passive:false});
+
+// Mouse look - drag to look around
+var hallEl=document.getElementById('hall');
+hallEl.addEventListener('mousedown',function(e){
+  dragging=true;lastMX=e.clientX;lastMY=e.clientY;
+  hallEl.style.cursor='grabbing';
+});
+hallEl.addEventListener('mousemove',function(e){
+  if(!dragging)return;
+  var dx=e.clientX-lastMX,dy=e.clientY-lastMY;
+  rotY+=dx*.28;
+  rotX-=dy*.22;
+  rotX=Math.max(-70,Math.min(70,rotX));
+  lastMX=e.clientX;lastMY=e.clientY;
+  apply();
+});
+hallEl.addEventListener('mouseup',function(){dragging=false;hallEl.style.cursor='grab';});
+hallEl.addEventListener('mouseleave',function(){dragging=false;hallEl.style.cursor='grab';});
+
+// Double click to reset view
+hallEl.addEventListener('dblclick',function(){
+  rotY=0;rotX=0;apply();
+});
 
 apply();
 </script>

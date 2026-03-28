@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,546 +8,396 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;1,200;1,300&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;overflow:hidden;background:#000;font-family:'Cormorant Garamond',serif;color:#fff;user-select:none;}
+html,body{height:100%;overflow:hidden;background:#000;font-family:'Cormorant Garamond',serif;color:#fff;user-select:none;-webkit-user-select:none;}
+@keyframes tw{0%,100%{opacity:.04}50%{opacity:.95}}
+@keyframes nebFloat{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.1);opacity:.8}}
+@keyframes cloudDrift{0%{transform:translateX(0) scaleX(1)}100%{transform:translateX(-25%) scaleX(1.1)}}
+@keyframes compBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes glow{0%,100%{opacity:.3}50%{opacity:.9}}
+@keyframes waterfall{0%{background-position:0 0}100%{background-position:0 180px}}
+@keyframes lightShaft{0%,100%{opacity:.05}50%{opacity:.12}}
+@keyframes doorPulse{0%,100%{box-shadow:0 0 15px rgba(201,168,76,.15)}50%{box-shadow:0 0 35px rgba(201,168,76,.4)}}
+@keyframes hallEnter{from{opacity:0;filter:blur(28px) brightness(.2)}to{opacity:1;filter:blur(0) brightness(1)}}
+@keyframes hintBlink{0%,100%{opacity:.5}50%{opacity:1}}
 
-/* ── SPACE BG ── */
-.space{position:fixed;inset:0;z-index:0;}
-.space-deep{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,#060118 0%,#000008 50%,#000 100%);}
-.star{position:absolute;border-radius:50%;background:#fff;}
-@keyframes tw{0%,100%{opacity:.04}50%{opacity:.9}}
+/* SPACE */
+#bg{position:fixed;inset:0;z-index:0;overflow:hidden;}
+.bg-deep{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,#080125 0%,#040012 40%,#000 100%);}
+.neb{position:absolute;filter:blur(55px);animation:nebFloat var(--nd,18s) ease-in-out infinite;animation-delay:var(--ndl,0s);}
+.n1{width:80vw;height:60vh;top:-10%;left:-10%;background:radial-gradient(ellipse,rgba(18,0,100,.6),rgba(0,20,140,.3) 45%,transparent 70%);}
+.n2{width:65vw;height:50vh;bottom:-5%;right:-5%;background:radial-gradient(ellipse,rgba(0,70,120,.55),rgba(0,50,100,.25) 45%,transparent 70%);--nd:23s;--ndl:4s;}
+.n3{width:45vw;height:38vh;top:28%;left:25%;background:radial-gradient(ellipse,rgba(70,0,130,.35),transparent 70%);--nd:15s;--ndl:7s;}
+.star-bg{position:absolute;inset:0;}
+.spt{position:absolute;border-radius:50%;background:#fff;animation:tw var(--d) var(--dl) infinite;}
+/* Planets */
+.plt{position:absolute;border-radius:50%;pointer-events:none;}
+.p1{width:clamp(55px,7.5vw,115px);height:clamp(55px,7.5vw,115px);top:7%;right:7%;background:radial-gradient(circle at 35% 35%,#e8c080,#c8803a 40%,#8b4520 70%,#4a2a08);box-shadow:0 0 40px rgba(200,128,58,.3),inset -14px -10px 28px rgba(0,0,0,.55);opacity:.72;}
+.p2{width:clamp(35px,4.5vw,72px);height:clamp(35px,4.5vw,72px);top:14%;left:6%;background:radial-gradient(circle at 40% 40%,#8090e8,#4060c8 40%,#2035a0 70%,#101855);box-shadow:0 0 28px rgba(64,80,200,.3),inset -10px -8px 18px rgba(0,0,0,.6);opacity:.62;}
+.p-ring{position:absolute;width:clamp(90px,13vw,190px);height:clamp(18px,2.5vw,38px);top:4.5%;right:4.5%;border-radius:50%;border:2.5px solid rgba(200,180,100,.28);transform:rotateX(70deg);pointer-events:none;opacity:.5;}
 
-/* ── HALL WRAPPER ── */
-#hall{position:fixed;inset:0;z-index:10;perspective:900px;perspective-origin:50% 48%;overflow:hidden;cursor:grab;}
-#hall:active{cursor:grabbing;}
+/* HALL */
+#hall{position:fixed;inset:0;z-index:10;perspective:820px;perspective-origin:50% 46%;overflow:hidden;animation:hallEnter 2s ease .4s both;}
+#world{position:absolute;width:100%;height:100%;transform-style:preserve-3d;transition:transform .14s cubic-bezier(.25,.46,.45,.94);}
 
-/* ── CORRIDOR WORLD ── */
-#world{
-  position:absolute;
-  width:100%;height:100%;
-  transform-style:preserve-3d;
-  transition:transform .18s cubic-bezier(.25,.46,.45,.94);
-}
+/* FLOOR */
+.floor{position:absolute;bottom:0;left:-300%;width:700%;height:52%;transform:rotateX(85deg);transform-origin:50% 0%;
+  background:linear-gradient(180deg,transparent,rgba(201,168,76,.04) 50%,rgba(0,200,168,.06)),
+  repeating-linear-gradient(90deg,transparent,transparent 59px,rgba(201,168,76,.06) 60px),
+  repeating-linear-gradient(0deg,transparent,transparent 59px,rgba(201,168,76,.04) 60px);
+  background-color:rgba(5,3,0,.45);border-top:1px solid rgba(201,168,76,.14);}
+/* Clouds below floor */
+.cloud-layer{position:absolute;bottom:1%;left:-200%;width:500%;height:18%;transform:rotateX(80deg);transform-origin:50% 0%;overflow:hidden;pointer-events:none;}
+.cloud{position:absolute;border-radius:50%;background:rgba(180,200,255,.05);filter:blur(18px);animation:cloudDrift var(--cs,32s) linear infinite;animation-delay:var(--csdl,0s);}
 
-/* ── FLOOR ── */
-.floor{
-  position:absolute;
-  bottom:0;left:-200%;width:500%;
-  height:55%;
-  background:
-    linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(201,168,76,.04) 40%,rgba(201,168,76,.08) 100%),
-    repeating-linear-gradient(90deg,transparent,transparent 79px,rgba(201,168,76,.07) 80px),
-    repeating-linear-gradient(0deg,transparent,transparent 79px,rgba(201,168,76,.05) 80px);
-  background-color:#050300;
-  transform:rotateX(82deg) translateZ(-10px);
-  transform-origin:50% 0%;
-}
+/* CEILING */
+.ceiling{position:absolute;top:0;left:-200%;width:500%;height:32%;transform:rotateX(-82deg);transform-origin:50% 100%;
+  background:radial-gradient(ellipse at 50% 85%,rgba(201,168,76,.06),transparent 60%),radial-gradient(ellipse at 30% 50%,rgba(0,100,200,.07),transparent 50%);
+  background-color:rgba(2,0,10,.55);border-bottom:1px solid rgba(0,200,168,.07);}
 
-/* ── CEILING ── */
-.ceiling{
-  position:absolute;
-  top:0;left:-200%;width:500%;
-  height:35%;
-  background:
-    radial-gradient(ellipse at 50% 100%,rgba(201,168,76,.08) 0%,transparent 70%),
-    repeating-linear-gradient(90deg,transparent,transparent 79px,rgba(201,168,76,.04) 80px);
-  background-color:#030200;
-  transform:rotateX(-80deg) translateZ(-10px);
-  transform-origin:50% 100%;
-}
+/* SEGMENT */
+.seg{position:absolute;left:50%;top:50%;transform:translateX(-50%) translateY(-50%) translateZ(var(--z,0px));transform-style:preserve-3d;width:1px;height:1px;}
 
-/* ── LEFT WALL ── */
-.wall-l{
-  position:absolute;
-  left:0;top:0;bottom:0;
-  width:28%;
-  background:linear-gradient(90deg,#020100,#080500);
-  transform:rotateY(88deg);
-  transform-origin:0% 50%;
-}
+/* BOOKSHELF */
+.shelf{position:absolute;width:clamp(95px,15vw,195px);height:clamp(175px,36vh,310px);top:50%;transform:translateY(-58%);
+  background:repeating-linear-gradient(0deg,rgba(75,48,18,.85) 0px,rgba(75,48,18,.85) 21px,rgba(55,32,10,.95) 21px,rgba(55,32,10,.95) 23px);
+  border:1px solid rgba(201,168,76,.1);overflow:hidden;}
+.shelf::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(180,80,20,.55) 0px,rgba(180,80,20,.55) 13px,rgba(20,80,180,.48) 13px,rgba(20,80,180,.48) 26px,rgba(180,160,20,.48) 26px,rgba(180,160,20,.48) 39px,rgba(80,20,180,.48) 39px,rgba(80,20,180,.48) 52px,rgba(180,60,60,.48) 52px,rgba(180,60,60,.48) 65px,rgba(20,160,80,.48) 65px,rgba(20,160,80,.48) 78px);opacity:.65;}
+.shelf::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.5) 0%,transparent 18%,transparent 82%,rgba(0,0,0,.5) 100%);}
+.shelf-l{left:clamp(-355px,-27vw,-175px);}
+.shelf-r{right:clamp(-355px,-27vw,-175px);}
 
-/* ── RIGHT WALL ── */
-.wall-r{
-  position:absolute;
-  right:0;top:0;bottom:0;
-  width:28%;
-  background:linear-gradient(270deg,#020100,#080500);
-  transform:rotateY(-88deg);
-  transform-origin:100% 50%;
-}
+/* GOLD COLUMNS */
+.col{position:absolute;width:clamp(9px,1.4vw,18px);height:clamp(155px,31vh,270px);top:50%;transform:translateY(-54%);
+  background:linear-gradient(90deg,rgba(201,168,76,.07),rgba(201,168,76,.28),rgba(201,168,76,.14),rgba(201,168,76,.28),rgba(201,168,76,.07));
+  border-left:1px solid rgba(201,168,76,.22);border-right:1px solid rgba(201,168,76,.22);}
+.col::before{content:'';position:absolute;top:-11px;left:-5px;right:-5px;height:11px;background:rgba(201,168,76,.32);border-radius:2px 2px 0 0;}
+.col::after{content:'';position:absolute;bottom:-11px;left:-5px;right:-5px;height:11px;background:rgba(201,168,76,.32);}
+.col-l{left:clamp(-395px,-31vw,-195px);}
+.col-r{right:clamp(-395px,-31vw,-195px);}
 
-/* ── CORRIDOR SEGMENTS ── */
-.seg{
-  position:absolute;
-  left:50%;top:50%;
-  transform-style:preserve-3d;
-  transform:translateX(-50%) translateY(-50%) translateZ(var(--z));
-}
+/* LIGHT SHAFT */
+.shaft{position:absolute;width:clamp(18px,2.8vw,38px);height:clamp(195px,38vh,370px);top:clamp(-145px,-19vh,-75px);left:50%;transform:translateX(-50%);
+  background:linear-gradient(180deg,rgba(201,168,76,.14) 0%,rgba(201,168,76,.04) 60%,transparent 100%);filter:blur(7px);animation:lightShaft 5s ease-in-out infinite;pointer-events:none;}
 
-/* Glass wall panel */
-.panel{
-  position:absolute;
-  width:clamp(80px,12vw,140px);
-  height:clamp(120px,22vh,200px);
-  top:50%;transform:translateY(-50%);
-  border:1px solid rgba(201,168,76,.18);
-  background:linear-gradient(180deg,rgba(201,168,76,.03),rgba(0,200,168,.02));
-  backdrop-filter:blur(2px);
-}
-.panel-l{left:clamp(-280px,-22vw,-140px);}
-.panel-r{right:clamp(-280px,-22vw,-140px);}
-.panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.4),transparent);}
-.panel::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:rgba(201,168,76,.1);}
+/* COSMOS WINDOWS */
+.cwin{position:absolute;width:clamp(68px,10vw,128px);height:clamp(78px,13vh,145px);top:clamp(-195px,-27vh,-95px);border:1px solid rgba(0,200,168,.16);overflow:hidden;background:radial-gradient(ellipse at 50% 30%,#060118,#000);box-shadow:inset 0 0 18px rgba(0,200,168,.05);}
+.cwin-l{left:clamp(-325px,-25vw,-160px);}
+.cwin-r{right:clamp(-325px,-25vw,-160px);}
 
-/* Column */
-.col{
-  position:absolute;
-  width:clamp(8px,1.2vw,16px);
-  height:clamp(130px,26vh,220px);
-  top:50%;transform:translateY(-50%);
-  background:linear-gradient(90deg,rgba(201,168,76,.1),rgba(201,168,76,.25),rgba(201,168,76,.1));
-  border:1px solid rgba(201,168,76,.2);
-}
-.col-l{left:clamp(-310px,-25vw,-165px);}
-.col-r{right:clamp(-310px,-25vw,-165px);}
-.col::before{content:'';position:absolute;top:-8px;left:-4px;right:-4px;height:8px;background:rgba(201,168,76,.3);}
-.col::after{content:'';position:absolute;bottom:-8px;left:-4px;right:-4px;height:8px;background:rgba(201,168,76,.3);}
+/* WATERFALL */
+.wfall{position:absolute;width:clamp(7px,1vw,14px);height:clamp(115px,21vh,195px);bottom:clamp(-115px,-19vh,-75px);
+  background:linear-gradient(180deg,rgba(0,200,255,.38),rgba(0,150,255,.18) 50%,rgba(0,100,200,.08) 80%,transparent);
+  filter:blur(2.5px);animation:waterfall .75s linear infinite;background-size:100% 90px;}
+.wfall-l{left:clamp(-375px,-29vw,-185px);}
+.wfall-r{right:clamp(-375px,-29vw,-185px);}
+.wfall::after{content:'';position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);width:clamp(25px,4vw,55px);height:clamp(5px,.8vh,10px);border-radius:50%;background:rgba(0,200,255,.12);filter:blur(5px);}
 
-/* Overhead light */
-.light{
-  position:absolute;
-  width:3px;height:3px;
-  top:-clamp(60px,10vh,100px);
-  left:50%;transform:translateX(-50%);
-  background:#fff;
-  border-radius:50%;
-  box-shadow:0 0 20px 6px rgba(201,168,76,.3),0 0 60px 20px rgba(201,168,76,.08);
-}
+/* DOORS */
+.door{position:absolute;width:clamp(62px,8.5vw,108px);height:clamp(90px,16vh,148px);bottom:clamp(52px,9.5vh,96px);
+  border:2px solid rgba(201,168,76,.32);background:rgba(0,0,0,.52);cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  transition:all .28s;backdrop-filter:blur(4px);animation:doorPulse 3.5s ease-in-out infinite;z-index:2;}
+.door::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--dc,linear-gradient(90deg,#C9A84C,#E8C96A));opacity:.75;}
+.dhalo{position:absolute;inset:-22px;border-radius:50%;background:radial-gradient(ellipse,var(--dg,rgba(201,168,76,.14)),transparent 70%);opacity:0;transition:opacity .28s;z-index:-1;pointer-events:none;}
+.door:hover .dhalo{opacity:1;}
+.door:hover{border-color:rgba(201,168,76,.9);transform:var(--dhov,scale(1.05));}
+.dl{left:clamp(-355px,-27vw,-182px);--dhov:translateX(-3px) scale(1.04);}
+.dr{right:clamp(-355px,-27vw,-182px);--dhov:translateX(3px) scale(1.04);}
+.dc{left:50%;transform:translateX(-50%);--dhov:translateX(-50%) scale(1.05);}
+.dc:hover{transform:translateX(-50%) scale(1.05)!important;}
+.dico{font-size:clamp(15px,2.2vw,25px);}
+.dnm{font-size:clamp(6.5px,.9vw,10.5px);font-weight:300;letter-spacing:.07em;text-align:center;color:rgba(255,255,255,.84);}
+.dsub{font-family:'Rajdhani',sans-serif;font-size:clamp(4px,.58vw,6.5px);letter-spacing:.17em;text-transform:uppercase;color:var(--ds,#C9A84C);opacity:.7;text-align:center;}
 
-/* ── DOORS ── */
-.door{
-  position:absolute;
-  left:50%;transform:translateX(-50%);
-  width:clamp(60px,9vw,110px);
-  height:clamp(90px,16vh,150px);
-  bottom:clamp(60px,11vh,110px);
-  border:2px solid rgba(201,168,76,.4);
-  background:rgba(0,0,0,.6);
-  cursor:pointer;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
-  transition:all .3s;
-  backdrop-filter:blur(4px);
-  z-index:2;
-}
-.door::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--dc,linear-gradient(90deg,#C9A84C,#E8C96A));}
-.door-glow{position:absolute;inset:-20px;border-radius:50%;background:var(--dg,rgba(201,168,76,.15));filter:blur(15px);opacity:0;transition:opacity .3s;z-index:-1;}
-.door:hover .door-glow{opacity:1;}
-.door:hover{border-color:rgba(201,168,76,.8);transform:translateX(-50%) scale(1.04);}
-.door-icon{font-size:clamp(16px,2.5vw,28px);}
-.door-name{font-size:clamp(7px,1vw,11px);font-weight:300;letter-spacing:.08em;text-align:center;color:rgba(255,255,255,.8);}
-.door-sub{font-family:'Rajdhani',sans-serif;font-size:clamp(4px,.6vw,7px);letter-spacing:.18em;text-transform:uppercase;color:var(--ds,#C9A84C);opacity:.7;text-align:center;}
+/* COMPANIONS */
+.comp{position:absolute;bottom:clamp(52px,9.5vh,96px);pointer-events:none;animation:compBob var(--cd,4s) ease-in-out infinite;animation-delay:var(--cdl,0s);}
+.comp svg{width:clamp(20px,3.2vw,40px);height:auto;filter:drop-shadow(0 0 9px var(--cf,rgba(0,200,168,.6)));}
+.ctag{font-family:'Rajdhani',sans-serif;font-size:4.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--cf);text-align:center;margin-top:2px;opacity:.65;}
 
-/* ── COMPANION SILHOUETTES ── */
-.companion-fig{
-  position:absolute;
-  bottom:clamp(60px,11vh,110px);
-  width:clamp(28px,4vw,50px);
-  opacity:.45;
-  filter:drop-shadow(0 0 8px var(--cf,rgba(0,200,168,.5)));
-  animation:compFloat var(--cfd,4s) ease-in-out infinite;
-  animation-delay:var(--cfdl,0s);
-  pointer-events:none;
-}
-@keyframes compFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+/* FAR DOME + CLOCK */
+.dome-far{position:absolute;left:50%;top:50%;transform:translateX(-50%) translateY(-50%) translateZ(-2850px);width:clamp(180px,28vw,380px);height:clamp(180px,28vw,380px);border-radius:50% 50% 0 0;border:2px solid rgba(201,168,76,.18);border-bottom:none;background:radial-gradient(ellipse at 50% 80%,rgba(201,168,76,.05),transparent 70%);pointer-events:none;}
+.clock-far{position:absolute;left:50%;top:50%;transform:translateX(-50%) translateY(-50%) translateZ(-2550px);width:clamp(38px,5.5vw,75px);height:clamp(38px,5.5vw,75px);border-radius:50%;border:2px solid rgba(201,168,76,.38);background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;font-size:clamp(16px,2.2vw,30px);box-shadow:0 0 28px rgba(201,168,76,.28);pointer-events:none;}
 
-/* ── COSMOS WINDOWS ── */
-.cosmos-win{
-  position:absolute;
-  width:clamp(60px,9vw,110px);
-  height:clamp(70px,12vh,120px);
-  top:clamp(30px,6vh,70px);
-  border:1px solid rgba(0,200,168,.15);
-  overflow:hidden;
-  background:radial-gradient(ellipse,#060118 0%,#000 100%);
-}
-.cosmos-win-l{left:clamp(-260px,-21vw,-130px);}
-.cosmos-win-r{right:clamp(-260px,-21vw,-130px);}
-.cosmos-stars-inner{position:absolute;inset:0;}
+/* HUD */
+.hud{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:60;display:flex;flex-direction:column;align-items:center;gap:5px;}
+.hud-row{display:flex;gap:5px;align-items:center;}
+.hbtn{width:clamp(36px,5.2vw,46px);height:clamp(36px,5.2vw,46px);background:rgba(0,0,0,.78);border:1px solid rgba(201,168,76,.2);color:rgba(201,168,76,.62);font-size:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(8px);border-radius:5px;transition:all .16s;-webkit-user-select:none;touch-action:none;}
+.hbtn:active,.hbtn.act{background:rgba(201,168,76,.16);border-color:rgba(201,168,76,.65);color:#C9A84C;}
+.hlbl{font-family:'Rajdhani',sans-serif;font-size:5.5px;letter-spacing:.28em;text-transform:uppercase;color:rgba(201,168,76,.32);}
 
-/* ── HUD / NAVIGATION ── */
-.hud{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:50;display:flex;flex-direction:column;align-items:center;gap:8px;}
-.hud-arrows{display:flex;gap:6px;align-items:center;}
-.hud-btn{width:clamp(36px,5vw,46px);height:clamp(36px,5vw,46px);background:rgba(0,0,0,.7);border:1px solid rgba(201,168,76,.25);color:rgba(201,168,76,.7);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(8px);border-radius:4px;transition:all .2s;-webkit-user-select:none;}
-.hud-btn:active,.hud-btn.pressed{background:rgba(201,168,76,.15);border-color:rgba(201,168,76,.6);}
-.hud-label{font-family:'Rajdhani',sans-serif;font-size:6.5px;letter-spacing:.3em;text-transform:uppercase;color:rgba(201,168,76,.4);}
-
-/* ── POSITION INDICATOR ── */
-.pos-ind{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:50;font-family:'Rajdhani',sans-serif;font-size:7px;letter-spacing:.3em;text-transform:uppercase;color:rgba(201,168,76,.5);background:rgba(0,0,0,.6);border:1px solid rgba(201,168,76,.12);padding:5px 14px;backdrop-filter:blur(8px);}
-
-/* ── DOOR LABEL ── */
-.door-hint{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:50;font-family:'Rajdhani',sans-serif;font-size:8px;letter-spacing:.35em;text-transform:uppercase;color:rgba(0,200,168,.8);background:rgba(0,0,0,.8);border:1px solid rgba(0,200,168,.2);padding:6px 16px;pointer-events:none;opacity:0;transition:opacity .3s;}
-.door-hint.on{opacity:1;}
-
-/* ── ENTER ANIMATION ── */
-@keyframes hallEnter{from{opacity:0;filter:blur(20px)}to{opacity:1;filter:blur(0)}}
-#hall{animation:hallEnter 1.5s ease .5s both;}
-
-/* ── BACK BTN ── */
-.back-cosmos{position:fixed;top:14px;left:14px;z-index:50;font-family:'Rajdhani',sans-serif;font-size:7px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.4);background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.1);padding:6px 12px;cursor:pointer;backdrop-filter:blur(8px);text-decoration:none;}
-.back-cosmos:hover{color:rgba(201,168,76,.8);border-color:rgba(201,168,76,.25);}
-
-/* ── ROOM ENTRY FLASH ── */
-#flash{position:fixed;inset:0;background:#fff;z-index:999;opacity:0;pointer-events:none;transition:opacity .15s;}
-#flash.on{opacity:.5;}
+/* OVERLAYS */
+.posbar{position:fixed;top:13px;left:50%;transform:translateX(-50%);z-index:60;font-family:'Rajdhani',sans-serif;font-size:6.5px;letter-spacing:.28em;text-transform:uppercase;color:rgba(201,168,76,.52);background:rgba(0,0,0,.72);border:1px solid rgba(201,168,76,.1);padding:4px 14px;backdrop-filter:blur(8px);white-space:nowrap;}
+.dhint{position:fixed;bottom:clamp(98px,14.5vh,128px);left:50%;transform:translateX(-50%);z-index:60;font-family:'Rajdhani',sans-serif;font-size:7.5px;letter-spacing:.28em;text-transform:uppercase;color:rgba(0,200,168,.82);background:rgba(0,0,0,.82);border:1px solid rgba(0,200,168,.2);padding:5px 16px;pointer-events:none;opacity:0;transition:opacity .28s;animation:hintBlink 2.2s ease-in-out infinite;white-space:nowrap;}
+.dhint.on{opacity:1;}
+.backbtn{position:fixed;top:11px;left:13px;z-index:60;font-family:'Rajdhani',sans-serif;font-size:6.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);background:rgba(0,0,0,.65);border:1px solid rgba(255,255,255,.07);padding:6px 11px;cursor:pointer;backdrop-filter:blur(8px);text-decoration:none;transition:all .28s;}
+.backbtn:hover{color:rgba(201,168,76,.8);border-color:rgba(201,168,76,.22);}
+#flash{position:fixed;inset:0;background:#fff;z-index:999;opacity:0;pointer-events:none;transition:opacity .18s;}
 </style>
 </head>
 <body>
 
-<!-- SPACE BG -->
-<div class="space">
-  <div class="space-deep"></div>
-  <div id="spacestars"></div>
+<div id="bg">
+  <div class="bg-deep"></div>
+  <div class="neb n1"></div><div class="neb n2"></div><div class="neb n3"></div>
+  <div class="plt p1"></div><div class="plt p2"></div>
+  <div class="p-ring"></div>
+  <div class="star-bg" id="sbg"></div>
 </div>
 
-<!-- BACK -->
-<a class="back-cosmos" href="https://cubee1-jpg.github.io/horizon-cosmos/horizon-cosmos-index.html">← Cosmos</a>
-
-<!-- POSITION -->
-<div class="pos-ind" id="posInd">Horizon Hall · Main Corridor</div>
-
-<!-- DOOR HINT -->
-<div class="door-hint" id="doorHint">Press ENTER to enter room</div>
-
-<!-- FLASH -->
+<a class="backbtn" href="https://cubee1-jpg.github.io/horizon-cosmos/horizon-cosmos-index.html">← Cosmos</a>
+<div class="posbar" id="posbar">Horizon Hall · Grand Entrance</div>
+<div class="dhint" id="dhint">Approach a door · ENTER to step inside</div>
 <div id="flash"></div>
 
-<!-- HALL -->
 <div id="hall">
 <div id="world">
 
-  <!-- FLOOR -->
   <div class="floor"></div>
-  <!-- CEILING -->
+  <div class="cloud-layer">
+    <div class="cloud" style="width:220px;height:90px;left:5%;top:10%;--cs:36s;--csdl:0s;"></div>
+    <div class="cloud" style="width:160px;height:65px;left:38%;top:35%;--cs:28s;--csdl:-10s;"></div>
+    <div class="cloud" style="width:280px;height:110px;left:62%;top:15%;--cs:42s;--csdl:-20s;"></div>
+  </div>
   <div class="ceiling"></div>
+  <div class="dome-far"></div>
+  <div class="clock-far">🕐</div>
 
-  <!-- CORRIDOR SEGMENTS — each has columns, panels, lights, windows -->
-  <!-- We build 9 segments from far to near -->
-
-  <!-- SEG 0 — FAR END: Round Table -->
-  <div class="seg" style="--z:-2400px;">
+  <!-- ═══ SEG 0 — Round Table straight ahead ═══ -->
+  <div class="seg" style="--z:-2450px;">
     <div class="col col-l"></div><div class="col col-r"></div>
-    <div class="panel panel-l"></div><div class="panel panel-r"></div>
-    <div class="light"></div>
-    <div class="door" data-room="round-table.html" data-name="Round Table"
+    <div class="shelf shelf-l"></div><div class="shelf shelf-r"></div>
+    <div class="shaft"></div>
+    <div class="door dc" data-room="round-table.html" data-name="Round Table · Simple Seven"
+         style="--dc:linear-gradient(90deg,#C9A84C,rgba(0,200,168,.9));--dg:rgba(201,168,76,.22);--ds:#C9A84C;">
+      <div class="dhalo"></div><div class="dico">🏛️</div>
+      <div class="dnm">Round Table</div><div class="dsub">Simple Seven</div>
+    </div>
+  </div>
+
+  <!-- ═══ SEG 1 ═══ -->
+  <div class="seg" style="--z:-2050px;">
+    <div class="col col-l"></div><div class="col col-r"></div>
+    <div class="shelf shelf-l"></div><div class="shelf shelf-r"></div>
+    <div class="cwin cwin-l" id="w1l"></div><div class="cwin cwin-r" id="w1r"></div>
+    <div class="shaft"></div>
+    <div class="wfall wfall-l"></div><div class="wfall wfall-r"></div>
+    <div class="comp" style="left:clamp(-280px,-22vw,-140px);--cf:rgba(39,174,96,.7);--cd:5.2s;--cdl:.4s;">
+      <svg viewBox="0 0 50 75"><ellipse cx="25" cy="17" rx="11" ry="12" fill="rgba(39,174,96,.5)"/><path d="M12 75L12 44Q12 34 20 30L23 28L25 32L27 28L30 30Q38 34 38 44L38 75Z" fill="rgba(39,174,96,.3)"/><path d="M20 36L25 33L30 36L30 44Q25 48 20 44Z" fill="none" stroke="rgba(39,174,96,.5)" stroke-width="1.5"/></svg>
+      <div class="ctag">Ward</div>
+    </div>
+    <div class="comp" style="right:clamp(-280px,-22vw,-140px);left:auto;--cf:rgba(93,173,226,.7);--cd:4.6s;--cdl:1.1s;">
+      <svg viewBox="0 0 50 75"><ellipse cx="25" cy="17" rx="11" ry="12" fill="rgba(93,173,226,.5)"/><path d="M12 75L12 44Q12 34 20 30L23 28L25 32L27 28L30 30Q38 34 38 44L38 75Z" fill="rgba(93,173,226,.3)"/></svg>
+      <div class="ctag">Atlas</div>
+    </div>
+  </div>
+
+  <!-- ═══ SEG 2 — Ainchorcain L, Companion Hub R ═══ -->
+  <div class="seg" style="--z:-1650px;">
+    <div class="col col-l"></div><div class="col col-r"></div>
+    <div class="shelf shelf-l"></div><div class="shelf shelf-r"></div>
+    <div class="shaft"></div>
+    <div class="door dl" data-room="horizon-cosmos-index.html" data-name="Ainchorcain · Financial District"
+         style="--dc:linear-gradient(90deg,#7d6608,#C9A84C);--dg:rgba(201,168,76,.2);--ds:#d4ac0d;">
+      <div class="dhalo"></div><div class="dico">⚡</div>
+      <div class="dnm">Ainchorcain</div><div class="dsub">Financial District</div>
+    </div>
+    <div class="door dr" data-room="horizon-cosmos-cinematic.html" data-name="Companion Hub · 26 Intelligences"
+         style="--dc:linear-gradient(90deg,#9b59b6,#e056fd);--dg:rgba(155,89,182,.2);--ds:#9b59b6;">
+      <div class="dhalo"></div><div class="dico">🧊</div>
+      <div class="dnm">Companion Hub</div><div class="dsub">26 Intelligences</div>
+    </div>
+    <div class="comp" style="left:clamp(-175px,-14vw,-88px);--cf:rgba(243,156,18,.75);--cd:2.9s;--cdl:.1s;">
+      <svg viewBox="0 0 50 75"><ellipse cx="25" cy="17" rx="11" ry="12" fill="rgba(243,156,18,.55)"/><path d="M12 75L12 44Q12 34 20 30L23 28L25 32L27 28L30 30Q38 34 38 44L38 75Z" fill="rgba(243,156,18,.3)"/><path d="M25 34L18 45L22 45L15 58L28 46L24 46Z" fill="rgba(243,156,18,.85)"/></svg>
+      <div class="ctag">Nova</div>
+    </div>
+  </div>
+
+  <!-- ═══ SEG 3 ═══ -->
+  <div class="seg" style="--z:-1250px;">
+    <div class="col col-l"></div><div class="col col-r"></div>
+    <div class="shelf shelf-l"></div><div class="shelf shelf-r"></div>
+    <div class="cwin cwin-l" id="w3l"></div><div class="cwin cwin-r" id="w3r"></div>
+    <div class="shaft"></div>
+    <div class="wfall wfall-l"></div><div class="wfall wfall-r"></div>
+    <div class="comp" style="right:clamp(-240px,-19vw,-120px);left:auto;--cf:rgba(130,224,170,.72);--cd:5.5s;--cdl:.7s;">
+      <svg viewBox="0 0 50 75"><ellipse cx="25" cy="17" rx="11" ry="12" fill="rgba(130,224,170,.52)"/><path d="M12 75L12 44Q12 34 20 30L23 28L25 32L27 28L30 30Q38 34 38 44L38 75Z" fill="rgba(130,224,170,.3)"/><circle cx="19" cy="10" r="2.2" fill="rgba(130,224,170,.75)"/></svg>
+      <div class="ctag">Eden</div>
+    </div>
+  </div>
+
+  <!-- ═══ SEG 4 — Travelercube L, Welcome Center R ═══ -->
+  <div class="seg" style="--z:-850px;">
+    <div class="col col-l"></div><div class="col col-r"></div>
+    <div class="shelf shelf-l"></div><div class="shelf shelf-r"></div>
+    <div class="shaft"></div>
+    <div class="door dl" data-room="cubee1-traveler-studio.html" data-name="Travelercube Affairs"
+         style="--dc:linear-gradient(90deg,#00C8A8,#00d4ff);--dg:rgba(0,200,168,.2);--ds:#00C8A8;">
+      <div class="dhalo"></div><div class="dico">✈️</div>
+      <div class="dnm">Travelercube</div><div class="dsub">Affairs · Studio</div>
+    </div>
+    <div class="door dr" data-room="horizon-cosmos-index.html" data-name="Horizon Hall Welcome Center"
          style="--dc:linear-gradient(90deg,#C9A84C,rgba(0,200,168,.8));--dg:rgba(201,168,76,.2);--ds:#C9A84C;">
-      <div class="door-glow"></div>
-      <div class="door-icon">🏛️</div>
-      <div class="door-name">Round Table</div>
-      <div class="door-sub">Simple Seven</div>
+      <div class="dhalo"></div><div class="dico">🌌</div>
+      <div class="dnm">Welcome Center</div><div class="dsub">Horizon Hall</div>
+    </div>
+    <div class="comp" style="left:clamp(-200px,-16vw,-100px);--cf:rgba(155,89,182,.72);--cd:4.8s;--cdl:.5s;">
+      <svg viewBox="0 0 50 75"><ellipse cx="25" cy="17" rx="11" ry="12" fill="rgba(155,89,182,.52)"/><path d="M12 75L12 44Q12 34 20 30L23 28L25 32L27 28L30 30Q38 34 38 44L38 75Z" fill="rgba(155,89,182,.3)"/></svg>
+      <div class="ctag">Pulse</div>
     </div>
   </div>
 
-  <!-- SEG 1 -->
-  <div class="seg" style="--z:-2000px;">
+  <!-- ═══ SEG 5 — Trav's Affairs L, + companions ═══ -->
+  <div class="seg" style="--z:-450px;">
     <div class="col col-l"></div><div class="col col-r"></div>
-    <div class="panel panel-l">
-      <div class="cosmos-win cosmos-win-l" id="cw1l"></div>
+    <div class="shelf shelf-l"></div><div class="shelf shelf-r"></div>
+    <div class="cwin cwin-l" id="w5l"></div><div class="cwin cwin-r" id="w5r"></div>
+    <div class="shaft"></div>
+    <div class="wfall wfall-l"></div><div class="wfall wfall-r"></div>
+    <!-- TRAV'S AFFAIRS — most prominent door LEFT -->
+    <div class="door dl" data-room="travs-affairs-READY.html" data-name="Trav's Affairs · Private Command"
+         style="--dc:linear-gradient(90deg,#C9A84C,#E8C96A);--dg:rgba(201,168,76,.28);--ds:#C9A84C;border-color:rgba(201,168,76,.55);">
+      <div class="dhalo"></div><div class="dico">🎩</div>
+      <div class="dnm">Trav's Affairs</div><div class="dsub">Private Command</div>
     </div>
-    <div class="panel panel-r">
-      <div class="cosmos-win cosmos-win-r" id="cw1r"></div>
+    <!-- Cubee1 right side -->
+    <div class="comp" style="right:clamp(-195px,-15.5vw,-98px);left:auto;--cf:rgba(0,200,168,.92);--cd:5.2s;--cdl:0s;width:clamp(26px,4.2vw,52px);">
+      <svg viewBox="0 0 50 75"><ellipse cx="25" cy="17" rx="12" ry="13" fill="rgba(0,200,168,.62)"/><path d="M12 75L12 44Q12 34 20 30L23 28L25 32L27 28L30 30Q38 34 38 44L38 75Z" fill="rgba(0,200,168,.36)"/><path d="M22 32L25 35L28 32L27 44L25 46L23 44Z" fill="rgba(0,212,184,.92)"/></svg>
+      <div class="ctag" style="color:rgba(0,200,168,.92);">Cubee1</div>
     </div>
-    <div class="light"></div>
-    <!-- Companion silhouette -->
-    <div class="companion-fig" style="left:clamp(-200px,-16vw,-100px);--cf:rgba(130,224,170,.6);--cfd:4.2s;--cfdl:.3s;">
-      <svg viewBox="0 0 50 70" fill="none"><ellipse cx="25" cy="18" rx="12" ry="13" fill="rgba(130,224,170,.4)"/><path d="M10 70 L10 42 Q10 32 18 28 L22 26 L25 30 L28 26 L32 28 Q40 32 40 42 L40 70Z" fill="rgba(130,224,170,.25)"/></svg>
+    <!-- Lyric -->
+    <div class="comp" style="left:clamp(-295px,-23vw,-148px);--cf:rgba(224,86,253,.72);--cd:3.9s;--cdl:1.6s;">
+      <svg viewBox="0 0 50 75"><ellipse cx="25" cy="17" rx="11" ry="12" fill="rgba(224,86,253,.52)"/><path d="M12 75L12 44Q12 34 20 30L23 28L25 32L27 28L30 30Q38 34 38 44L38 75Z" fill="rgba(224,86,253,.3)"/><text x="30" y="13" font-size="8" fill="rgba(224,86,253,.82)">♪</text></svg>
+      <div class="ctag">Lyric</div>
     </div>
   </div>
 
-  <!-- SEG 2 -->
-  <div class="seg" style="--z:-1600px;">
+  <!-- ═══ SEG 6 — entrance ═══ -->
+  <div class="seg" style="--z:80px;">
     <div class="col col-l"></div><div class="col col-r"></div>
-    <div class="panel panel-l"></div><div class="panel panel-r"></div>
-    <div class="light"></div>
+    <div class="shelf shelf-l"></div><div class="shelf shelf-r"></div>
+    <div class="shaft"></div>
   </div>
 
-  <!-- SEG 3 — Travelercube Studio door -->
-  <div class="seg" style="--z:-1200px;">
-    <div class="col col-l"></div><div class="col col-r"></div>
-    <div class="panel panel-l">
-      <div class="cosmos-win cosmos-win-l" id="cw3l"></div>
-    </div>
-    <div class="panel panel-r">
-      <div class="cosmos-win cosmos-win-r" id="cw3r"></div>
-    </div>
-    <div class="light"></div>
-    <div class="door" data-room="cubee1-traveler-studio.html" data-name="Travelercube Studio"
-         style="left:clamp(-350px,-28vw,-180px);--dc:linear-gradient(90deg,#00C8A8,#00d4ff);--dg:rgba(0,200,168,.2);--ds:#00C8A8;">
-      <div class="door-glow"></div>
-      <div class="door-icon">🌍</div>
-      <div class="door-name">Travelercube</div>
-      <div class="door-sub">Studio</div>
-    </div>
-    <!-- Companion silhouette right -->
-    <div class="companion-fig" style="right:clamp(-200px,-16vw,-100px);left:auto;--cf:rgba(93,173,226,.6);--cfd:3.8s;--cfdl:.8s;">
-      <svg viewBox="0 0 50 70" fill="none"><ellipse cx="25" cy="18" rx="12" ry="13" fill="rgba(93,173,226,.4)"/><path d="M10 70 L10 42 Q10 32 18 28 L22 26 L25 30 L28 26 L32 28 Q40 32 40 42 L40 70Z" fill="rgba(93,173,226,.25)"/></svg>
-    </div>
-  </div>
+</div></div>
 
-  <!-- SEG 4 -->
-  <div class="seg" style="--z:-800px;">
-    <div class="col col-l"></div><div class="col col-r"></div>
-    <div class="panel panel-l"></div><div class="panel panel-r"></div>
-    <div class="light"></div>
-  </div>
-
-  <!-- SEG 5 — Companion Hub door -->
-  <div class="seg" style="--z:-400px;">
-    <div class="col col-l"></div><div class="col col-r"></div>
-    <div class="panel panel-l">
-      <div class="cosmos-win cosmos-win-l" id="cw5l"></div>
-    </div>
-    <div class="panel panel-r">
-      <div class="cosmos-win cosmos-win-r" id="cw5r"></div>
-    </div>
-    <div class="light"></div>
-    <div class="door" data-room="horizon-cosmos-cinematic.html" data-name="Companion Hub"
-         style="right:clamp(-350px,-28vw,-180px);left:auto;--dc:linear-gradient(90deg,#9b59b6,#e056fd);--dg:rgba(155,89,182,.2);--ds:#9b59b6;">
-      <div class="door-glow"></div>
-      <div class="door-icon">🧊</div>
-      <div class="door-name">Companion Hub</div>
-      <div class="door-sub">26 Intelligences</div>
-    </div>
-    <!-- Companion silhouettes -->
-    <div class="companion-fig" style="left:clamp(-220px,-18vw,-110px);--cf:rgba(224,86,253,.6);--cfd:4.5s;--cfdl:.2s;">
-      <svg viewBox="0 0 50 70" fill="none"><ellipse cx="25" cy="18" rx="12" ry="13" fill="rgba(224,86,253,.4)"/><path d="M10 70 L10 42 Q10 32 18 28 L22 26 L25 30 L28 26 L32 28 Q40 32 40 42 L40 70Z" fill="rgba(224,86,253,.25)"/></svg>
-    </div>
-    <div class="companion-fig" style="right:clamp(-250px,-20vw,-130px);left:auto;--cf:rgba(243,156,18,.6);--cfd:3.6s;--cfdl:1s;">
-      <svg viewBox="0 0 50 70" fill="none"><ellipse cx="25" cy="18" rx="12" ry="13" fill="rgba(243,156,18,.4)"/><path d="M10 70 L10 42 Q10 32 18 28 L22 26 L25 30 L28 26 L32 28 Q40 32 40 42 L40 70Z" fill="rgba(243,156,18,.25)"/></svg>
-    </div>
-  </div>
-
-  <!-- SEG 6 — near, Trav's Affairs -->
-  <div class="seg" style="--z:0px;">
-    <div class="col col-l"></div><div class="col col-r"></div>
-    <div class="panel panel-l"></div><div class="panel panel-r"></div>
-    <div class="light"></div>
-    <div class="door" data-room="travs-affairs-READY.html" data-name="Trav's Affairs"
-         style="left:clamp(-350px,-28vw,-180px);--dc:linear-gradient(90deg,#C9A84C,#E8C96A);--dg:rgba(201,168,76,.25);--ds:#C9A84C;">
-      <div class="door-glow"></div>
-      <div class="door-icon">🎩</div>
-      <div class="door-name">Trav's Affairs</div>
-      <div class="door-sub">The Hall</div>
-    </div>
-    <!-- Cubee1 silhouette -->
-    <div class="companion-fig" style="right:clamp(-180px,-15vw,-90px);left:auto;width:clamp(35px,5vw,60px);--cf:rgba(0,200,168,.8);--cfd:5s;--cfdl:0s;">
-      <svg viewBox="0 0 50 70" fill="none">
-        <ellipse cx="25" cy="18" rx="13" ry="14" fill="rgba(0,200,168,.5)"/>
-        <path d="M10 70 L10 42 Q10 32 18 28 L22 26 L25 30 L28 26 L32 28 Q40 32 40 42 L40 70Z" fill="rgba(0,200,168,.3)"/>
-        <path d="M22 30 L25 33 L28 30 L27 42 L25 44 L23 42Z" fill="rgba(0,212,184,.8)"/>
-      </svg>
-    </div>
-  </div>
-
-  <!-- SEG 7 — behind camera -->
-  <div class="seg" style="--z:400px;">
-    <div class="col col-l"></div><div class="col col-r"></div>
-    <div class="panel panel-l"></div><div class="panel panel-r"></div>
-  </div>
-
-</div><!-- /world -->
-</div><!-- /hall -->
-
-<!-- HUD NAVIGATION -->
+<!-- HUD -->
 <div class="hud">
-  <div class="hud-btn" id="btnUp" onmousedown="startMove('f')" onmouseup="stopMove()" ontouchstart="startMove('f')" ontouchend="stopMove()">▲</div>
-  <div class="hud-arrows">
-    <div class="hud-btn" id="btnLeft" onmousedown="startMove('l')" onmouseup="stopMove()" ontouchstart="startMove('l')" ontouchend="stopMove()">◄</div>
-    <div class="hud-btn" id="btnDown" onmousedown="startMove('b')" onmouseup="stopMove()" ontouchstart="startMove('b')" ontouchend="stopMove()">▼</div>
-    <div class="hud-btn" id="btnRight" onmousedown="startMove('r')" onmouseup="stopMove()" ontouchstart="startMove('r')" ontouchend="stopMove()">►</div>
+  <div class="hbtn" id="hf" ontouchstart="sm('f');event.preventDefault();" ontouchend="st()" onmousedown="sm('f')" onmouseup="st()" onmouseleave="st()">▲</div>
+  <div class="hud-row">
+    <div class="hbtn" id="hl" ontouchstart="sm('l');event.preventDefault();" ontouchend="st()" onmousedown="sm('l')" onmouseup="st()" onmouseleave="st()">◄</div>
+    <div class="hbtn" id="hb" ontouchstart="sm('b');event.preventDefault();" ontouchend="st()" onmousedown="sm('b')" onmouseup="st()" onmouseleave="st()">▼</div>
+    <div class="hbtn" id="hr" ontouchstart="sm('r');event.preventDefault();" ontouchend="st()" onmousedown="sm('r')" onmouseup="st()" onmouseleave="st()">►</div>
   </div>
-  <div class="hud-label">Navigate The Hall</div>
+  <div class="hlbl">Walk The Hall · Arrow Keys or Touch</div>
 </div>
 
 <script>
-// STARS
+// Stars
 (function(){
-  var c=document.getElementById('spacestars');
-  for(var i=0;i<200;i++){
-    var s=document.createElement('div');
-    var z=Math.random()*1.5+.2;
-    s.className='star';
-    s.style.cssText='position:absolute;border-radius:50%;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+z+'px;height:'+z+'px;animation:tw '+(3+Math.random()*7)+'s ease-in-out '+(Math.random()*8)+'s infinite;';
+  var c=document.getElementById('sbg');
+  for(var i=0;i<300;i++){
+    var s=document.createElement('div');var z=Math.random()*1.8+.1;
+    s.className='spt';
+    s.style.cssText='left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+z+'px;height:'+z+'px;--d:'+(3+Math.random()*8)+'s;--dl:'+(Math.random()*9)+'s;';
     c.appendChild(s);
   }
 })();
 
-// COSMOS WINDOWS
-function addStarsToWindow(el){
-  if(!el)return;
-  for(var i=0;i<30;i++){
-    var s=document.createElement('div');
-    var z=Math.random()*1.2+.3;
-    s.style.cssText='position:absolute;border-radius:50%;background:white;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+z+'px;height:'+z+'px;opacity:'+(Math.random()*.8+.2)+';animation:tw '+(3+Math.random()*5)+'s ease-in-out '+(Math.random()*4)+'s infinite;';
-    el.querySelector('.cosmos-stars-inner') ? el.querySelector('.cosmos-stars-inner').appendChild(s) : el.appendChild(s);
+// Cosmos windows
+function fillW(id){
+  var el=document.getElementById(id);if(!el)return;
+  for(var i=0;i<45;i++){
+    var s=document.createElement('div');var z=Math.random()*1.3+.3;
+    s.style.cssText='position:absolute;border-radius:50%;background:white;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+z+'px;height:'+z+'px;opacity:'+(Math.random()*.9+.1)+';animation:tw '+(2+Math.random()*4)+'s ease-in-out '+(Math.random()*5)+'s infinite;';
+    el.appendChild(s);
+  }
+  if(Math.random()>.45){
+    var p=document.createElement('div');var ps=8+Math.floor(Math.random()*10);
+    p.style.cssText='position:absolute;border-radius:50%;width:'+ps+'px;height:'+ps+'px;top:'+(15+Math.random()*55)+'%;left:'+(15+Math.random()*55)+'%;background:radial-gradient(circle at 35% 35%,'+(Math.random()>.5?'rgba(200,150,80,1),rgba(150,80,20,1)':'rgba(80,100,200,1),rgba(30,50,160,1)')+');opacity:.7;';
+    el.appendChild(p);
   }
 }
-['cw1l','cw1r','cw3l','cw3r','cw5l','cw5r'].forEach(function(id){
-  var el=document.getElementById(id);
-  if(el){el.innerHTML='<div class="cosmos-stars-inner"></div>';addStarsToWindow(el);}
-});
+['w1l','w1r','w3l','w3r','w5l','w5r'].forEach(fillW);
 
-// NAVIGATION
-var posZ = 0;
-var posX = 0;
-var moving = null;
-var moveInt = null;
-var STEP = 28;
-var STEP_X = 12;
-var MIN_Z = -2600;
-var MAX_Z = 500;
-var MIN_X = -200;
-var MAX_X = 200;
+// Nav
+var pz=0,px=0,mi=null,STEP=22,SX=10,MNZ=-2650,MXZ=220,MNX=-260,MXX=260;
 
-function updateWorld(){
-  document.getElementById('world').style.transform =
-    'translateZ('+posZ+'px) translateX('+posX+'px)';
-  updatePosition();
-  checkDoorProximity();
+function apply(){
+  document.getElementById('world').style.transform='translateZ('+pz+'px) translateX('+px+'px)';
+  updPos();chkDoors();
 }
-
-function move(dir){
-  if(dir==='f' && posZ<MAX_Z) posZ+=STEP;
-  else if(dir==='b' && posZ>MIN_Z) posZ-=STEP;
-  else if(dir==='l' && posX<MAX_X) posX+=STEP_X;
-  else if(dir==='r' && posX>MIN_X) posX-=STEP_X;
-  updateWorld();
+function mv(d){
+  if(d==='f'&&pz<MXZ)pz+=STEP;
+  else if(d==='b'&&pz>MNZ)pz-=STEP;
+  else if(d==='l'&&px<MXX)px+=SX;
+  else if(d==='r'&&px>MNX)px-=SX;
+  apply();
 }
+function sm(d){st();mv(d);var m={f:'hf',b:'hb',l:'hl',r:'hr'};document.getElementById(m[d]).classList.add('act');mi=setInterval(function(){mv(d);},55);}
+function st(){clearInterval(mi);['hf','hb','hl','hr'].forEach(function(b){document.getElementById(b).classList.remove('act');});}
 
-function startMove(dir){
-  stopMove();
-  move(dir);
-  var btn = {f:'btnUp',b:'btnDown',l:'btnLeft',r:'btnRight'}[dir];
-  if(btn) document.getElementById(btn).classList.add('pressed');
-  moveInt=setInterval(function(){move(dir);},60);
-}
-
-function stopMove(){
-  clearInterval(moveInt);
-  ['btnUp','btnDown','btnLeft','btnRight'].forEach(function(b){
-    document.getElementById(b).classList.remove('pressed');
-  });
-}
-
-// KEYBOARD
+var ks={};
 document.addEventListener('keydown',function(e){
-  if(e.key==='ArrowUp'||e.key==='w') startMove('f');
-  else if(e.key==='ArrowDown'||e.key==='s') startMove('b');
-  else if(e.key==='ArrowLeft'||e.key==='a') startMove('l');
-  else if(e.key==='ArrowRight'||e.key==='d') startMove('r');
-  else if(e.key==='Enter') enterNearestDoor();
-});
-document.addEventListener('keyup',function(){stopMove();});
-
-// POSITION LABELS
-var zones=[
-  {z:300,x:0,label:'Horizon Hall · Main Entrance'},
-  {z:-200,x:0,label:'Horizon Hall · Central Corridor'},
-  {z:-600,x:0,label:'Companion Hub · West Wing'},
-  {z:-1000,x:0,label:'Travelercube Studio · North Wing'},
-  {z:-1400,x:0,label:'The Hall · Deep Corridor'},
-  {z:-1800,x:0,label:'Round Table · Approaching Governance'},
-  {z:-2200,x:0,label:'Round Table · Chamber Entrance'},
-];
-
-function updatePosition(){
-  var label='Horizon Hall';
-  var best=9999;
-  for(var i=0;i<zones.length;i++){
-    var d=Math.abs(posZ-zones[i].z);
-    if(d<best){best=d;label=zones[i].label;}
-  }
-  document.getElementById('posInd').textContent=label;
-}
-
-// DOOR PROXIMITY
-var doors=document.querySelectorAll('.door');
-var nearDoor=null;
-
-function checkDoorProximity(){
-  nearDoor=null;
-  var closest=9999;
-  doors.forEach(function(d){
-    var seg=d.closest('.seg');
-    var segZ=parseInt(seg.style.getPropertyValue('--z'))||0;
-    var approxDoorZ=segZ;
-    // Offset for side doors
-    var doorLeft=d.style.left;
-    var doorRight=d.style.right;
-    var offsetX=0;
-    if(doorLeft&&doorLeft!=='') offsetX=-200;
-    if(doorRight&&doorRight!=='') offsetX=200;
-
-    var dz=Math.abs(posZ+approxDoorZ);
-    var dx=Math.abs(posX-offsetX);
-    var dist=Math.sqrt(dz*dz*0.6+dx*dx);
-
-    if(dist<350 && dist<closest){
-      closest=dist;
-      nearDoor=d;
-    }
-  });
-
-  var hint=document.getElementById('doorHint');
-  if(nearDoor){
-    hint.textContent='Press ENTER · '+nearDoor.dataset.name;
-    hint.classList.add('on');
-  } else {
-    hint.classList.remove('on');
-  }
-}
-
-function enterNearestDoor(){
-  if(nearDoor) enterRoom(nearDoor.dataset.room);
-}
-
-// DOOR CLICK
-doors.forEach(function(d){
-  d.addEventListener('click',function(){
-    enterRoom(d.dataset.room);
-  });
-});
-
-function enterRoom(room){
-  var flash=document.getElementById('flash');
-  flash.classList.add('on');
-  setTimeout(function(){
-    window.location.href='https://cubee1-jpg.github.io/horizon-cosmos/'+room;
-  },200);
-}
-
-// TOUCH/SWIPE
-var touchStartX=0,touchStartY=0;
-var hallEl=document.getElementById('hall');
-hallEl.addEventListener('touchstart',function(e){
-  touchStartX=e.touches[0].clientX;
-  touchStartY=e.touches[0].clientY;
-},{passive:true});
-hallEl.addEventListener('touchmove',function(e){
-  var dx=e.touches[0].clientX-touchStartX;
-  var dy=e.touches[0].clientY-touchStartY;
-  if(Math.abs(dy)>Math.abs(dx)){
-    if(dy<-5) move('f');
-    else if(dy>5) move('b');
-  } else {
-    if(dx<-5) move('r');
-    else if(dx>5) move('l');
-  }
-  touchStartX=e.touches[0].clientX;
-  touchStartY=e.touches[0].clientY;
+  if(ks[e.key])return;ks[e.key]=true;
+  if(e.key==='ArrowUp'||e.key==='w')sm('f');
+  else if(e.key==='ArrowDown'||e.key==='s')sm('b');
+  else if(e.key==='ArrowLeft'||e.key==='a')sm('l');
+  else if(e.key==='ArrowRight'||e.key==='d')sm('r');
+  else if(e.key==='Enter')enterNearest();
   e.preventDefault();
+});
+document.addEventListener('keyup',function(e){ks[e.key]=false;st();});
+
+var zones=[
+  {z:180,l:'Horizon Hall · Grand Entrance'},
+  {z:-200,l:'Horizon Hall · Main Corridor'},
+  {z:-520,l:'Trav\'s Affairs · Left Wing'},
+  {z:-950,l:'Travelercube · Central Wing'},
+  {z:-1350,l:'Ainchorcain · Financial District'},
+  {z:-1750,l:'Companion Hub · East Wing'},
+  {z:-2150,l:'Round Table · Governance Chamber'},
+  {z:-2450,l:'Round Table · Entering The Seven'},
+];
+function updPos(){
+  var best=9999,lbl='Horizon Hall';
+  zones.forEach(function(z){var d=Math.abs(pz-z.z);if(d<best){best=d;lbl=z.l;}});
+  document.getElementById('posbar').textContent=lbl;
+}
+
+var allDoors=document.querySelectorAll('.door'),nearDoor=null;
+function chkDoors(){
+  nearDoor=null;var best=9999;
+  allDoors.forEach(function(door){
+    var seg=door.closest('.seg');
+    var sz=parseInt(seg.style.getPropertyValue('--z'))||0;
+    var isL=door.classList.contains('dl'),isR=door.classList.contains('dr');
+    var tx=isL?-220:(isR?220:0);
+    var dz=Math.abs(pz+sz),dx=Math.abs(px-tx);
+    var dist=Math.sqrt(dz*dz*.5+dx*dx);
+    if(dist<400&&dist<best){best=dist;nearDoor=door;}
+  });
+  var h=document.getElementById('dhint');
+  if(nearDoor){h.textContent='ENTER · '+nearDoor.dataset.name;h.classList.add('on');}
+  else h.classList.remove('on');
+}
+function enterNearest(){if(nearDoor)goRoom(nearDoor.dataset.room);}
+allDoors.forEach(function(d){d.addEventListener('click',function(){goRoom(d.dataset.room);});});
+function goRoom(r){
+  var f=document.getElementById('flash');f.style.opacity='.85';f.style.transition='opacity .18s';
+  setTimeout(function(){window.location.href='https://cubee1-jpg.github.io/horizon-cosmos/'+r;},220);
+}
+
+// Touch swipe
+var tx=0,ty=0;
+document.getElementById('hall').addEventListener('touchstart',function(e){tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+document.getElementById('hall').addEventListener('touchmove',function(e){
+  var dx=e.touches[0].clientX-tx,dy=e.touches[0].clientY-ty;
+  if(Math.abs(dy)>Math.abs(dx)){if(dy<-4)mv('f');else if(dy>4)mv('b');}
+  else{if(dx<-4)mv('r');else if(dx>4)mv('l');}
+  tx=e.touches[0].clientX;ty=e.touches[0].clientY;e.preventDefault();
 },{passive:false});
 
-// INIT
-updateWorld();
+apply();
 </script>
 </body>
 </html>

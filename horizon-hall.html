@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -360,7 +361,7 @@ function fillW(id){
 ['w1l','w1r','w3l','w3r','w5l','w5r','wx1','wx2','wx3','wx4','wx5','wx6'].forEach(fillW);
 
 // Nav
-var pz=0,px=0,mi=null,STEP=55,SX=25,MNZ=-9000,MXZ=600,MNX=-500,MXX=500;
+var pz=0,px=0,mi=null,STEP=60,SX=25,MNZ=-600,MXZ=5000,MNX=-500,MXX=500;
 
 function apply(){
   document.getElementById('world').style.transform='translateZ('+pz+'px) translateX('+px+'px)';
@@ -389,14 +390,15 @@ document.addEventListener('keydown',function(e){
 document.addEventListener('keyup',function(e){ks[e.key]=false;st();});
 
 var zones=[
-  {z:180,l:'Horizon Hall · Grand Entrance'},
-  {z:-200,l:'Horizon Hall · Main Corridor'},
-  {z:-520,l:'Trav\'s Affairs · Left Wing'},
-  {z:-950,l:'Travelercube · Central Wing'},
-  {z:-1350,l:'Ainchorcain · Financial District'},
-  {z:-1750,l:'Companion Hub · East Wing'},
-  {z:-2150,l:'Round Table · Governance Chamber'},
-  {z:-2450,l:'Round Table · Entering The Seven'},
+  {z:50,l:'Horizon Hall · Grand Entrance'},
+  {z:400,l:'Horizon Hall · Main Corridor'},
+  {z:800,l:'Trav\'s Affairs · Left Wing'},
+  {z:1200,l:'Travelercube · Central Wing'},
+  {z:1600,l:'Ainchorcain · Financial District'},
+  {z:2000,l:'Companion Hub · East Wing'},
+  {z:2400,l:'Round Table · Governance Chamber'},
+  {z:2800,l:'Round Table · Entering The Seven'},
+  {z:3200,l:'Beyond The Seven · Deep Cosmos'},
 ];
 function updPos(){
   var best=9999,lbl='Horizon Hall';
@@ -412,7 +414,7 @@ function chkDoors(){
     var sz=parseInt(seg.style.getPropertyValue('--z'))||0;
     var isL=door.classList.contains('dl'),isR=door.classList.contains('dr');
     var tx=isL?-220:(isR?220:0);
-    var dz=Math.abs(pz+sz),dx=Math.abs(px-tx);
+    var dz=Math.abs(pz-(-sz)),dx=Math.abs(px-tx);
     var dist=Math.sqrt(dz*dz*.5+dx*dx);
     if(dist<400&&dist<best){best=dist;nearDoor=door;}
   });

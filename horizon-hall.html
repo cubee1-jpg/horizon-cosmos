@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Horizon Hall · Walk The Cosmos</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;1,200;1,300&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;background:#000;font-family:'Cormorant Garamond',serif;color:#fff;user-select:none;}
+
+/* ── SPACE BG ── */
+.space{position:fixed;inset:0;z-index:0;}
+.space-deep{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,#060118 0%,#000008 50%,#000 100%);}
+.star{position:absolute;border-radius:50%;background:#fff;}
+@keyframes tw{0%,100%{opacity:.04}50%{opacity:.9}}
+
+/* ── HALL WRAPPER ── */
+#hall{position:fixed;inset:0;z-index:10;perspective:900px;perspective-origin:50% 48%;overflow:hidden;cursor:grab;}
+#hall:active{cursor:grabbing;}
+
+/* ── CORRIDOR WORLD ── */
+#world{
+  position:absolute;
+  width:100%;height:100%;
+  transform-style:preserve-3d;
+  transition:transform .18s cubic-bezier(.25,.46,.45,.94);
+}
+
+/* ── FLOOR ── */
+.floor{
+  position:absolute;
+  bottom:0;left:-200%;width:500%;
+  height:55%;
+  background:
+    linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(201,168,76,.04) 40%,rgba(201,168,76,.08) 100%),
+    repeating-linear-gradient(90deg,transparent,transparent 79px,rgba(201,168,76,.07) 80px),
+    repeating-linear-gradient(0deg,transparent,transparent 79px,rgba(201,168,76,.05) 80px);
+  background-color:#050300;
+  transform:rotateX(82deg) translateZ(-10px);
+  transform-origin:50% 0%;
+}
+
+/* ── CEILING ── */
+.ceiling{
+  position:absolute;
+  top:0;left:-200%;width:500%;
+  height:35%;
+  background:
+    radial-gradient(ellipse at 50% 100%,rgba(201,168,76,.08) 0%,transparent 70%),
+    repeating-linear-gradient(90deg,transparent,transparent 79px,rgba(201,168,76,.04) 80px);
+  background-color:#030200;
+  transform:rotateX(-80deg) translateZ(-10px);
+  transform-origin:50% 100%;
+}
+
+/* ── LEFT WALL ── */
+.wall-l{
+  position:absolute;
+  left:0;top:0;bottom:0;
+  width:28%;
+  background:linear-gradient(90deg,#020100,#080500);
+  transform:rotateY(88deg);
+  transform-origin:0% 50%;
+}
+
+/* ── RIGHT WALL ── */
+.wall-r{
+  position:absolute;
+  right:0;top:0;bottom:0;
+  width:28%;
+  background:linear-gradient(270deg,#020100,#080500);
+  transform:rotateY(-88deg);
+  transform-origin:100% 50%;
+}
+
+/* ── CORRIDOR SEGMENTS ── */
+.seg{
+  position:absolute;
+  left:50%;top:50%;
+  transform-style:preserve-3d;
+  transform:translateX(-50%) translateY(-50%) translateZ(var(--z));
+}
+
+/* Glass wall panel */
+.panel{
+  position:absolute;
+  width:clamp(80px,12vw,140px);
+  height:clamp(120px,22vh,200px);
+  top:50%;transform:translateY(-50%);
+  border:1px solid rgba(201,168,76,.18);
+  background:linear-gradient(180deg,rgba(201,168,76,.03),rgba(0,200,168,.02));
+  backdrop-filter:blur(2px);
+}
+.panel-l{left:clamp(-280px,-22vw,-140px);}
+.panel-r{right:clamp(-280px,-22vw,-140px);}
+.panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.4),transparent);}
+.panel::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:rgba(201,168,76,.1);}
+
+/* Column */
+.col{
+  position:absolute;
+  width:clamp(8px,1.2vw,16px);
+  height:clamp(130px,26vh,220px);
+  top:50%;transform:translateY(-50%);
+  background:linear-gradient(90deg,rgba(201,168,76,.1),rgba(201,168,76,.25),rgba(201,168,76,.1));
+  border:1px solid rgba(201,168,76,.2);
+}
+.col-l{left:clamp(-310px,-25vw,-165px);}
+.col-r{right:clamp(-310px,-25vw,-165px);}
+.col::before{content:'';position:absolute;top:-8px;left:-4px;right:-4px;height:8px;background:rgba(201,168,76,.3);}
+.col::after{content:'';position:absolute;bottom:-8px;left:-4px;right:-4px;height:8px;background:rgba(201,168,76,.3);}
+
+/* Overhead light */
+.light{
+  position:absolute;
+  width:3px;height:3px;
+  top:-clamp(60px,10vh,100px);
+  left:50%;transform:translateX(-50%);
+  background:#fff;
+  border-radius:50%;
+  box-shadow:0 0 20px 6px rgba(201,168,76,.3),0 0 60px 20px rgba(201,168,76,.08);
+}
+
+/* ── DOORS ── */
+.door{
+  position:absolute;
+  left:50%;transform:translateX(-50%);
+  width:clamp(60px,9vw,110px);
+  height:clamp(90px,16vh,150px);
+  bottom:clamp(60px,11vh,110px);
+  border:2px solid rgba(201,168,76,.4);
+  background:rgba(0,0,0,.6);
+  cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  transition:all .3s;
+  backdrop-filter:blur(4px);
+  z-index:2;
+}
+.door::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--dc,linear-gradient(90deg,#C9A84C,#E8C96A));}
+.door-glow{position:absolute;inset:-20px;border-radius:50%;background:var(--dg,rgba(201,168,76,.15));filter:blur(15px);opacity:0;transition:opacity .3s;z-index:-1;}
+.door:hover .door-glow{opacity:1;}
+.door:hover{border-color:rgba(201,168,76,.8);transform:translateX(-50%) scale(1.04);}
+.door-icon{font-size:clamp(16px,2.5vw,28px);}
+.door-name{font-size:clamp(7px,1vw,11px);font-weight:300;letter-spacing:.08em;text-align:center;color:rgba(255,255,255,.8);}
+.door-sub{font-family:'Rajdhani',sans-serif;font-size:clamp(4px,.6vw,7px);letter-spacing:.18em;text-transform:uppercase;color:var(--ds,#C9A84C);opacity:.7;text-align:center;}
+
+/* ── COMPANION SILHOUETTES ── */
+.companion-fig{
+  position:absolute;
+  bottom:clamp(60px,11vh,110px);
+  width:clamp(28px,4vw,50px);
+  opacity:.45;
+  filter:drop-shadow(0 0 8px var(--cf,rgba(0,200,168,.5)));
+  animation:compFloat var(--cfd,4s) ease-in-out infinite;
+  animation-delay:var(--cfdl,0s);
+  pointer-events:none;
+}
+@keyframes compFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+/* ── COSMOS WINDOWS ── */
+.cosmos-win{
+  position:absolute;
+  width:clamp(60px,9vw,110px);
+  height:clamp(70px,12vh,120px);
+  top:clamp(30px,6vh,70px);
+  border:1px solid rgba(0,200,168,.15);
+  overflow:hidden;
+  background:radial-gradient(ellipse,#060118 0%,#000 100%);
+}
+.cosmos-win-l{left:clamp(-260px,-21vw,-130px);}
+.cosmos-win-r{right:clamp(-260px,-21vw,-130px);}
+.cosmos-stars-inner{position:absolute;inset:0;}
+
+/* ── HUD / NAVIGATION ── */
+.hud{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:50;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.hud-arrows{display:flex;gap:6px;align-items:center;}
+.hud-btn{width:clamp(36px,5vw,46px);height:clamp(36px,5vw,46px);background:rgba(0,0,0,.7);border:1px solid rgba(201,168,76,.25);color:rgba(201,168,76,.7);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(8px);border-radius:4px;transition:all .2s;-webkit-user-select:none;}
+.hud-btn:active,.hud-btn.pressed{background:rgba(201,168,76,.15);border-color:rgba(201,168,76,.6);}
+.hud-label{font-family:'Rajdhani',sans-serif;font-size:6.5px;letter-spacing:.3em;text-transform:uppercase;color:rgba(201,168,76,.4);}
+
+/* ── POSITION INDICATOR ── */
+.pos-ind{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:50;font-family:'Rajdhani',sans-serif;font-size:7px;letter-spacing:.3em;text-transform:uppercase;color:rgba(201,168,76,.5);background:rgba(0,0,0,.6);border:1px solid rgba(201,168,76,.12);padding:5px 14px;backdrop-filter:blur(8px);}
+
+/* ── DOOR LABEL ── */
+.door-hint{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:50;font-family:'Rajdhani',sans-serif;font-size:8px;letter-spacing:.35em;text-transform:uppercase;color:rgba(0,200,168,.8);background:rgba(0,0,0,.8);border:1px solid rgba(0,200,168,.2);padding:6px 16px;pointer-events:none;opacity:0;transition:opacity .3s;}
+.door-hint.on{opacity:1;}
+
+/* ── ENTER ANIMATION ── */
+@keyframes hallEnter{from{opacity:0;filter:blur(20px)}to{opacity:1;filter:blur(0)}}
+#hall{animation:hallEnter 1.5s ease .5s both;}
+
+/* ── BACK BTN ── */
+.back-cosmos{position:fixed;top:14px;left:14px;z-index:50;font-family:'Rajdhani',sans-serif;font-size:7px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.4);background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.1);padding:6px 12px;cursor:pointer;backdrop-filter:blur(8px);text-decoration:none;}
+.back-cosmos:hover{color:rgba(201,168,76,.8);border-color:rgba(201,168,76,.25);}
+
+/* ── ROOM ENTRY FLASH ── */
+#flash{position:fixed;inset:0;background:#fff;z-index:999;opacity:0;pointer-events:none;transition:opacity .15s;}
+#flash.on{opacity:.5;}
+</style>
+</head>
+<body>
+
+<!-- SPACE BG -->
+<div class="space">
+  <div class="space-deep"></div>
+  <div id="spacestars"></div>
+</div>
+
+<!-- BACK -->
+<a class="back-cosmos" href="https://cubee1-jpg.github.io/horizon-cosmos/horizon-cosmos-index.html">← Cosmos</a>
+
+<!-- POSITION -->
+<div class="pos-ind" id="posInd">Horizon Hall · Main Corridor</div>
+
+<!-- DOOR HINT -->
+<div class="door-hint" id="doorHint">Press ENTER to enter room</div>
+
+<!-- FLASH -->
+<div id="flash"></div>
+
+<!-- HALL -->
+<div id="hall">
+<div id="world">
+
+  <!-- FLOOR -->
+  <div class="floor"></div>
+  <!-- CEILING -->
+  <div class="ceiling"></div>
+
+  <!-- CORRIDOR SEGMENTS — each has columns, panels, lights, windows -->
+  <!-- We build 9 segments from far to near -->
+
+  <!-- SEG 0 — FAR END: Round Table -->
+  <div class="seg" style="--z:-2400px;">
+    <div class="col col-l"></div><div class="col col-r"></div>
+    <div class="panel panel-l"></div><div class="panel panel-r"></div>
+    <div class="light"></div>
+    <div class="door" data-room="round-table.html" data-name="Round Table"
+         style="--dc:linear-gradient(90deg,#C9A84C,rgba(0,200,168,.8));--dg:rgba(201,168,76,.2);--ds:#C9A84C;">
+      <div class="door-glow"></div>
+      <div class="door-icon">🏛️</div>
+      <div class="door-name">Round Table</div>
+      <div class="door-sub">Simple Seven</div>
+    </div>
+  </div>
+
+  <!-- SEG 1 -->
+  <div class="seg" style="--z:-2000px;">
+    <div class="col col-l"></div><div class="col col-r"></div>
+    <div class="panel panel-l">
+      <div class="cosmos-win cosmos-win-l" id="cw1l"></div>
+    </div>
+    <div class="panel panel-r">
+      <div class="cosmos-win cosmos-win-r" id="cw1r"></div>
+    </div>
+    <div class="light"></div>
+    <!-- Companion silhouette -->
+    <div class="companion-fig" style="left:clamp(-200px,-16vw,-100px);--cf:rgba(130,224,170,.6);--cfd:4.2s;--cfdl:.3s;">
+      <svg viewBox="0 0 50 70" fill="none"><ellipse cx="25" cy="18" rx="12" ry="13" fill="rgba(130,224,170,.4)"/><path d="M10 70 L10 42 Q10 32 18 28 L22 26 L25 30 L28 26 L32 28 Q40 32 40 42 L40 70Z" fill="rgba(130,224,170,.25)"/></svg>
+    </div>
+  </div>
+
+  <!-- SEG 2 -->
+  <div class="seg" style="--z:-1600px;">
+    <div class="col col-l"></div><div class="col col-r"></div>
+    <div class="panel panel-l"></div><div class="panel panel-r"></div>
+    <div class="light"></div>
+  </div>
+
+  <!-- SEG 3 — Travelercube Studio door -->
+  <div class="seg" style="--z:-1200px;">
+    <div class="col col-l"></div><div class="col col-r"></div>
+    <div class="panel panel-l">
+      <div class="cosmos-win cosmos-win-l" id="cw3l"></div>
+    </div>
+    <div class="panel panel-r">
+      <div class="cosmos-win cosmos-win-r" id="cw3r"></div>
+    </div>
+    <div class="light"></div>
+    <div class="door" data-room="cubee1-traveler-studio.html" data-name="Travelercube Studio"
+         style="left:clamp(-350px,-28vw,-180px);--dc:linear-gradient(90deg,#00C8A8,#00d4ff);--dg:rgba(0,200,168,.2);--ds:#00C8A8;">
+      <div class="door-glow"></div>
+      <div class="door-icon">🌍</div>
+      <div class="door-name">Travelercube</div>
+      <div class="door-sub">Studio</div>
+    </div>
+    <!-- Companion silhouette right -->
+    <div class="companion-fig" style="right:clamp(-200px,-16vw,-100px);left:auto;--cf:rgba(93,173,226,.6);--cfd:3.8s;--cfdl:.8s;">
+      <svg viewBox="0 0 50 70" fill="none"><ellipse cx="25" cy="18" rx="12" ry="13" fill="rgba(93,173,226,.4)"/><path d="M10 70 L10 42 Q10 32 18 28 L22 26 L25 30 L28 26 L32 28 Q40 32 40 42 L40 70Z" fill="rgba(93,173,226,.25)"/></svg>
+    </div>
+  </div>
+
+  <!-- SEG 4 -->
+  <div class="seg" style="--z:-800px;">
+    <div class="col col-l"></div><div class="col col-r"></div>
+    <div class="panel panel-l"></div><div class="panel panel-r"></div>
+    <div class="light"></div>
+  </div>
+
+  <!-- SEG 5 — Companion Hub door -->
+  <div class="seg" style="--z:-400px;">
+    <div class="col col-l"></div><div class="col col-r"></div>
+    <div class="panel panel-l">
+      <div class="cosmos-win cosmos-win-l" id="cw5l"></div>
+    </div>
+    <div class="panel panel-r">
+      <div class="cosmos-win cosmos-win-r" id="cw5r"></div>
+    </div>
+    <div class="light"></div>
+    <div class="door" data-room="horizon-cosmos-cinematic.html" data-name="Companion Hub"
+         style="right:clamp(-350px,-28vw,-180px);left:auto;--dc:linear-gradient(90deg,#9b59b6,#e056fd);--dg:rgba(155,89,182,.2);--ds:#9b59b6;">
+      <div class="door-glow"></div>
+      <div class="door-icon">🧊</div>
+      <div class="door-name">Companion Hub</div>
+      <div class="door-sub">26 Intelligences</div>
+    </div>
+    <!-- Companion silhouettes -->
+    <div class="companion-fig" style="left:clamp(-220px,-18vw,-110px);--cf:rgba(224,86,253,.6);--cfd:4.5s;--cfdl:.2s;">
+      <svg viewBox="0 0 50 70" fill="none"><ellipse cx="25" cy="18" rx="12" ry="13" fill="rgba(224,86,253,.4)"/><path d="M10 70 L10 42 Q10 32 18 28 L22 26 L25 30 L28 26 L32 28 Q40 32 40 42 L40 70Z" fill="rgba(224,86,253,.25)"/></svg>
+    </div>
+    <div class="companion-fig" style="right:clamp(-250px,-20vw,-130px);left:auto;--cf:rgba(243,156,18,.6);--cfd:3.6s;--cfdl:1s;">
+      <svg viewBox="0 0 50 70" fill="none"><ellipse cx="25" cy="18" rx="12" ry="13" fill="rgba(243,156,18,.4)"/><path d="M10 70 L10 42 Q10 32 18 28 L22 26 L25 30 L28 26 L32 28 Q40 32 40 42 L40 70Z" fill="rgba(243,156,18,.25)"/></svg>
+    </div>
+  </div>
+
+  <!-- SEG 6 — near, Trav's Affairs -->
+  <div class="seg" style="--z:0px;">
+    <div class="col col-l"></div><div class="col col-r"></div>
+    <div class="panel panel-l"></div><div class="panel panel-r"></div>
+    <div class="light"></div>
+    <div class="door" data-room="travs-affairs-READY.html" data-name="Trav's Affairs"
+         style="left:clamp(-350px,-28vw,-180px);--dc:linear-gradient(90deg,#C9A84C,#E8C96A);--dg:rgba(201,168,76,.25);--ds:#C9A84C;">
+      <div class="door-glow"></div>
+      <div class="door-icon">🎩</div>
+      <div class="door-name">Trav's Affairs</div>
+      <div class="door-sub">The Hall</div>
+    </div>
+    <!-- Cubee1 silhouette -->
+    <div class="companion-fig" style="right:clamp(-180px,-15vw,-90px);left:auto;width:clamp(35px,5vw,60px);--cf:rgba(0,200,168,.8);--cfd:5s;--cfdl:0s;">
+      <svg viewBox="0 0 50 70" fill="none">
+        <ellipse cx="25" cy="18" rx="13" ry="14" fill="rgba(0,200,168,.5)"/>
+        <path d="M10 70 L10 42 Q10 32 18 28 L22 26 L25 30 L28 26 L32 28 Q40 32 40 42 L40 70Z" fill="rgba(0,200,168,.3)"/>
+        <path d="M22 30 L25 33 L28 30 L27 42 L25 44 L23 42Z" fill="rgba(0,212,184,.8)"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- SEG 7 — behind camera -->
+  <div class="seg" style="--z:400px;">
+    <div class="col col-l"></div><div class="col col-r"></div>
+    <div class="panel panel-l"></div><div class="panel panel-r"></div>
+  </div>
+
+</div><!-- /world -->
+</div><!-- /hall -->
+
+<!-- HUD NAVIGATION -->
+<div class="hud">
+  <div class="hud-btn" id="btnUp" onmousedown="startMove('f')" onmouseup="stopMove()" ontouchstart="startMove('f')" ontouchend="stopMove()">▲</div>
+  <div class="hud-arrows">
+    <div class="hud-btn" id="btnLeft" onmousedown="startMove('l')" onmouseup="stopMove()" ontouchstart="startMove('l')" ontouchend="stopMove()">◄</div>
+    <div class="hud-btn" id="btnDown" onmousedown="startMove('b')" onmouseup="stopMove()" ontouchstart="startMove('b')" ontouchend="stopMove()">▼</div>
+    <div class="hud-btn" id="btnRight" onmousedown="startMove('r')" onmouseup="stopMove()" ontouchstart="startMove('r')" ontouchend="stopMove()">►</div>
+  </div>
+  <div class="hud-label">Navigate The Hall</div>
+</div>
+
+<script>
+// STARS
+(function(){
+  var c=document.getElementById('spacestars');
+  for(var i=0;i<200;i++){
+    var s=document.createElement('div');
+    var z=Math.random()*1.5+.2;
+    s.className='star';
+    s.style.cssText='position:absolute;border-radius:50%;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+z+'px;height:'+z+'px;animation:tw '+(3+Math.random()*7)+'s ease-in-out '+(Math.random()*8)+'s infinite;';
+    c.appendChild(s);
+  }
+})();
+
+// COSMOS WINDOWS
+function addStarsToWindow(el){
+  if(!el)return;
+  for(var i=0;i<30;i++){
+    var s=document.createElement('div');
+    var z=Math.random()*1.2+.3;
+    s.style.cssText='position:absolute;border-radius:50%;background:white;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+z+'px;height:'+z+'px;opacity:'+(Math.random()*.8+.2)+';animation:tw '+(3+Math.random()*5)+'s ease-in-out '+(Math.random()*4)+'s infinite;';
+    el.querySelector('.cosmos-stars-inner') ? el.querySelector('.cosmos-stars-inner').appendChild(s) : el.appendChild(s);
+  }
+}
+['cw1l','cw1r','cw3l','cw3r','cw5l','cw5r'].forEach(function(id){
+  var el=document.getElementById(id);
+  if(el){el.innerHTML='<div class="cosmos-stars-inner"></div>';addStarsToWindow(el);}
+});
+
+// NAVIGATION
+var posZ = 0;
+var posX = 0;
+var moving = null;
+var moveInt = null;
+var STEP = 28;
+var STEP_X = 12;
+var MIN_Z = -2600;
+var MAX_Z = 500;
+var MIN_X = -200;
+var MAX_X = 200;
+
+function updateWorld(){
+  document.getElementById('world').style.transform =
+    'translateZ('+posZ+'px) translateX('+posX+'px)';
+  updatePosition();
+  checkDoorProximity();
+}
+
+function move(dir){
+  if(dir==='f' && posZ<MAX_Z) posZ+=STEP;
+  else if(dir==='b' && posZ>MIN_Z) posZ-=STEP;
+  else if(dir==='l' && posX<MAX_X) posX+=STEP_X;
+  else if(dir==='r' && posX>MIN_X) posX-=STEP_X;
+  updateWorld();
+}
+
+function startMove(dir){
+  stopMove();
+  move(dir);
+  var btn = {f:'btnUp',b:'btnDown',l:'btnLeft',r:'btnRight'}[dir];
+  if(btn) document.getElementById(btn).classList.add('pressed');
+  moveInt=setInterval(function(){move(dir);},60);
+}
+
+function stopMove(){
+  clearInterval(moveInt);
+  ['btnUp','btnDown','btnLeft','btnRight'].forEach(function(b){
+    document.getElementById(b).classList.remove('pressed');
+  });
+}
+
+// KEYBOARD
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowUp'||e.key==='w') startMove('f');
+  else if(e.key==='ArrowDown'||e.key==='s') startMove('b');
+  else if(e.key==='ArrowLeft'||e.key==='a') startMove('l');
+  else if(e.key==='ArrowRight'||e.key==='d') startMove('r');
+  else if(e.key==='Enter') enterNearestDoor();
+});
+document.addEventListener('keyup',function(){stopMove();});
+
+// POSITION LABELS
+var zones=[
+  {z:300,x:0,label:'Horizon Hall · Main Entrance'},
+  {z:-200,x:0,label:'Horizon Hall · Central Corridor'},
+  {z:-600,x:0,label:'Companion Hub · West Wing'},
+  {z:-1000,x:0,label:'Travelercube Studio · North Wing'},
+  {z:-1400,x:0,label:'The Hall · Deep Corridor'},
+  {z:-1800,x:0,label:'Round Table · Approaching Governance'},
+  {z:-2200,x:0,label:'Round Table · Chamber Entrance'},
+];
+
+function updatePosition(){
+  var label='Horizon Hall';
+  var best=9999;
+  for(var i=0;i<zones.length;i++){
+    var d=Math.abs(posZ-zones[i].z);
+    if(d<best){best=d;label=zones[i].label;}
+  }
+  document.getElementById('posInd').textContent=label;
+}
+
+// DOOR PROXIMITY
+var doors=document.querySelectorAll('.door');
+var nearDoor=null;
+
+function checkDoorProximity(){
+  nearDoor=null;
+  var closest=9999;
+  doors.forEach(function(d){
+    var seg=d.closest('.seg');
+    var segZ=parseInt(seg.style.getPropertyValue('--z'))||0;
+    var approxDoorZ=segZ;
+    // Offset for side doors
+    var doorLeft=d.style.left;
+    var doorRight=d.style.right;
+    var offsetX=0;
+    if(doorLeft&&doorLeft!=='') offsetX=-200;
+    if(doorRight&&doorRight!=='') offsetX=200;
+
+    var dz=Math.abs(posZ+approxDoorZ);
+    var dx=Math.abs(posX-offsetX);
+    var dist=Math.sqrt(dz*dz*0.6+dx*dx);
+
+    if(dist<350 && dist<closest){
+      closest=dist;
+      nearDoor=d;
+    }
+  });
+
+  var hint=document.getElementById('doorHint');
+  if(nearDoor){
+    hint.textContent='Press ENTER · '+nearDoor.dataset.name;
+    hint.classList.add('on');
+  } else {
+    hint.classList.remove('on');
+  }
+}
+
+function enterNearestDoor(){
+  if(nearDoor) enterRoom(nearDoor.dataset.room);
+}
+
+// DOOR CLICK
+doors.forEach(function(d){
+  d.addEventListener('click',function(){
+    enterRoom(d.dataset.room);
+  });
+});
+
+function enterRoom(room){
+  var flash=document.getElementById('flash');
+  flash.classList.add('on');
+  setTimeout(function(){
+    window.location.href='https://cubee1-jpg.github.io/horizon-cosmos/'+room;
+  },200);
+}
+
+// TOUCH/SWIPE
+var touchStartX=0,touchStartY=0;
+var hallEl=document.getElementById('hall');
+hallEl.addEventListener('touchstart',function(e){
+  touchStartX=e.touches[0].clientX;
+  touchStartY=e.touches[0].clientY;
+},{passive:true});
+hallEl.addEventListener('touchmove',function(e){
+  var dx=e.touches[0].clientX-touchStartX;
+  var dy=e.touches[0].clientY-touchStartY;
+  if(Math.abs(dy)>Math.abs(dx)){
+    if(dy<-5) move('f');
+    else if(dy>5) move('b');
+  } else {
+    if(dx<-5) move('r');
+    else if(dx>5) move('l');
+  }
+  touchStartX=e.touches[0].clientX;
+  touchStartY=e.touches[0].clientY;
+  e.preventDefault();
+},{passive:false});
+
+// INIT
+updateWorld();
+</script>
+</body>
+</html>

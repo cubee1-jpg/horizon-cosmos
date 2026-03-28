@@ -83,13 +83,24 @@ html,body{height:100%;overflow:hidden;background:#000;font-family:'Cormorant Gar
 .cwin-l{left:clamp(-325px,-25vw,-160px);}
 .cwin-r{right:clamp(-325px,-25vw,-160px);}
 
-/* WATERFALL */
-.wfall{position:absolute;width:clamp(7px,1vw,14px);height:clamp(115px,21vh,195px);bottom:clamp(-115px,-19vh,-75px);
-  background:linear-gradient(180deg,rgba(0,200,255,.38),rgba(0,150,255,.18) 50%,rgba(0,100,200,.08) 80%,transparent);
-  filter:blur(2.5px);animation:waterfall .75s linear infinite;background-size:100% 90px;}
+/* WATERFALL — flows into cosmos abyss */
+.wfall{position:absolute;width:clamp(14px,2vw,24px);height:clamp(400px,70vh,700px);bottom:clamp(-420px,-68vh,-280px);
+  background:linear-gradient(180deg,rgba(120,230,255,.6) 0%,rgba(0,190,255,.45) 15%,rgba(0,150,220,.3) 35%,rgba(0,100,200,.18) 55%,rgba(0,60,180,.08) 75%,transparent 100%);
+  filter:blur(2px);animation:waterfall .55s linear infinite;background-size:100% 70px;}
+.wfall::before{content:'';position:absolute;width:clamp(35px,6vw,70px);height:100%;left:50%;transform:translateX(-50%);
+  background:linear-gradient(180deg,rgba(0,200,255,.15) 0%,rgba(0,150,255,.08) 40%,transparent 80%);filter:blur(10px);}
+.wfall::after{content:'';position:absolute;bottom:-40px;left:50%;transform:translateX(-50%);
+  width:clamp(50px,8vw,100px);height:clamp(40px,7vh,80px);border-radius:50%;
+  background:radial-gradient(ellipse,rgba(0,200,255,.25) 0%,rgba(0,150,255,.1) 50%,transparent 70%);filter:blur(14px);}
 .wfall-l{left:clamp(-375px,-29vw,-185px);}
 .wfall-r{right:clamp(-375px,-29vw,-185px);}
-.wfall::after{content:'';position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);width:clamp(25px,4vw,55px);height:clamp(5px,.8vh,10px);border-radius:50%;background:rgba(0,200,255,.12);filter:blur(5px);}
+/* Second mist layer for depth */
+.wfall-mist{position:absolute;width:clamp(40px,7vw,90px);height:clamp(500px,85vh,900px);bottom:clamp(-520px,-82vh,-350px);
+  background:linear-gradient(180deg,transparent 0%,rgba(0,150,255,.04) 30%,rgba(0,100,200,.08) 60%,rgba(0,50,180,.12) 80%,rgba(0,20,150,.06) 100%);
+  filter:blur(18px);pointer-events:none;}
+.wfall-mist-l{left:clamp(-380px,-30vw,-190px);}
+.wfall-mist-r{right:clamp(-380px,-30vw,-190px);}
+
 
 /* DOORS */
 .door{position:absolute;width:clamp(62px,8.5vw,108px);height:clamp(90px,16vh,148px);bottom:clamp(52px,9.5vh,96px);
@@ -179,7 +190,7 @@ html,body{height:100%;overflow:hidden;background:#000;font-family:'Cormorant Gar
     <div class="shelf shelf-l"></div><div class="shelf shelf-r"></div>
     <div class="cwin cwin-l" id="w1l"></div><div class="cwin cwin-r" id="w1r"></div>
     <div class="shaft"></div>
-    <div class="wfall wfall-l"></div><div class="wfall wfall-r"></div>
+    <div class="wfall wfall-l"></div><div class="wfall-mist wfall-mist-l"></div><div class="wfall wfall-r"></div><div class="wfall-mist wfall-mist-r"></div>
     <div class="comp" style="left:clamp(-280px,-22vw,-140px);--cf:rgba(39,174,96,.7);--cd:5.2s;--cdl:.4s;">
       <svg viewBox="0 0 50 75"><ellipse cx="25" cy="17" rx="11" ry="12" fill="rgba(39,174,96,.5)"/><path d="M12 75L12 44Q12 34 20 30L23 28L25 32L27 28L30 30Q38 34 38 44L38 75Z" fill="rgba(39,174,96,.3)"/><path d="M20 36L25 33L30 36L30 44Q25 48 20 44Z" fill="none" stroke="rgba(39,174,96,.5)" stroke-width="1.5"/></svg>
       <div class="ctag">Ward</div>
@@ -217,7 +228,7 @@ html,body{height:100%;overflow:hidden;background:#000;font-family:'Cormorant Gar
     <div class="shelf shelf-l"></div><div class="shelf shelf-r"></div>
     <div class="cwin cwin-l" id="w3l"></div><div class="cwin cwin-r" id="w3r"></div>
     <div class="shaft"></div>
-    <div class="wfall wfall-l"></div><div class="wfall wfall-r"></div>
+    <div class="wfall wfall-l"></div><div class="wfall-mist wfall-mist-l"></div><div class="wfall wfall-r"></div><div class="wfall-mist wfall-mist-r"></div>
     <div class="comp" style="right:clamp(-240px,-19vw,-120px);left:auto;--cf:rgba(130,224,170,.72);--cd:5.5s;--cdl:.7s;">
       <svg viewBox="0 0 50 75"><ellipse cx="25" cy="17" rx="11" ry="12" fill="rgba(130,224,170,.52)"/><path d="M12 75L12 44Q12 34 20 30L23 28L25 32L27 28L30 30Q38 34 38 44L38 75Z" fill="rgba(130,224,170,.3)"/><circle cx="19" cy="10" r="2.2" fill="rgba(130,224,170,.75)"/></svg>
       <div class="ctag">Eden</div>
@@ -251,7 +262,7 @@ html,body{height:100%;overflow:hidden;background:#000;font-family:'Cormorant Gar
     <div class="shelf shelf-l"></div><div class="shelf shelf-r"></div>
     <div class="cwin cwin-l" id="w5l"></div><div class="cwin cwin-r" id="w5r"></div>
     <div class="shaft"></div>
-    <div class="wfall wfall-l"></div><div class="wfall wfall-r"></div>
+    <div class="wfall wfall-l"></div><div class="wfall-mist wfall-mist-l"></div><div class="wfall wfall-r"></div><div class="wfall-mist wfall-mist-r"></div>
     <!-- TRAV'S AFFAIRS — most prominent door LEFT -->
     <div class="door dl" data-room="travs-affairs-READY.html" data-name="Trav's Affairs · Private Command"
          style="--dc:linear-gradient(90deg,#C9A84C,#E8C96A);--dg:rgba(201,168,76,.28);--ds:#C9A84C;border-color:rgba(201,168,76,.55);">
@@ -283,7 +294,7 @@ html,body{height:100%;overflow:hidden;background:#000;font-family:'Cormorant Gar
     <div class="shelf shelf-l"></div><div class="shelf shelf-r"></div>
     <div class="cwin cwin-l" id="wx1"></div><div class="cwin cwin-r" id="wx2"></div>
     <div class="shaft"></div>
-    <div class="wfall wfall-l"></div><div class="wfall wfall-r"></div>
+    <div class="wfall wfall-l"></div><div class="wfall-mist wfall-mist-l"></div><div class="wfall wfall-r"></div><div class="wfall-mist wfall-mist-r"></div>
   </div>
   <div class="seg" style="--z:-3250px;">
     <div class="col col-l"></div><div class="col col-r"></div>
@@ -303,7 +314,7 @@ html,body{height:100%;overflow:hidden;background:#000;font-family:'Cormorant Gar
     <div class="shelf shelf-l"></div><div class="shelf shelf-r"></div>
     <div class="shaft"></div>
     <div class="cwin cwin-l" id="wx3"></div><div class="cwin cwin-r" id="wx4"></div>
-    <div class="wfall wfall-l"></div><div class="wfall wfall-r"></div>
+    <div class="wfall wfall-l"></div><div class="wfall-mist wfall-mist-l"></div><div class="wfall wfall-r"></div><div class="wfall-mist wfall-mist-r"></div>
   </div>
   <div class="seg" style="--z:-4050px;">
     <div class="col col-l"></div><div class="col col-r"></div>
@@ -315,7 +326,7 @@ html,body{height:100%;overflow:hidden;background:#000;font-family:'Cormorant Gar
     <div class="shelf shelf-l"></div><div class="shelf shelf-r"></div>
     <div class="cwin cwin-l" id="wx5"></div><div class="cwin cwin-r" id="wx6"></div>
     <div class="shaft"></div>
-    <div class="wfall wfall-l"></div><div class="wfall wfall-r"></div>
+    <div class="wfall wfall-l"></div><div class="wfall-mist wfall-mist-l"></div><div class="wfall wfall-r"></div><div class="wfall-mist wfall-mist-r"></div>
   </div>
 
 </div></div>
@@ -368,8 +379,9 @@ var locked=false; // pointer lock active
 
 // ═══ APPLY TRANSFORM ═══
 function apply(){
+  // Rotation BEFORE translation = true first-person head turning
   document.getElementById('world').style.transform=
-    'translateZ('+pz+'px) translateX('+px+'px) rotateY('+rotY+'deg) rotateX('+rotX+'deg)';
+    'rotateX('+(-rotX)+'deg) rotateY('+(-rotY)+'deg) translateZ('+pz+'px) translateX('+px+'px)';
   updPos();chkDoors();
 }
 

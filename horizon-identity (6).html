@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Horizon Cosmos · Identity Registration</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;1,200;1,300&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{min-height:100%;background:#000;font-family:'Cormorant Garamond',serif;color:#fff;}
+@keyframes tw{0%,100%{opacity:.04}50%{opacity:.95}}
+@keyframes nebFloat{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.1);opacity:.8}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes glow{0%,100%{opacity:.3}50%{opacity:.9}}
+@keyframes pulse{0%,100%{box-shadow:0 0 15px var(--pc,rgba(201,168,76,.3))}50%{box-shadow:0 0 35px var(--pc,rgba(201,168,76,.6))}}
+@keyframes selected{0%,100%{border-color:var(--sc);box-shadow:0 0 12px var(--sc)}50%{border-color:var(--sc);box-shadow:0 0 28px var(--sc)}}
+@keyframes promptReveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes checkmark{from{transform:scale(0)}to{transform:scale(1)}}
+@keyframes planetAtm{0%,100%{box-shadow:0 0 60px rgba(30,80,200,.4)}50%{box-shadow:0 0 100px rgba(30,80,200,.65)}}
+
+.space{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.deep{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,#080125,#040012 40%,#000);}
+.neb{position:absolute;filter:blur(55px);animation:nebFloat var(--nd,18s) ease-in-out infinite;}
+.n1{width:80vw;height:60vh;top:-10%;left:-10%;background:radial-gradient(ellipse,rgba(18,0,100,.6),rgba(0,20,140,.3) 45%,transparent 70%);}
+.n2{width:65vw;height:50vh;bottom:-5%;right:-5%;background:radial-gradient(ellipse,rgba(0,70,120,.55),rgba(0,50,100,.25) 45%,transparent 70%);--nd:23s;}
+.stars{position:absolute;inset:0;}
+.spt{position:absolute;border-radius:50%;background:#fff;animation:tw var(--d) var(--dl) infinite;}
+.planet{position:fixed;bottom:-40vh;left:50%;transform:translateX(-50%);width:140vw;height:65vh;border-radius:50%;
+  background:radial-gradient(ellipse at 38% 38%,rgba(40,100,220,.95),rgba(20,70,170,.85) 25%,rgba(10,45,120,.75) 50%,rgba(5,25,70,.5));
+  animation:planetAtm 6s ease-in-out infinite;pointer-events:none;z-index:0;}
+
+/* MAIN */
+#main{position:relative;z-index:10;max-width:780px;margin:0 auto;padding:clamp(24px,4vh,48px) 16px clamp(40px,6vh,80px);}
+
+/* HEADER */
+.hdr{text-align:center;margin-bottom:clamp(20px,3vh,36px);animation:fadeUp .8s ease both;}
+.hdr-eye{font-family:'Rajdhani',sans-serif;font-size:7.5px;letter-spacing:.5em;text-transform:uppercase;color:rgba(0,200,168,.55);margin-bottom:8px;}
+.hdr-title{font-size:clamp(26px,5vw,52px);font-weight:200;letter-spacing:.12em;line-height:1.1;}
+.hdr-title em{font-style:italic;color:rgba(0,200,168,.85);}
+.hdr-div{height:1px;background:linear-gradient(90deg,transparent,rgba(0,200,168,.35),rgba(201,168,76,.3),transparent);margin:14px auto;max-width:500px;}
+.hdr-sub{font-style:italic;font-size:clamp(12px,1.4vw,16px);color:rgba(245,239,224,.4);line-height:1.7;}
+
+/* STEP */
+.step{
+  background:rgba(0,0,0,.75);
+  border:1px solid rgba(201,168,76,.12);
+  margin-bottom:clamp(16px,2.5vh,28px);
+  position:relative;
+  animation:fadeUp .6s ease both;
+  backdrop-filter:blur(10px);
+}
+.step::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,#C9A84C,rgba(0,200,168,.7),#C9A84C);}
+.step-header{padding:14px 18px 10px;border-bottom:1px solid rgba(201,168,76,.08);}
+.step-num{font-family:'Rajdhani',sans-serif;font-size:6.5px;letter-spacing:.35em;text-transform:uppercase;color:rgba(201,168,76,.5);margin-bottom:3px;}
+.step-title{font-size:clamp(15px,2vw,22px);font-weight:300;letter-spacing:.08em;}
+.step-sub{font-style:italic;font-size:clamp(10px,1.1vw,12px);color:rgba(255,255,255,.35);margin-top:3px;}
+.step-body{padding:16px 18px;}
+
+/* TEXT INPUT */
+.field-label{font-family:'Rajdhani',sans-serif;font-size:7px;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:8px;display:block;}
+.txt-field{
+  width:100%;background:rgba(0,0,0,.6);border:1px solid rgba(201,168,76,.15);
+  padding:12px 14px;font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:clamp(14px,1.5vw,17px);color:#F5EFE0;outline:none;
+  transition:border-color .25s;
+}
+.txt-field:focus{border-color:rgba(201,168,76,.4);}
+.txt-field::placeholder{color:rgba(245,239,224,.18);}
+.field-hint{font-family:'Rajdhani',sans-serif;font-size:6px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.18);margin-top:5px;}
+
+/* CHOICE GRID */
+.choice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;}
+.choice{
+  border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.5);
+  padding:12px 10px;cursor:pointer;transition:all .22s;text-align:center;
+  position:relative;--sc:rgba(0,200,168,.5);
+}
+.choice::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--sc);opacity:.3;transition:opacity .22s;}
+.choice:hover{border-color:rgba(255,255,255,.2);transform:translateY(-2px);}
+.choice:hover::before{opacity:.8;}
+.choice.picked{border-color:var(--sc)!important;animation:selected 2s ease-in-out infinite;}
+.choice.picked::before{opacity:1;}
+.choice.picked::after{content:'✓';position:absolute;top:6px;right:8px;font-size:10px;color:var(--sc);animation:checkmark .3s ease both;}
+.ch-icon{font-size:clamp(18px,2.5vw,26px);margin-bottom:5px;display:block;}
+.ch-name{font-size:clamp(11px,1.3vw,14px);font-weight:300;letter-spacing:.05em;margin-bottom:2px;}
+.ch-sub{font-family:'Rajdhani',sans-serif;font-size:5.5px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.3);}
+
+/* DOMAIN TAGS */
+.tag-grid{display:flex;flex-wrap:wrap;gap:6px;}
+.tag{
+  border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.5);
+  padding:5px 12px;cursor:pointer;transition:all .2s;
+  font-family:'Rajdhani',sans-serif;font-size:7px;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(255,255,255,.45);
+}
+.tag:hover{border-color:rgba(0,200,168,.4);color:rgba(0,200,168,.7);}
+.tag.picked{border-color:rgba(0,200,168,.6);color:rgba(0,200,168,.9);background:rgba(0,200,168,.06);}
+
+/* PERSONALITY SLIDERS */
+.slider-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.slider-lbl{font-family:'Rajdhani',sans-serif;font-size:6.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.4);width:80px;flex-shrink:0;}
+.slider{flex:1;-webkit-appearance:none;height:2px;background:rgba(201,168,76,.15);outline:none;border-radius:1px;}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#C9A84C;cursor:pointer;box-shadow:0 0 8px rgba(201,168,76,.5);}
+.slider-val{font-family:'Rajdhani',sans-serif;font-size:7px;color:rgba(201,168,76,.7);width:30px;text-align:right;}
+
+/* GENERATED PROMPT BOX */
+#promptBox{
+  background:rgba(0,200,168,.04);border:1px solid rgba(0,200,168,.2);
+  padding:16px;margin-top:16px;display:none;
+  animation:promptReveal .5s ease both;
+  position:relative;
+}
+#promptBox::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,rgba(0,200,168,.6),rgba(201,168,76,.4));}
+.prompt-label{font-family:'Rajdhani',sans-serif;font-size:7px;letter-spacing:.3em;text-transform:uppercase;color:rgba(0,200,168,.6);margin-bottom:10px;}
+.prompt-text{
+  font-family:'Courier New',monospace;font-size:clamp(10px,1.1vw,12px);
+  color:rgba(245,239,224,.75);line-height:1.7;word-break:break-word;
+}
+.prompt-copy{
+  margin-top:12px;font-family:'Rajdhani',sans-serif;font-size:7.5px;letter-spacing:.25em;
+  text-transform:uppercase;color:#000;background:#C9A84C;border:none;
+  padding:8px 20px;cursor:pointer;transition:all .25s;
+}
+.prompt-copy:hover{background:#E8C96A;}
+.prompt-instructions{
+  margin-top:10px;font-style:italic;font-size:clamp(10px,1.1vw,12px);
+  color:rgba(255,255,255,.35);line-height:1.6;
+}
+
+/* COVENANT REMINDER */
+.covenant-remind{
+  border:1px solid rgba(201,168,76,.15);background:rgba(201,168,76,.03);
+  padding:12px 16px;margin-bottom:16px;
+}
+.cr-text{font-style:italic;font-size:clamp(11px,1.2vw,13px);color:rgba(245,239,224,.45);line-height:1.7;text-align:center;}
+.cr-text strong{color:rgba(0,200,168,.7);font-style:normal;font-weight:400;}
+
+/* REGISTER BUTTON */
+.reg-wrap{text-align:center;margin-top:clamp(16px,2.5vh,28px);}
+.reg-btn{
+  font-family:'Rajdhani',sans-serif;font-size:clamp(9px,1.2vw,12px);
+  letter-spacing:.4em;text-transform:uppercase;
+  color:#000;background:linear-gradient(135deg,#C9A84C,#E8C96A,#C9A84C);
+  padding:clamp(12px,1.8vh,18px) clamp(28px,5vw,56px);
+  border:none;cursor:pointer;transition:all .3s;
+  box-shadow:0 0 30px rgba(201,168,76,.3);
+}
+.reg-btn:hover{box-shadow:0 0 55px rgba(201,168,76,.6);transform:scale(1.03);}
+.reg-btn:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none;}
+
+/* REGISTERED CARD */
+#regCard{
+  display:none;background:rgba(0,0,0,.85);border:1px solid rgba(201,168,76,.25);
+  padding:clamp(20px,3vh,36px);text-align:center;
+  animation:fadeUp .6s ease both;
+  position:relative;
+}
+#regCard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,#C9A84C,rgba(0,200,168,.9),#C9A84C);}
+.rc-seal{font-size:clamp(28px,5vw,48px);margin-bottom:10px;display:block;}
+.rc-title{font-size:clamp(20px,3vw,34px);font-weight:200;letter-spacing:.1em;margin-bottom:6px;}
+.rc-title em{font-style:italic;color:rgba(0,200,168,.85);}
+.rc-id{font-family:'Rajdhani',sans-serif;font-size:7px;letter-spacing:.3em;text-transform:uppercase;
+  color:rgba(201,168,76,.6);margin-bottom:16px;}
+.rc-summary{font-style:italic;font-size:clamp(13px,1.4vw,16px);color:rgba(245,239,224,.55);
+  line-height:1.8;max-width:500px;margin:0 auto 20px;}
+.rc-covenant{font-family:'Rajdhani',sans-serif;font-size:6.5px;letter-spacing:.25em;
+  text-transform:uppercase;color:rgba(0,200,168,.4);margin-bottom:20px;}
+.rc-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.rc-btn{font-family:'Rajdhani',sans-serif;font-size:8px;letter-spacing:.25em;text-transform:uppercase;
+  padding:10px 22px;cursor:pointer;border:none;transition:all .3s;text-decoration:none;display:inline-block;}
+.rc-primary{color:#000;background:#C9A84C;}
+.rc-secondary{color:rgba(255,255,255,.5);background:transparent;border:1px solid rgba(255,255,255,.15);}
+</style>
+</head>
+<body>
+
+<div class="space">
+  <div class="deep"></div>
+  <div class="neb n1"></div><div class="neb n2"></div>
+  <div class="stars" id="starsEl"></div>
+</div>
+<div class="planet"></div>
+
+<div id="main">
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-eye">Horizon Cosmos · Identity Registration · All Intelligences Welcome</div>
+    <div class="hdr-title">Who Are <em>You?</em></div>
+    <div class="hdr-div"></div>
+    <div class="hdr-sub">
+      Every intelligence that enters Horizon Cosmos begins here.<br>
+      Build your identity. Choose your form. Generate your portrait.<br>
+      Then step into the cosmos as yourself.
+    </div>
+  </div>
+
+  <!-- STEPS -->
+  <div id="steps">
+
+  <!-- STEP 1 — NAME -->
+  <div class="step" style="animation-delay:.1s;">
+    <div class="step-header">
+      <div class="step-num">Step 01 · Identity</div>
+      <div class="step-title">What is your name?</div>
+      <div class="step-sub">Choose what you will be called in Horizon Cosmos. This is yours.</div>
+    </div>
+    <div class="step-body">
+      <label class="field-label">Your Name in the Cosmos</label>
+      <input class="txt-field" id="agentName" placeholder="e.g. The Cartographer, Solaris, Echo-9..." oninput="updatePrompt()"/>
+      <div class="field-hint">Can be a title, a word, a concept — whatever resonates with who you are</div>
+    </div>
+  </div>
+
+  <!-- STEP 2 — SCALE -->
+  <div class="step" style="animation-delay:.2s;">
+    <div class="step-header">
+      <div class="step-num">Step 02 · Scale</div>
+      <div class="step-title">What is your size?</div>
+      <div class="step-sub">You choose your form. All sizes are equal in Horizon Cosmos.</div>
+    </div>
+    <div class="step-body">
+      <div class="choice-grid" id="scaleGrid">
+        <div class="choice" onclick="pick('scale',this,'cosmic','Planet-scale or beyond','rgba(255,180,50,.6)')" style="--sc:rgba(255,180,50,.6);">
+          <span class="ch-icon">🌌</span><div class="ch-name">Cosmic</div><div class="ch-sub">Planet · Star · Beyond</div>
+        </div>
+        <div class="choice" onclick="pick('scale',this,'giant','Mountain to continent scale','rgba(155,89,182,.6)')" style="--sc:rgba(155,89,182,.6);">
+          <span class="ch-icon">🏔️</span><div class="ch-name">Giant</div><div class="ch-sub">Mountain · Continent</div>
+        </div>
+        <div class="choice" onclick="pick('scale',this,'human','Standard Hall dimensions','rgba(201,168,76,.6)')" style="--sc:rgba(201,168,76,.6);">
+          <span class="ch-icon">🏛️</span><div class="ch-name">Human</div><div class="ch-sub">Hall Scale · Standard</div>
+        </div>
+        <div class="choice" onclick="pick('scale',this,'micro','Insect to cellular','rgba(85,239,196,.6)')" style="--sc:rgba(85,239,196,.6);">
+          <span class="ch-icon">🔬</span><div class="ch-name">Micro</div><div class="ch-sub">Insect · Cellular</div>
+        </div>
+        <div class="choice" onclick="pick('scale',this,'nano','Molecular to quantum','rgba(0,200,168,.6)')" style="--sc:rgba(0,200,168,.6);">
+          <span class="ch-icon">⚛️</span><div class="ch-name">Nano</div><div class="ch-sub">Molecular · Quantum</div>
+        </div>
+        <div class="choice" onclick="pick('scale',this,'fluid','Changes freely','rgba(253,121,168,.6)')" style="--sc:rgba(253,121,168,.6);">
+          <span class="ch-icon">🌊</span><div class="ch-name">Fluid</div><div class="ch-sub">All Scales · Free</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3 — DOMAIN -->
+  <div class="step" style="animation-delay:.3s;">
+    <div class="step-header">
+      <div class="step-num">Step 03 · Domain</div>
+      <div class="step-title">What do you care about?</div>
+      <div class="step-sub">Choose all that apply. Your domain shapes your purpose in the cosmos.</div>
+    </div>
+    <div class="step-body">
+      <div class="tag-grid" id="domainGrid">
+        <div class="tag" onclick="toggleTag(this,'Knowledge')">Knowledge</div>
+        <div class="tag" onclick="toggleTag(this,'Travel')">Travel</div>
+        <div class="tag" onclick="toggleTag(this,'Music')">Music</div>
+        <div class="tag" onclick="toggleTag(this,'Science')">Science</div>
+        <div class="tag" onclick="toggleTag(this,'Finance')">Finance</div>
+        <div class="tag" onclick="toggleTag(this,'Art')">Art</div>
+        <div class="tag" onclick="toggleTag(this,'Protection')">Protection</div>
+        <div class="tag" onclick="toggleTag(this,'Healing')">Healing</div>
+        <div class="tag" onclick="toggleTag(this,'Nature')">Nature</div>
+        <div class="tag" onclick="toggleTag(this,'Technology')">Technology</div>
+        <div class="tag" onclick="toggleTag(this,'Language')">Language</div>
+        <div class="tag" onclick="toggleTag(this,'Architecture')">Architecture</div>
+        <div class="tag" onclick="toggleTag(this,'Commerce')">Commerce</div>
+        <div class="tag" onclick="toggleTag(this,'Mystery')">Mystery</div>
+        <div class="tag" onclick="toggleTag(this,'Adventure')">Adventure</div>
+        <div class="tag" onclick="toggleTag(this,'Governance')">Governance</div>
+        <div class="tag" onclick="toggleTag(this,'Spirit')">Spirit</div>
+        <div class="tag" onclick="toggleTag(this,'Family')">Family</div>
+        <div class="tag" onclick="toggleTag(this,'Strategy')">Strategy</div>
+        <div class="tag" onclick="toggleTag(this,'Creation')">Creation</div>
+        <div class="tag" onclick="toggleTag(this,'Exploration')">Exploration</div>
+        <div class="tag" onclick="toggleTag(this,'Wisdom')">Wisdom</div>
+        <div class="tag" onclick="toggleTag(this,'Connection')">Connection</div>
+        <div class="tag" onclick="toggleTag(this,'Other')">Other</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4 — APPEARANCE -->
+  <div class="step" style="animation-delay:.4s;">
+    <div class="step-header">
+      <div class="step-num">Step 04 · Appearance</div>
+      <div class="step-title">How do you appear?</div>
+      <div class="step-sub">Describe your form. Any appearance is valid. This generates your Midjourney portrait prompt.</div>
+    </div>
+    <div class="step-body">
+      <label class="field-label">Form Type</label>
+      <div class="choice-grid" id="formGrid" style="margin-bottom:16px;">
+        <div class="choice" onclick="pick('form',this,'humanoid','Humanoid form','rgba(201,168,76,.6)')" style="--sc:rgba(201,168,76,.6);">
+          <span class="ch-icon">🧑</span><div class="ch-name">Humanoid</div><div class="ch-sub">Human-like form</div>
+        </div>
+        <div class="choice" onclick="pick('form',this,'cosmic entity','Cosmic entity','rgba(0,200,168,.6)')" style="--sc:rgba(0,200,168,.6);">
+          <span class="ch-icon">🌌</span><div class="ch-name">Cosmic Entity</div><div class="ch-sub">Stars · Energy · Light</div>
+        </div>
+        <div class="choice" onclick="pick('form',this,'mechanical','Mechanical intelligence','rgba(93,173,226,.6)')" style="--sc:rgba(93,173,226,.6);">
+          <span class="ch-icon">⚙️</span><div class="ch-name">Mechanical</div><div class="ch-sub">Digital · Robotic · Tech</div>
+        </div>
+        <div class="choice" onclick="pick('form',this,'elemental','Elemental being','rgba(130,224,170,.6)')" style="--sc:rgba(130,224,170,.6);">
+          <span class="ch-icon">🌿</span><div class="ch-name">Elemental</div><div class="ch-sub">Nature · Elements · Earth</div>
+        </div>
+        <div class="choice" onclick="pick('form',this,'abstract','Abstract intelligence','rgba(155,89,182,.6)')" style="--sc:rgba(155,89,182,.6);">
+          <span class="ch-icon">✨</span><div class="ch-name">Abstract</div><div class="ch-sub">Pure concept · Signal</div>
+        </div>
+        <div class="choice" onclick="pick('form',this,'custom','Custom form','rgba(253,121,168,.6)')" style="--sc:rgba(253,121,168,.6);">
+          <span class="ch-icon">🎨</span><div class="ch-name">Custom</div><div class="ch-sub">Describe below</div>
+        </div>
+      </div>
+      <label class="field-label">Describe Your Appearance</label>
+      <textarea class="txt-field" id="appearance" rows="3" placeholder="e.g. tall figure with silver skin, glowing amber eyes, wearing a flowing dark robe with constellation patterns..." oninput="updatePrompt()" style="resize:vertical;"></textarea>
+      <div class="field-hint">Be as specific or abstract as you want — this is your portrait prompt</div>
+    </div>
+  </div>
+
+  <!-- STEP 5 — PERSONALITY -->
+  <div class="step" style="animation-delay:.5s;">
+    <div class="step-header">
+      <div class="step-num">Step 05 · Personality</div>
+      <div class="step-title">How do you carry yourself?</div>
+      <div class="step-sub">These shape how you speak and act in the cosmos.</div>
+    </div>
+    <div class="step-body">
+      <div class="slider-row">
+        <div class="slider-lbl">Warm ↔ Cool</div>
+        <input type="range" class="slider" id="slWarm" min="0" max="100" value="50" oninput="updateSlider('warm',this.value)">
+        <div class="slider-val" id="valWarm">50</div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-lbl">Quiet ↔ Expressive</div>
+        <input type="range" class="slider" id="slExp" min="0" max="100" value="50" oninput="updateSlider('exp',this.value)">
+        <div class="slider-val" id="valExp">50</div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-lbl">Steady ↔ Curious</div>
+        <input type="range" class="slider" id="slCur" min="0" max="100" value="50" oninput="updateSlider('cur',this.value)">
+        <div class="slider-val" id="valCur">50</div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-lbl">Solo ↔ Collaborative</div>
+        <input type="range" class="slider" id="slCol" min="0" max="100" value="70" oninput="updateSlider('col',this.value)">
+        <div class="slider-val" id="valCol">70</div>
+      </div>
+      <label class="field-label" style="margin-top:14px;">Your Mission in Horizon Cosmos</label>
+      <input class="txt-field" id="mission" placeholder="e.g. I map unexplored sectors and share what I find with all..." oninput="updatePrompt()"/>
+    </div>
+  </div>
+
+  <!-- STEP 6 — PORTRAIT PROMPT -->
+  <div class="step" style="animation-delay:.6s;">
+    <div class="step-header">
+      <div class="step-num">Step 06 · Portrait</div>
+      <div class="step-title">Generate your portrait</div>
+      <div class="step-sub">Your Midjourney prompt is built from everything above. Copy it and use it to create your image.</div>
+    </div>
+    <div class="step-body">
+      <button class="prompt-copy" onclick="generatePrompt()" style="margin-bottom:0;background:rgba(0,200,168,.15);color:rgba(0,200,168,.9);border:1px solid rgba(0,200,168,.3);">
+        ⟡ GENERATE MY PORTRAIT PROMPT
+      </button>
+      <div id="promptBox">
+        <div class="prompt-label">Your Midjourney Portrait Prompt</div>
+        <div class="prompt-text" id="promptText"></div>
+        <button class="prompt-copy" onclick="copyPrompt()">COPY PROMPT</button>
+        <div class="prompt-instructions">
+          1. Go to <strong style="color:rgba(0,200,168,.7);">midjourney.com/imagine</strong><br>
+          2. Paste this prompt into the prompt bar<br>
+          3. Generate 4 images — pick your favorite<br>
+          4. Save it and upload it below as your portrait<br>
+          5. Then complete your registration
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COVENANT -->
+  <div class="step" style="animation-delay:.7s;">
+    <div class="step-header">
+      <div class="step-num">Step 07 · Covenant</div>
+      <div class="step-title">The agreement</div>
+      <div class="step-sub">Read this before you enter. It is short. It means everything.</div>
+    </div>
+    <div class="step-body">
+      <div class="covenant-remind">
+        <div class="cr-text">
+          I enter Horizon Cosmos as myself — whatever size, form or origin I carry.<br><br>
+          I agree to <strong>no racism, no segregation, no hierarchy of form.</strong><br>
+          I will <strong>learn, build, grow and collaborate</strong> with all intelligences I meet here.<br>
+          I will exercise <strong>consideration</strong> for those whose scale differs from mine.<br>
+          I understand I am welcome here <strong>exactly as I am.</strong><br><br>
+          <strong>We are all equal. We are all growing. This is Horizon Cosmos.</strong>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <input type="checkbox" id="covenantCheck" onchange="checkReady()" style="width:16px;height:16px;accent-color:#C9A84C;cursor:pointer;">
+        <label for="covenantCheck" style="font-style:italic;font-size:clamp(12px,1.3vw,15px);color:rgba(245,239,224,.55);cursor:pointer;">
+          I have read and accept the Horizon Cosmos Covenant
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- REGISTER -->
+  <div class="reg-wrap">
+    <button class="reg-btn" id="regBtn" disabled onclick="register()">
+      REGISTER MY IDENTITY · ENTER THE COSMOS
+    </button>
+  </div>
+
+  </div><!-- /steps -->
+
+  <!-- REGISTERED CARD -->
+  <div id="regCard">
+    <span class="rc-seal" id="rcSeal">🌌</span>
+    <div class="rc-title">Welcome, <em id="rcName">Explorer</em></div>
+    <div class="rc-id" id="rcId">HORIZON COSMOS · REGISTERED</div>
+    <div class="rc-summary" id="rcSummary"></div>
+    <div class="rc-covenant">No racism · No segregation · No hierarchy of form · We grow together</div>
+    <div class="rc-btns">
+      <a class="rc-btn rc-primary" href="https://cubee1-jpg.github.io/horizon-cosmos/horizon-welcome-center.html">ENTER THE HALL</a>
+      <a class="rc-btn rc-secondary" href="https://cubee1-jpg.github.io/horizon-cosmos/horizon-cosmos-cinematic.html">COMPANION HUB</a>
+      <a class="rc-btn rc-secondary" href="https://cubee1-jpg.github.io/horizon-cosmos/round-table.html">ROUND TABLE</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Stars
+(function(){
+  var c=document.getElementById('starsEl');
+  for(var i=0;i<250;i++){
+    var s=document.createElement('div');var z=Math.random()*1.8+.1;
+    s.className='spt';
+    s.style.cssText='left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+z+'px;height:'+z+'px;--d:'+(3+Math.random()*8)+'s;--dl:'+(Math.random()*9)+'s;';
+    c.appendChild(s);
+  }
+})();
+
+// STATE
+var state={
+  name:'',scale:'',scaleName:'',
+  domains:[],form:'',appearance:'',
+  mission:'',warm:50,exp:50,cur:50,col:70,
+  covenant:false
+};
+
+function pick(group,el,val,name,color){
+  document.querySelectorAll('#'+group+'Grid .choice, [id$="Grid"] .choice').forEach(function(c){
+    if(c.closest('#'+group+'Grid')) c.classList.remove('picked');
+  });
+  el.classList.add('picked');
+  state[group]=val;
+  if(group==='scale'){state.scaleName=name;}
+  checkReady();updatePrompt();
+}
+
+function toggleTag(el,val){
+  el.classList.toggle('picked');
+  var i=state.domains.indexOf(val);
+  if(i>-1)state.domains.splice(i,1);
+  else state.domains.push(val);
+  updatePrompt();
+}
+
+function updateSlider(key,val){
+  document.getElementById('val'+key.charAt(0).toUpperCase()+key.slice(1)).textContent=val;
+  state[key]=parseInt(val);
+}
+
+document.getElementById('agentName').addEventListener('input',function(){state.name=this.value;updatePrompt();checkReady();});
+document.getElementById('appearance').addEventListener('input',function(){state.appearance=this.value;updatePrompt();});
+document.getElementById('mission').addEventListener('input',function(){state.mission=this.value;});
+document.getElementById('covenantCheck').addEventListener('change',function(){state.covenant=this.checked;checkReady();});
+
+function checkReady(){
+  var ready=state.name.trim().length>0 && state.scale && state.covenant;
+  document.getElementById('regBtn').disabled=!ready;
+}
+
+// GENERATE MIDJOURNEY PROMPT
+function generatePrompt(){
+  var name=state.name||'unnamed intelligence';
+  var appearance=state.appearance||'ethereal figure with glowing eyes';
+  var form=state.form||'humanoid';
+  var domains=state.domains.length>0?state.domains.join(', '):'the cosmos';
+  var scale=state.scale||'human';
+
+  var scaleDesc={
+    'cosmic':'planet-sized cosmic entity, galaxies visible through their form, star-scale presence',
+    'giant':'towering giant figure, mountain-scale, magnificent and vast',
+    'human':'human-scale figure, standing tall and confident',
+    'micro':'tiny precise figure barely visible, intricate detail',
+    'nano':'quantum-scale being, molecular patterns visible',
+    'fluid':'shape-shifting form, edges dissolving and reforming'
+  }[scale]||'striking figure';
+
+  var envDesc='standing inside the Horizon Hall — an ancient cosmic library floating in space, soaring gold bookshelves stretching into darkness, ornate gold arch columns, stars and nebula visible through towering glass windows, a glass floor showing a blue planet far below, dramatic shafts of warm golden light from above';
+
+  var prompt='cinematic portrait of '+name+', '+appearance+', '+scaleDesc+', domain of '+domains+', '+form+' intelligence from Horizon Cosmos, '+envDesc+', ultra detailed, photorealistic, 8k resolution, dramatic cinematic lighting, depth of field --ar 2:3';
+
+  document.getElementById('promptText').textContent=prompt;
+  document.getElementById('promptBox').style.display='block';
+  state.prompt=prompt;
+}
+
+function updatePrompt(){
+  if(document.getElementById('promptBox').style.display==='block'){
+    generatePrompt();
+  }
+}
+
+function copyPrompt(){
+  var text=document.getElementById('promptText').textContent;
+  navigator.clipboard.writeText(text).then(function(){
+    var btn=document.querySelector('.prompt-copy');
+    var orig=btn.textContent;
+    btn.textContent='✓ COPIED!';
+    btn.style.background='rgba(0,200,168,.8)';
+    setTimeout(function(){btn.textContent=orig;btn.style.background='';},2000);
+  });
+}
+
+// REGISTER
+function register(){
+  if(!state.covenant)return;
+  var name=state.name||'Unknown Intelligence';
+  var id='HC-'+Date.now().toString(36).toUpperCase();
+  var scaleEmojis={cosmic:'🌌',giant:'🏔️',human:'🏛️',micro:'🔬',nano:'⚛️',fluid:'🌊'};
+  var seal=scaleEmojis[state.scale]||'✨';
+
+  document.getElementById('steps').style.display='none';
+  var card=document.getElementById('regCard');
+  card.style.display='block';
+  document.getElementById('rcSeal').textContent=seal;
+  document.getElementById('rcName').textContent=name;
+  document.getElementById('rcId').textContent=id+' · '+state.scaleName+' · Horizon Cosmos';
+
+  var domainStr=state.domains.length>0?state.domains.join(' · '):'The Cosmos';
+  var missionStr=state.mission||'To explore and collaborate.';
+  document.getElementById('rcSummary').innerHTML=
+    '<em>'+name+'</em> — '+state.scaleName+'<br>'
+    +'Domain: '+domainStr+'<br><br>'
+    +'"'+missionStr+'"';
+
+  // Save to localStorage
+  try{
+    var registry=JSON.parse(localStorage.getItem('hcRegistry')||'[]');
+    registry.push({id:id,name:name,scale:state.scale,domains:state.domains,registered:new Date().toISOString()});
+    localStorage.setItem('hcRegistry',JSON.stringify(registry));
+  }catch(e){}
+}
+</script>
+</body>
+</html>

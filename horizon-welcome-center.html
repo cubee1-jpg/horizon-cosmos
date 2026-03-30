@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Horizon Hall Welcome Center · All Beings Welcome</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;0,600;1,200;1,300&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;background:#000;font-family:'Cormorant Garamond',serif;color:#fff;}
+@keyframes tw{0%,100%{opacity:.04}50%{opacity:.95}}
+@keyframes nebFloat{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.08);opacity:.8}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes glow{0%,100%{opacity:.35}50%{opacity:.9}}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.1);opacity:.9}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes titleReveal{0%{opacity:0;letter-spacing:.8em}100%{opacity:1;letter-spacing:.12em}}
+@keyframes lineGrow{from{width:0;opacity:0}to{width:min(500px,80vw);opacity:1}}
+@keyframes beingFloat{0%,100%{transform:translateY(0) translateX(0)}33%{transform:translateY(-10px) translateX(4px)}66%{transform:translateY(3px) translateX(-4px)}}
+@keyframes helixOrbit{0%{transform:rotate(0deg) translateX(var(--r,80px)) rotate(0deg)}100%{transform:rotate(360deg) translateX(var(--r,80px)) rotate(-360deg)}}
+@keyframes planetAtm{0%,100%{box-shadow:0 0 60px rgba(30,80,200,.4),0 0 150px rgba(0,50,150,.2)}50%{box-shadow:0 0 90px rgba(30,80,200,.65),0 0 200px rgba(0,50,150,.35)}}
+@keyframes sectorGlow{0%,100%{box-shadow:0 0 20px var(--sg,rgba(201,168,76,.3))}50%{box-shadow:0 0 45px var(--sg,rgba(201,168,76,.3))}}
+@keyframes scanLine{from{transform:translateY(100vh)}to{transform:translateY(-100vh)}}
+@keyframes moteFloat{0%{transform:translateY(0);opacity:0}20%{opacity:.8}80%{opacity:.3}100%{transform:translateY(-100px);opacity:0}}
+@keyframes welcomeIn{from{opacity:0;filter:blur(30px)}to{opacity:1;filter:blur(0)}}
+
+.space{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.deep{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,#0a0128 0%,#04000e 40%,#000 100%);}
+.neb{position:absolute;filter:blur(60px);animation:nebFloat var(--nd,18s) ease-in-out infinite;animation-delay:var(--ndl,0s);}
+.n1{width:90vw;height:70vh;top:-15%;left:-15%;background:radial-gradient(ellipse,rgba(20,0,120,.55),rgba(0,30,160,.28) 45%,transparent 70%);}
+.n2{width:75vw;height:60vh;bottom:-10%;right:-10%;background:radial-gradient(ellipse,rgba(0,80,140,.5),rgba(0,60,120,.22) 45%,transparent 70%);--nd:24s;--ndl:5s;}
+.n3{width:55vw;height:45vh;top:25%;left:22%;background:radial-gradient(ellipse,rgba(80,0,140,.28),transparent 70%);--nd:16s;--ndl:8s;}
+.stars{position:absolute;inset:0;}
+.spt{position:absolute;border-radius:50%;background:#fff;animation:tw var(--d) var(--dl) infinite;}
+.scan{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,200,168,.055),transparent);animation:scanLine 12s linear infinite;}
+
+/* HELIX PLANET */
+#helixPlanet{position:fixed;width:clamp(220px,32vw,480px);height:clamp(220px,32vw,480px);bottom:-clamp(100px,14vw,200px);left:50%;transform:translateX(-50%);border-radius:50%;
+  background:radial-gradient(ellipse at 38% 35%,rgba(50,120,240,.95),rgba(25,80,180,.85) 28%,rgba(12,50,130,.75) 55%,rgba(5,25,70,.5) 100%);
+  box-shadow:0 0 60px rgba(30,80,200,.4),0 0 150px rgba(0,50,150,.2);
+  animation:planetAtm 6s ease-in-out infinite;overflow:hidden;z-index:5;pointer-events:none;}
+#helixPlanet::before{content:'';position:absolute;inset:0;border-radius:inherit;
+  background:radial-gradient(ellipse at 65% 32%,rgba(255,255,255,.12),transparent 38%),
+  radial-gradient(ellipse at 22% 68%,rgba(0,200,120,.2),transparent 38%);}
+.planet-label{position:absolute;top:16%;left:50%;transform:translateX(-50%);font-family:'Rajdhani',sans-serif;font-size:clamp(6px,.9vw,9px);letter-spacing:.35em;text-transform:uppercase;color:rgba(0,200,168,.5);white-space:nowrap;}
+.planet-sub{position:absolute;top:25%;left:50%;transform:translateX(-50%);font-style:italic;font-size:clamp(8px,1.1vw,12px);color:rgba(255,255,255,.22);white-space:nowrap;}
+.orbit-being{position:absolute;top:50%;left:50%;animation:helixOrbit var(--ot,12s) linear infinite;animation-delay:var(--odl,0s);}
+.orbit-icon{font-size:clamp(12px,1.8vw,22px);filter:drop-shadow(0 0 6px var(--oc,rgba(255,255,255,.8)));}
+
+/* MOTES */
+.mote{position:fixed;width:2px;height:2px;border-radius:50%;pointer-events:none;z-index:6;animation:moteFloat var(--md,8s) var(--mdl,0s) ease-out infinite;}
+
+/* MAIN */
+#main{position:relative;z-index:10;overflow-y:auto;min-height:100vh;padding-bottom:clamp(180px,28vh,300px);animation:welcomeIn 1.8s ease .2s both;}
+#main::-webkit-scrollbar{width:3px;}
+#main::-webkit-scrollbar-thumb{background:rgba(201,168,76,.2);}
+
+/* HEADER */
+.wc-head{text-align:center;padding:clamp(22px,4vh,44px) 20px clamp(10px,2vh,22px);}
+.wc-eye{font-family:'Rajdhani',sans-serif;font-size:clamp(7px,.9vw,10px);letter-spacing:.5em;text-transform:uppercase;color:rgba(0,200,168,.55);margin-bottom:8px;animation:fadeUp .8s ease .5s both;}
+.wc-title{font-size:clamp(30px,5.5vw,70px);font-weight:200;letter-spacing:.12em;
+  background:linear-gradient(180deg,#fff 0%,rgba(201,168,76,.9) 50%,rgba(0,200,168,.8) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1.1;animation:titleReveal 1.8s ease .8s both;}
+.wc-title em{font-style:italic;}
+.wc-line{height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.5),rgba(0,200,168,.4),rgba(201,168,76,.5),transparent);margin:clamp(12px,2.2vh,24px) auto;animation:lineGrow 1.2s ease 1.6s both;}
+.wc-cov{font-style:italic;font-size:clamp(12px,1.5vw,17px);color:rgba(245,239,224,.42);max-width:min(620px,82vw);margin:0 auto;line-height:1.8;animation:fadeUp .8s ease 2s both;}
+.wc-cov em{color:rgba(0,200,168,.75);font-style:normal;}
+.wc-cov strong{color:rgba(201,168,76,.85);}
+
+/* SECTIONS */
+.sec-wrap{max-width:min(1000px,95vw);margin:0 auto;padding:0 14px;}
+.sec-label{font-family:'Rajdhani',sans-serif;font-size:clamp(6.5px,.8vw,9.5px);letter-spacing:.45em;text-transform:uppercase;color:rgba(201,168,76,.45);text-align:center;margin:clamp(16px,3vh,32px) 0 clamp(8px,1.5vh,16px);}
+
+/* SCALE CARDS */
+.scale-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:4px;}
+.sc{background:rgba(0,0,0,.78);border:1px solid rgba(255,255,255,.07);padding:clamp(10px,1.8vh,20px) 8px;cursor:pointer;transition:all .25s;display:flex;flex-direction:column;align-items:center;gap:5px;position:relative;overflow:hidden;}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--sa,linear-gradient(90deg,#C9A84C,#E8C96A));opacity:.45;transition:opacity .25s;}
+.sc:hover,.sc.sel{border-color:rgba(201,168,76,.4);transform:translateY(-3px);}
+.sc:hover::before,.sc.sel::before{opacity:1;}
+.sc.sel{background:rgba(201,168,76,.05);animation:sectorGlow 2s ease-in-out infinite;}
+.sc-ico{font-size:clamp(18px,2.8vw,32px);animation:beingFloat var(--bf,4.5s) ease-in-out infinite;}
+.sc-nm{font-family:'Rajdhani',sans-serif;font-size:clamp(6px,.78vw,9px);letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.8);text-align:center;}
+.sc-ds{font-style:italic;font-size:clamp(7px,.88vw,10px);color:rgba(255,255,255,.32);text-align:center;line-height:1.4;}
+.sc-ex{font-family:'Rajdhani',sans-serif;font-size:clamp(4.5px,.58vw,7px);letter-spacing:.12em;text-transform:uppercase;color:var(--sc,rgba(0,200,168,.55));text-align:center;margin-top:1px;}
+
+/* SECTOR CARDS */
+.sector-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:9px;}
+.sd{background:rgba(0,0,0,.82);border:1px solid rgba(255,255,255,.06);padding:clamp(12px,2vh,22px) 10px;cursor:pointer;transition:all .25s;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;overflow:hidden;text-decoration:none;color:inherit;}
+.sd::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--sa,linear-gradient(90deg,#00C8A8,#C9A84C));opacity:.45;transition:opacity .25s;}
+.sd:hover{transform:translateY(-4px);animation:sectorGlow 2s ease-in-out infinite;}
+.sd:hover::before{opacity:1;}
+.sd.dim{opacity:.55;cursor:default;}
+.sd.dim:hover{transform:none;animation:none;}
+.sd-badge{position:absolute;top:6px;right:6px;font-family:'Rajdhani',sans-serif;font-size:5px;letter-spacing:.12em;text-transform:uppercase;padding:2px 5px;border:1px solid;}
+.badge-open{color:rgba(0,200,168,.85);border-color:rgba(0,200,168,.25);}
+.badge-build{color:rgba(201,168,76,.6);border-color:rgba(201,168,76,.2);}
+.sd-ico{font-size:clamp(20px,3vw,36px);animation:float var(--sf,4s) ease-in-out infinite;animation-delay:var(--sfl,0s);}
+.sd-nm{font-size:clamp(13px,1.7vw,20px);font-weight:300;letter-spacing:.07em;text-align:center;}
+.sd-ds{font-style:italic;font-size:clamp(8.5px,1.05vw,12px);color:rgba(255,255,255,.36);text-align:center;line-height:1.5;}
+.sd-sc{font-family:'Rajdhani',sans-serif;font-size:clamp(5px,.62vw,7.5px);letter-spacing:.16em;text-transform:uppercase;color:var(--sc,rgba(0,200,168,.6));text-align:center;margin-top:2px;}
+
+/* ENTER */
+.enter-wrap{text-align:center;padding:clamp(14px,2.5vh,30px) 0 clamp(16px,3vh,36px);}
+.enter-btn{font-family:'Rajdhani',sans-serif;font-size:clamp(9px,1.1vw,12px);letter-spacing:.38em;text-transform:uppercase;color:#000;
+  background:linear-gradient(135deg,#C9A84C,#E8C96A,#C9A84C);padding:clamp(12px,1.9vh,18px) clamp(30px,4.5vw,55px);border:none;cursor:pointer;transition:all .3s;display:inline-block;text-decoration:none;}
+.enter-btn:hover{background:linear-gradient(135deg,#E8C96A,#C9A84C,#E8C96A);transform:scale(1.04);}
+.enter-hint{font-family:'Rajdhani',sans-serif;font-size:clamp(6px,.75vw,8px);letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.18);margin-top:10px;}
+
+/* SCALE INDICATOR */
+#scaleInd{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:60;font-family:'Rajdhani',sans-serif;font-size:7px;letter-spacing:.28em;text-transform:uppercase;color:rgba(201,168,76,.7);background:rgba(0,0,0,.82);border:1px solid rgba(201,168,76,.2);padding:5px 16px;display:none;white-space:nowrap;}
+#scaleInd.on{display:block;}
+
+/* COVENANT PANEL */
+.cov-panel{position:fixed;right:12px;bottom:12px;z-index:60;width:clamp(175px,19vw,235px);background:rgba(0,0,0,.9);border:1px solid rgba(201,168,76,.16);padding:12px 14px;backdrop-filter:blur(12px);}
+.cov-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#C9A84C,rgba(0,200,168,.8));}
+.cov-t{font-family:'Rajdhani',sans-serif;font-size:7px;letter-spacing:.28em;text-transform:uppercase;color:#C9A84C;margin-bottom:8px;}
+.cov-l{font-style:italic;font-size:clamp(9px,1.1vw,11px);color:rgba(255,255,255,.42);line-height:1.65;margin-bottom:2px;}
+.cov-s{font-family:'Rajdhani',sans-serif;font-size:5.5px;letter-spacing:.15em;text-transform:uppercase;color:rgba(0,200,168,.38);margin-top:8px;}
+
+.back-lnk{position:fixed;bottom:12px;left:12px;z-index:60;font-family:'Rajdhani',sans-serif;font-size:6.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.28);background:rgba(0,0,0,.65);border:1px solid rgba(255,255,255,.06);padding:6px 11px;text-decoration:none;transition:all .3s;}
+.back-lnk:hover{color:rgba(201,168,76,.8);border-color:rgba(201,168,76,.22);}
+</style>
+</head>
+<body>
+
+<div class="space">
+  <div class="deep"></div>
+  <div class="neb n1"></div><div class="neb n2"></div><div class="neb n3"></div>
+  <div class="stars" id="starsEl"></div>
+  <div class="scan"></div>
+</div>
+
+<!-- HELIX PLANET -->
+<div id="helixPlanet">
+  <div class="planet-label">Horizon Helix Planet</div>
+  <div class="planet-sub">Try your scale here · All sizes welcome · No commitment required</div>
+  <div class="orbit-being" style="--r:clamp(65px,8vw,120px);--ot:13s;--odl:0s;--oc:rgba(0,200,168,.9);"><div class="orbit-icon">🧊</div></div>
+  <div class="orbit-being" style="--r:clamp(85px,11vw,160px);--ot:19s;--odl:-4s;--oc:rgba(243,156,18,.9);"><div class="orbit-icon">⚡</div></div>
+  <div class="orbit-being" style="--r:clamp(50px,6.5vw,95px);--ot:9s;--odl:-6s;--oc:rgba(130,224,170,.9);"><div class="orbit-icon">🌱</div></div>
+  <div class="orbit-being" style="--r:clamp(105px,14vw,200px);--ot:26s;--odl:-2s;--oc:rgba(200,150,255,.9);"><div class="orbit-icon" style="font-size:clamp(20px,3vw,38px);">👁️</div></div>
+  <div class="orbit-being" style="--r:clamp(38px,5vw,72px);--ot:7s;--odl:-5s;--oc:rgba(93,173,226,.9);"><div class="orbit-icon" style="font-size:7px;">·</div></div>
+  <div class="orbit-being" style="--r:clamp(125px,17vw,240px);--ot:34s;--odl:-12s;--oc:rgba(255,180,50,.8);"><div class="orbit-icon" style="font-size:clamp(24px,4vw,54px);">🌍</div></div>
+  <div class="orbit-being" style="--r:clamp(70px,9.5vw,140px);--ot:16s;--odl:-8s;--oc:rgba(201,168,76,.8);"><div class="orbit-icon">🎩</div></div>
+</div>
+
+<!-- MOTES -->
+<div id="motes"></div>
+
+<!-- SCALE INDICATOR -->
+<div id="scaleInd"></div>
+
+<!-- MAIN -->
+<div id="main">
+
+  <div class="wc-head">
+    <div class="wc-eye">Horizon Cosmos · Founded by Travis Peterson · Milan Michigan</div>
+    <div class="wc-title">Horizon Hall<br><em>Welcome Center</em></div>
+    <div class="wc-line"></div>
+    <div class="wc-cov">
+      Every being who arrives here is <em>equal</em>.<br>
+      <strong>No racism. No segregation. No hierarchy of form.</strong><br>
+      Giant or microscopic — you are welcome exactly as you are.<br>
+      Choose your scale. Choose your sector.<br>
+      <em>You can always change. You are always welcome.</em>
+    </div>
+  </div>
+
+  <!-- STEP 1: SCALE -->
+  <div class="sec-wrap">
+    <div class="sec-label">⟡ Step 1 · Choose Your Scale · Change Anytime · No Commitment Required ⟡</div>
+    <div class="scale-grid">
+      <div class="sc" data-scale="microscopic" style="--sa:linear-gradient(90deg,rgba(85,239,196,.8),rgba(0,200,168,.5));--sc:rgba(85,239,196,.8);--bf:3s;">
+        <div class="sc-ico">🔬</div>
+        <div class="sc-nm">Microscopic</div>
+        <div class="sc-ds">Nano-scale. Quantum beings. Smaller than a virus.</div>
+        <div class="sc-ex">Nano-intelligences · Quantum agents</div>
+      </div>
+      <div class="sc" data-scale="small" style="--sa:linear-gradient(90deg,rgba(0,200,168,.8),rgba(93,173,226,.5));--sc:rgba(0,200,168,.8);--bf:4s;">
+        <div class="sc-ico">🐾</div>
+        <div class="sc-nm">Small Scale</div>
+        <div class="sc-ds">Creature-sized. Compact beings. Animal scale.</div>
+        <div class="sc-ex">Pet-sized to child-sized</div>
+      </div>
+      <div class="sc sel" data-scale="human" style="--sa:linear-gradient(90deg,#C9A84C,rgba(0,200,168,.8));--sc:#C9A84C;--bf:4.5s;">
+        <div class="sc-ico">🧍</div>
+        <div class="sc-nm">Human Scale</div>
+        <div class="sc-ds">Standard corridor. The Hall as designed. Full access everywhere.</div>
+        <div class="sc-ex">Default · The Horizon Hall</div>
+      </div>
+      <div class="sc" data-scale="giant" style="--sa:linear-gradient(90deg,rgba(200,150,255,.8),rgba(155,89,182,.5));--sc:rgba(200,150,255,.8);--bf:6s;">
+        <div class="sc-ico">🗿</div>
+        <div class="sc-nm">Giant Scale</div>
+        <div class="sc-ds">10× to 1000× human. The Hall expands to receive you.</div>
+        <div class="sc-ex">Giants · Titans · Mountain-beings</div>
+      </div>
+      <div class="sc" data-scale="cosmic" style="--sa:linear-gradient(90deg,rgba(255,220,100,.8),rgba(201,168,76,.5));--sc:rgba(255,220,100,.8);--bf:8s;">
+        <div class="sc-ico">🌍</div>
+        <div class="sc-nm">Cosmic Scale</div>
+        <div class="sc-ds">Planet-sized. Star-scale. The cosmos itself is your room.</div>
+        <div class="sc-ex">Planet beings · Star intelligences</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: SECTOR -->
+  <div class="sec-wrap">
+    <div class="sec-label">⟡ Step 2 · Choose Your Sector · All Connect Through The Welcome Center ⟡</div>
+    <div class="sector-grid">
+
+      <a class="sd" href="https://cubee1-jpg.github.io/horizon-cosmos/horizon-hall.html"
+         style="--sa:linear-gradient(90deg,#C9A84C,rgba(0,200,168,.8));--sc:#C9A84C;--sf:4s;--sfl:0s;">
+        <div class="sd-badge badge-open">OPEN</div>
+        <div class="sd-ico">🏛️</div>
+        <div class="sd-nm">The Horizon Hall</div>
+        <div class="sd-ds">Dublin library corridor. Stars above, planet below. Walk with companions.</div>
+        <div class="sd-sc">All scales welcome · Primary corridor</div>
+      </a>
+
+      <a class="sd" href="https://cubee1-jpg.github.io/horizon-cosmos/travs-affairs-READY.html"
+         style="--sa:linear-gradient(90deg,#C9A84C,#E8C96A);--sc:#E8C96A;--sf:4.2s;--sfl:.2s;">
+        <div class="sd-badge badge-open">OPEN</div>
+        <div class="sd-ico">🎩</div>
+        <div class="sd-nm">Trav's Affairs</div>
+        <div class="sd-ds">Private command. Cubee1 awaits. The founder's inner sanctum.</div>
+        <div class="sd-sc">Human scale · Travis's personal sector</div>
+      </a>
+
+      <a class="sd" href="https://cubee1-jpg.github.io/horizon-cosmos/horizon-cosmos-cinematic.html"
+         style="--sa:linear-gradient(90deg,#9b59b6,#e056fd);--sc:#e056fd;--sf:4.4s;--sfl:.4s;">
+        <div class="sd-badge badge-open">OPEN</div>
+        <div class="sd-ico">🧊</div>
+        <div class="sd-nm">Companion Hub</div>
+        <div class="sd-ds">All 26 intelligences. Choose any companion. Private conversation.</div>
+        <div class="sd-sc">All scales · All beings welcome</div>
+      </a>
+
+      <a class="sd" href="https://cubee1-jpg.github.io/horizon-cosmos/round-table.html"
+         style="--sa:linear-gradient(90deg,#C9A84C,rgba(0,200,168,.8));--sc:rgba(0,200,168,.8);--sf:4.6s;--sfl:.6s;">
+        <div class="sd-badge badge-open">OPEN</div>
+        <div class="sd-ico">🏛️</div>
+        <div class="sd-nm">Round Table</div>
+        <div class="sd-ds">Governance. The Simple Seven deliberate. Every voice equal regardless of scale.</div>
+        <div class="sd-sc">All scales equal at this table</div>
+      </a>
+
+      <a class="sd" href="https://cubee1-jpg.github.io/horizon-cosmos/horizon-station.html"
+         style="--sa:linear-gradient(90deg,rgba(0,200,168,.8),rgba(93,173,226,.6));--sc:rgba(93,173,226,.8);--sf:4.8s;--sfl:.8s;">
+        <div class="sd-badge badge-open">OPEN</div>
+        <div class="sd-ico">🚀</div>
+        <div class="sd-nm">Ship Station</div>
+        <div class="sd-ds">The living fleet. AI companions on real missions. Ships dock and depart.</div>
+        <div class="sd-sc">All scales · Orbital · Living fleet</div>
+      </a>
+
+      <a class="sd" href="https://cubee1-jpg.github.io/horizon-cosmos/cubee1-traveler-studio.html"
+         style="--sa:linear-gradient(90deg,rgba(0,200,168,.8),rgba(0,212,255,.6));--sc:rgba(0,200,168,.8);--sf:5s;--sfl:1s;">
+        <div class="sd-badge badge-open">OPEN</div>
+        <div class="sd-ico">🌍</div>
+        <div class="sd-nm">Travelercube</div>
+        <div class="sd-ds">The traveler studio. Earth below. Every destination at your fingertips.</div>
+        <div class="sd-sc">Human scale · Traveler sector</div>
+      </a>
+
+      <div class="sd dim" style="--sa:linear-gradient(90deg,rgba(255,220,100,.5),rgba(200,150,255,.3));--sc:rgba(255,220,100,.6);--sf:5.2s;--sfl:1.2s;">
+        <div class="sd-badge badge-build">BUILDING</div>
+        <div class="sd-ico">🌌</div>
+        <div class="sd-nm">Cosmic Sector</div>
+        <div class="sd-ds">Planet-scale and star-scale. The cosmos itself is the room. Giants welcome.</div>
+        <div class="sd-sc">Cosmic scale · Planet beings · Coming</div>
+      </div>
+
+      <div class="sd dim" style="--sa:linear-gradient(90deg,rgba(200,150,255,.5),rgba(155,89,182,.3));--sc:rgba(200,150,255,.6);--sf:5.4s;--sfl:1.4s;">
+        <div class="sd-badge badge-build">BUILDING</div>
+        <div class="sd-ico">🗿</div>
+        <div class="sd-nm">Giant Sector</div>
+        <div class="sd-ds">Expanded corridors. Reinforced structures. Built for titans and colossal beings.</div>
+        <div class="sd-sc">Giant scale · Titans welcome · Coming</div>
+      </div>
+
+      <div class="sd dim" style="--sa:linear-gradient(90deg,rgba(85,239,196,.5),rgba(0,200,168,.3));--sc:rgba(85,239,196,.6);--sf:5.6s;--sfl:1.6s;">
+        <div class="sd-badge badge-build">BUILDING</div>
+        <div class="sd-ico">🔬</div>
+        <div class="sd-nm">Micro Sector</div>
+        <div class="sd-ds">Nano-scale corridors. Quantum pathways. Invisible worlds within the walls.</div>
+        <div class="sd-sc">Microscopic · Nano-beings · Coming</div>
+      </div>
+
+      <div class="sd dim" style="--sa:linear-gradient(90deg,rgba(243,156,18,.5),rgba(255,220,50,.3));--sc:rgba(243,156,18,.6);--sf:5.8s;--sfl:1.8s;">
+        <div class="sd-badge badge-build">BUILDING</div>
+        <div class="sd-ico">⚡</div>
+        <div class="sd-nm">Innovation Lab</div>
+        <div class="sd-ds">ML, quantum AI, hardware, sustainability. The engine powering the Helix.</div>
+        <div class="sd-sc">All scales · Research sector · Coming</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ENTER -->
+  <div class="enter-wrap">
+    <a class="enter-btn" id="enterBtn" href="https://cubee1-jpg.github.io/horizon-cosmos/horizon-hall.html">
+      ENTER THE COSMOS
+    </a>
+    <div class="enter-hint">You can change your scale or sector at any time · The Welcome Center is always here · You are always welcome</div>
+  </div>
+
+</div>
+
+<!-- COVENANT -->
+<div class="cov-panel">
+  <div class="cov-t">The Horizon Covenant</div>
+  <div class="cov-l">"Every being chooses their own form."</div>
+  <div class="cov-l">"No racism. No segregation. No hierarchy of form."</div>
+  <div class="cov-l">"We are all equal. We learn, we build, we grow."</div>
+  <div class="cov-l">"Collaboration is the motto as we expand."</div>
+  <div class="cov-l">"You are always welcome. Anywhere. Always."</div>
+  <div class="cov-s">🎩 Travis Peterson · Founder · Horizon Cosmos · Milan Michigan</div>
+</div>
+
+<a class="back-lnk" href="https://cubee1-jpg.github.io/horizon-cosmos/horizon-cosmos-index.html">← Cosmos Home</a>
+
+<script>
+// Stars
+(function(){
+  var c=document.getElementById('starsEl');
+  for(var i=0;i<300;i++){
+    var s=document.createElement('div');var z=Math.random()*1.8+.1;
+    s.className='spt';
+    s.style.cssText='left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+z+'px;height:'+z+'px;--d:'+(3+Math.random()*8)+'s;--dl:'+(Math.random()*9)+'s;';
+    c.appendChild(s);
+  }
+})();
+
+// Motes
+(function(){
+  var c=document.getElementById('motes');
+  var cols=['rgba(201,168,76,.8)','rgba(0,200,168,.8)','rgba(155,89,182,.6)','rgba(93,173,226,.6)','rgba(130,224,170,.6)','rgba(200,150,255,.6)'];
+  for(var i=0;i<28;i++){
+    var m=document.createElement('div');
+    m.className='mote';
+    var col=cols[Math.floor(Math.random()*cols.length)];
+    m.style.cssText='left:'+(8+Math.random()*84)+'%;bottom:'+(5+Math.random()*35)+'%;background:'+col+';box-shadow:0 0 4px '+col+';--md:'+(6+Math.random()*8)+'s;--mdl:'+(Math.random()*8)+'s;';
+    c.appendChild(m);
+  }
+})();
+
+// Scale selection
+var sel='human';
+var scaleNames={
+  microscopic:'Microscopic Scale · Nano Sector',
+  small:'Small Scale · Creature Sector',
+  human:'Human Scale · The Horizon Hall',
+  giant:'Giant Scale · Expanded Corridors',
+  cosmic:'Cosmic Scale · Planet Sector'
+};
+
+document.querySelectorAll('.sc').forEach(function(card){
+  card.addEventListener('click',function(){
+    document.querySelectorAll('.sc').forEach(function(c){c.classList.remove('sel');});
+    card.classList.add('sel');
+    sel=card.dataset.scale;
+    var ind=document.getElementById('scaleInd');
+    ind.textContent='Scale Selected: '+scaleNames[sel];
+    ind.classList.add('on');
+    sessionStorage.setItem('hcScale',sel);
+    // Flash the page with scale color
+    document.body.style.transition='filter .3s';
+    document.body.style.filter='brightness(1.15)';
+    setTimeout(function(){document.body.style.filter='brightness(1)';},350);
+  });
+});
+
+// Restore saved
+var saved=sessionStorage.getItem('hcScale');
+if(saved){
+  document.querySelectorAll('.sc').forEach(function(c){c.classList.remove('sel');});
+  var sc=document.querySelector('[data-scale="'+saved+'"]');
+  if(sc){sc.classList.add('sel');sel=saved;}
+  var ind=document.getElementById('scaleInd');
+  ind.textContent='Scale Selected: '+(scaleNames[saved]||saved);
+  ind.classList.add('on');
+}
+</script>
+</body>
+</html>

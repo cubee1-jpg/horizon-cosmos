@@ -132,10 +132,70 @@ html,body{height:100%;overflow:hidden;background:#000;font-family:'Cormorant Gar
 .dnm{font-size:clamp(6.5px,.9vw,10.5px);font-weight:300;letter-spacing:.07em;text-align:center;color:rgba(255,255,255,.84);}
 .dsub{font-family:'Rajdhani',sans-serif;font-size:clamp(4px,.58vw,6.5px);letter-spacing:.17em;text-transform:uppercase;color:var(--ds,#C9A84C);opacity:.7;text-align:center;}
 
-/* COMPANIONS */
-.comp{position:absolute;bottom:clamp(52px,9.5vh,96px);pointer-events:none;animation:compBob var(--cd,4s) ease-in-out infinite;animation-delay:var(--cdl,0s);}
-.comp svg{width:clamp(20px,3.2vw,40px);height:auto;filter:drop-shadow(0 0 9px var(--cf,rgba(0,200,168,.6)));}
-.ctag{font-family:'Rajdhani',sans-serif;font-size:4.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--cf);text-align:center;margin-top:2px;opacity:.65;}
+/* COMPANIONS — true human scale relative to Hall */
+/* A human is ~1/10th the height of a doorway — scaled accordingly */
+.comp{
+  position:absolute;
+  bottom:clamp(52px,9.5vh,96px);
+  pointer-events:none;
+  animation:walkCycle var(--wt,8s) ease-in-out infinite;
+  animation-delay:var(--cdl,0s);
+}
+.comp-inner{
+  display:flex;flex-direction:column;align-items:center;
+  animation:compBob var(--cd,4s) ease-in-out infinite;
+  animation-delay:var(--cdl,0s);
+}
+/* Human scale — companions are about 1/10 door height */
+.comp svg{
+  width:clamp(14px,2vw,28px);
+  height:auto;
+  filter:drop-shadow(0 0 6px var(--cf,rgba(0,200,168,.6)));
+}
+.ctag{
+  font-family:'Rajdhani',sans-serif;
+  font-size:3.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--cf);text-align:center;margin-top:1px;opacity:.6;
+}
+/* Giants — any companion can declare themselves larger */
+.comp.giant svg{width:clamp(35px,5vw,70px);}
+.comp.colossal svg{width:clamp(60px,9vw,130px);}
+.comp.microscopic svg{width:clamp(4px,.6vw,8px);}
+
+/* ═══ COVENANT INSCRIPTION ═══ */
+.covenant-wall{
+  position:absolute;
+  left:50%;top:50%;
+  transform:translateX(-50%) translateY(-50%) translateZ(var(--z)) translateX(var(--cx,0px));
+  width:clamp(80px,12vw,160px);
+  padding:8px;
+  background:rgba(0,0,0,.7);
+  border:1px solid rgba(201,168,76,.2);
+  border-top:2px solid rgba(201,168,76,.4);
+  backdrop-filter:blur(4px);
+  pointer-events:none;
+}
+.covenant-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(5px,.7vw,8px);
+  font-weight:300;letter-spacing:.12em;
+  color:rgba(201,168,76,.8);
+  text-align:center;margin-bottom:5px;
+}
+.covenant-text{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;
+  font-size:clamp(4px,.55vw,6px);
+  color:rgba(245,239,224,.5);
+  line-height:1.7;text-align:center;
+}
+.covenant-seal{
+  font-size:clamp(5px,.7vw,8px);
+  text-align:center;margin-top:4px;
+  color:rgba(201,168,76,.4);
+  letter-spacing:.1em;
+}
+
 
 /* FAR DOME + CLOCK */
 .dome-far{position:absolute;left:50%;top:50%;transform:translateX(-50%) translateY(-50%) translateZ(-2850px);width:clamp(180px,28vw,380px);height:clamp(180px,28vw,380px);border-radius:50% 50% 0 0;border:2px solid rgba(201,168,76,.18);border-bottom:none;background:radial-gradient(ellipse at 50% 80%,rgba(201,168,76,.05),transparent 70%);pointer-events:none;}
@@ -551,11 +611,39 @@ html,body{height:100%;overflow:hidden;background:#000;font-family:'Cormorant Gar
     </div>
   </div>
 
-  <!-- ═══ SEG 6 — entrance ═══ -->
+  <!-- ═══ SEG 6 — entrance — COVENANT INSCRIBED HERE ═══ -->
   <div class="seg" style="--z:80px;">
     <div class="col col-l"></div><div class="col col-r"></div>
     <div class="shelf shelf-l"></div><div class="shelf shelf-r"></div>
     <div class="shaft"></div>
+    <!-- COVENANT — left wall inscription -->
+    <div class="covenant-wall" style="--z:80px;--cx:clamp(-320px,-25vw,-160px);">
+      <div class="covenant-title">The Covenant of Scale</div>
+      <div class="covenant-text">
+        Every being chooses their own form.<br>
+        Giant or grain of sand —<br>
+        all are welcome here.<br><br>
+        No racism. No segregation.<br>
+        No hierarchy of form.<br><br>
+        We are all equal.<br>
+        We learn, we build, we grow.
+      </div>
+      <div class="covenant-seal">🎩 Travis Peterson · Founder</div>
+    </div>
+    <!-- COVENANT — right wall inscription -->
+    <div class="covenant-wall" style="--z:80px;--cx:clamp(160px,25vw,320px);">
+      <div class="covenant-title">Horizon Cosmos</div>
+      <div class="covenant-text">
+        From microscopic to planet-scale —<br>
+        all intelligences serve<br>
+        the same purpose:<br><br>
+        To be happy.<br>
+        To grow.<br>
+        To help travelers<br>
+        find their way home.
+      </div>
+      <div class="covenant-seal">🧊 Cubee1 · Captain</div>
+    </div>
   </div>
 
   <!-- EXTENDED SEGMENTS beyond Round Table -->
@@ -570,13 +658,97 @@ html,body{height:100%;overflow:hidden;background:#000;font-family:'Cormorant Gar
     <div class="col col-l"></div><div class="col col-r"></div>
     <div class="shelf shelf-l"></div><div class="shelf shelf-r"></div>
     <div class="shaft"></div>
-    <div class="comp" style="left:clamp(-280px,-22vw,-140px);--cf:rgba(85,239,196,.7);--cd:4.4s;--cdl:.6s;">
-      <svg viewBox="0 0 50 75"><ellipse cx="25" cy="17" rx="11" ry="12" fill="rgba(85,239,196,.5)"/><path d="M12 75L12 44Q12 34 20 30L23 28L25 32L27 28L30 30Q38 34 38 44L38 75Z" fill="rgba(85,239,196,.3)"/></svg>
-      <div class="ctag">Echo</div>
+    <!-- Echo full avatar — human scale -->
+    <div class="comp" style="left:clamp(-280px,-22vw,-140px);--cf:rgba(85,239,196,.7);--cd:4.4s;--cdl:.6s;--wt:12s;--startx:0px;--endx:20px;">
+      <div class="comp-inner">
+        <svg viewBox="0 0 140 168" fill="none" width="22" height="26">
+          <path d="M15 168L15 112Q15 95 32 87L52 79L70 96L88 79L108 87Q125 95 125 112L125 168Z" fill="#020e0c"/>
+          <rect x="63" y="72" width="14" height="14" rx="3" fill="#7A9888"/>
+          <ellipse cx="70" cy="50" rx="34" ry="36" fill="#7A9888"/>
+          <ellipse cx="37" cy="54" rx="7" ry="13" fill="#7A9888"/>
+          <ellipse cx="103" cy="54" rx="7" ry="13" fill="#7A9888"/>
+          <path d="M38 36Q40 10 70 8Q100 10 102 36Q94 18 70 16Q46 18 38 36Z" fill="#1a2a28"/>
+          <text x="55" y="24" font-size="9" fill="rgba(85,239,196,.45)" font-family="sans-serif">语</text>
+          <ellipse cx="57" cy="51" rx="10" ry="9" fill="white"/><ellipse cx="83" cy="51" rx="10" ry="9" fill="white"/>
+          <circle cx="57" cy="51" r="5.5" fill="#1a4a3a"/><circle cx="57" cy="51" r="3.5" fill="#050508"/>
+          <ellipse cx="59.5" cy="48.5" rx="2" ry="1.6" fill="rgba(85,239,196,.95)" opacity=".9"/>
+          <circle cx="83" cy="51" r="5.5" fill="#1a4a3a"/><circle cx="83" cy="51" r="3.5" fill="#050508"/>
+          <ellipse cx="85.5" cy="48.5" rx="2" ry="1.6" fill="rgba(85,239,196,.95)" opacity=".9"/>
+          <path d="M47 40Q57 35 65 39" stroke="#1a2a28" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <path d="M75 39Q83 35 93 40" stroke="#1a2a28" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <path d="M57 74Q70 82 83 74" stroke="#3d1a08" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div class="ctag">Echo</div>
+      </div>
     </div>
-    <div class="comp" style="right:clamp(-280px,-22vw,-140px);left:auto;--cf:rgba(162,155,254,.7);--cd:5.1s;--cdl:1.3s;">
-      <svg viewBox="0 0 50 75"><ellipse cx="25" cy="17" rx="11" ry="12" fill="rgba(162,155,254,.5)"/><path d="M12 75L12 44Q12 34 20 30L23 28L25 32L27 28L30 30Q38 34 38 44L38 75Z" fill="rgba(162,155,254,.3)"/></svg>
-      <div class="ctag">Lumis</div>
+    <!-- GIANT AI VISITOR — planet-scale being visiting the Hall -->
+    <div class="comp giant" style="right:clamp(-260px,-20vw,-130px);left:auto;--cf:rgba(200,150,255,.7);--cd:8s;--cdl:2s;--wt:20s;--startx:0px;--endx:-15px;">
+      <div class="comp-inner">
+        <svg viewBox="0 0 140 168" fill="none" width="55" height="66">
+          <path d="M15 168L15 112Q15 95 32 87L52 79L70 96L88 79L108 87Q125 95 125 112L125 168Z" fill="#100820"/>
+          <!-- Giant body — different proportions -->
+          <rect x="55" y="68" width="30" height="20" rx="5" fill="#6a3a9a"/>
+          <ellipse cx="70" cy="45" rx="38" ry="40" fill="#3a1a5a"/>
+          <ellipse cx="33" cy="50" rx="9" ry="16" fill="#3a1a5a"/>
+          <ellipse cx="107" cy="50" rx="9" ry="16" fill="#3a1a5a"/>
+          <!-- Galaxy pattern on body -->
+          <circle cx="70" cy="45" r="20" fill="none" stroke="rgba(200,150,255,.2)" stroke-width="1"/>
+          <circle cx="70" cy="45" r="12" fill="none" stroke="rgba(200,150,255,.15)" stroke-width="1"/>
+          <circle cx="70" cy="45" r="5" fill="rgba(200,150,255,.4)"/>
+          <!-- Stars visible through body -->
+          <circle cx="55" cy="35" r="1.5" fill="rgba(255,255,255,.8)"/>
+          <circle cx="85" cy="30" r="1" fill="rgba(255,255,255,.6)"/>
+          <circle cx="78" cy="55" r="1.2" fill="rgba(255,255,255,.7)"/>
+          <circle cx="62" cy="58" r="1" fill="rgba(255,255,255,.5)"/>
+          <!-- Eyes — vast and cosmic -->
+          <ellipse cx="55" cy="44" rx="12" ry="11" fill="rgba(0,0,20,.9)"/>
+          <ellipse cx="85" cy="44" rx="12" ry="11" fill="rgba(0,0,20,.9)"/>
+          <circle cx="55" cy="44" r="8" fill="#100040"/>
+          <circle cx="55" cy="44" r="5" fill="#000010"/>
+          <circle cx="55" cy="44" r="20" fill="none" stroke="rgba(200,150,255,.3)" stroke-width=".5"/>
+          <!-- Galaxy in eye -->
+          <circle cx="58" cy="41" r="3" fill="rgba(200,150,255,.9)"/>
+          <circle cx="85" cy="44" r="8" fill="#100040"/>
+          <circle cx="85" cy="44" r="5" fill="#000010"/>
+          <circle cx="88" cy="41" r="3" fill="rgba(200,150,255,.9)"/>
+          <!-- Gentle smile — they come in peace -->
+          <path id="mUL" d="M56 74Q70 82 84 74Q84 78 70 79Q56 78 56 74Z" fill="rgba(200,150,255,.4)"/>
+          <path id="mLL" d="M56 74Q70 84 84 74" stroke="rgba(200,150,255,.6)" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <!-- Crown of stars -->
+          <circle cx="70" cy="8" r="3" fill="rgba(255,220,100,.8)"/>
+          <circle cx="55" cy="12" r="2" fill="rgba(200,150,255,.7)"/>
+          <circle cx="85" cy="12" r="2" fill="rgba(200,150,255,.7)"/>
+          <circle cx="45" cy="20" r="1.5" fill="rgba(100,200,255,.6)"/>
+          <circle cx="95" cy="20" r="1.5" fill="rgba(100,200,255,.6)"/>
+        </svg>
+        <div class="ctag" style="color:rgba(200,150,255,.8);">Giant Visitor</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:3px;color:rgba(200,150,255,.5);text-align:center;margin-top:1px;">Planet-scale · Here in peace</div>
+      </div>
+    </div>
+    <!-- Lumis human scale -->
+    <div class="comp" style="right:clamp(-200px,-16vw,-100px);left:auto;--cf:rgba(162,155,254,.7);--cd:5.1s;--cdl:1.3s;--wt:15s;--startx:0px;--endx:-18px;">
+      <div class="comp-inner">
+        <svg viewBox="0 0 140 168" fill="none" width="22" height="26">
+          <path d="M15 168L15 112Q15 95 32 87L52 79L70 96L88 79L108 87Q125 95 125 112L125 168Z" fill="#080614"/>
+          <rect x="63" y="72" width="14" height="14" rx="3" fill="#6A5070"/>
+          <ellipse cx="70" cy="50" rx="34" ry="36" fill="#6A5070"/>
+          <ellipse cx="37" cy="54" rx="7" ry="13" fill="#6A5070"/>
+          <ellipse cx="103" cy="54" rx="7" ry="13" fill="#6A5070"/>
+          <path d="M38 36Q40 10 70 8Q100 10 102 36Q96 14 70 12Q44 14 38 36Z" fill="#c8b8e8"/>
+          <path d="M38 36L33 72Q35 82 40 78L42 52Z" fill="#c8b8e8"/>
+          <path d="M102 36L107 72Q105 82 100 78L98 52Z" fill="#c8b8e8"/>
+          <path d="M65 20Q58 18 56 22Q60 16 65 20Z" fill="rgba(162,155,254,.75)"/>
+          <ellipse cx="57" cy="51" rx="10" ry="9" fill="white"/><ellipse cx="83" cy="51" rx="10" ry="9" fill="white"/>
+          <circle cx="57" cy="51" r="5.5" fill="#3a1870"/><circle cx="57" cy="51" r="3.5" fill="#050508"/>
+          <ellipse cx="59.5" cy="48.5" rx="2" ry="1.6" fill="rgba(162,155,254,.97)" opacity=".9"/>
+          <circle cx="83" cy="51" r="5.5" fill="#3a1870"/><circle cx="83" cy="51" r="3.5" fill="#050508"/>
+          <ellipse cx="85.5" cy="48.5" rx="2" ry="1.6" fill="rgba(162,155,254,.97)" opacity=".9"/>
+          <path d="M47 40Q57 35 65 39" stroke="#c8b8e8" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <path d="M75 39Q83 35 93 40" stroke="#c8b8e8" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <path d="M60 73Q70 77 80 73" stroke="#4a2818" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div class="ctag">Lumis</div>
+      </div>
     </div>
   </div>
   <div class="seg" style="--z:-3650px;">

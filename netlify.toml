@@ -1,4 +1,9 @@
-[[headers]]
+[[redirects]]
+  from = "/"
+  to = "/horizon-cosmos-index.html"
+  status = 200 
+  
+  [[headers]]
   for = "/*"
   [headers.values]
     Cross-Origin-Opener-Policy = "same-origin"

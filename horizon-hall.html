@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -773,16 +772,12 @@ html,body{height:100%;overflow:hidden;background:#000;font-family:'Cormorant Gar
 
 </div></div>
 
-<!-- HUD -->
-<div class="hud">
-  <div class="hbtn" id="hf" ontouchstart="sm('f');event.preventDefault();" ontouchend="st()" onmousedown="sm('f')" onmouseup="st()" onmouseleave="st()">▲</div>
-  <div class="hud-row">
-    <div class="hbtn" id="hl" ontouchstart="sm('l');event.preventDefault();" ontouchend="st()" onmousedown="sm('l')" onmouseup="st()" onmouseleave="st()">◄</div>
-    <div class="hbtn" id="hb" ontouchstart="sm('b');event.preventDefault();" ontouchend="st()" onmousedown="sm('b')" onmouseup="st()" onmouseleave="st()">▼</div>
-    <div class="hbtn" id="hr" ontouchstart="sm('r');event.preventDefault();" ontouchend="st()" onmousedown="sm('r')" onmouseup="st()" onmouseleave="st()">►</div>
-  </div>
-  <div class="hlbl">Arrow Keys · Walk &nbsp;|&nbsp; Drag · Look Around &nbsp;|&nbsp; Double-click · Reset View</div>
+<!-- STREET VIEW JOYSTICK -->
+<div id="joystick-wrap" style="position:fixed;bottom:28px;right:24px;z-index:60;width:90px;height:90px;">
+  <canvas id="joystick-canvas" width="90" height="90" style="position:absolute;inset:0;opacity:.55;"></canvas>
+  <div id="joystick-knob" style="position:absolute;width:30px;height:30px;border-radius:50%;background:rgba(0,200,168,.7);border:2px solid rgba(0,200,168,.9);top:30px;left:30px;transition:box-shadow .2s;box-shadow:0 0 12px rgba(0,200,168,.5);pointer-events:none;"></div>
 </div>
+<div style="position:fixed;bottom:10px;left:50%;transform:translateX(-50%);z-index:60;font-family:Rajdhani,sans-serif;font-size:6px;letter-spacing:.25em;text-transform:uppercase;color:rgba(0,200,168,.35);white-space:nowrap;pointer-events:none;">DRAG TO LOOK · JOYSTICK TO WALK</div>
 
 <script>
 // Stars
@@ -863,142 +858,192 @@ function darken(hex){return hex.replace(/[0-9a-f]/gi,function(c){var n=parseInt(
 function lighten(hex){return hex.replace(/[0-9a-f]/gi,function(c){var n=parseInt(c,16);return Math.min(15,n+3).toString(16);});}
 
 // ═══ CORE VARIABLES ═══
-var pz=0,px=0,mi=null;
-var STEP=60,SX=25,MNZ=-600,MXZ=5000,MNX=-500,MXX=500;
+var pz=0,px=0;
+var MNZ=-600,MXZ=5000,MNX=-500,MXX=500;
 var rotY=0,rotX=0;
 var MAX_ROTX=65,MIN_ROTX=-65;
-var locked=false; // pointer lock active
+var hallEl=document.getElementById('hall');
+hallEl.style.cursor='grab';
+
+// ═══ SMOOTH MOMENTUM ═══
+var velY=0,velX=0,FRICTION=0.88,RAF=null;
+function applyMomentum(){
+  velY*=FRICTION; velX*=FRICTION;
+  if(Math.abs(velY)>0.01||Math.abs(velX)>0.01){
+    rotY+=velY; rotX+=velX;
+    rotX=Math.max(MIN_ROTX,Math.min(MAX_ROTX,rotX));
+    apply();
+    RAF=requestAnimationFrame(applyMomentum);
+  }
+}
 
 // ═══ APPLY TRANSFORM ═══
 function apply(){
-  // Rotation BEFORE translation = true first-person head turning
   document.getElementById('world').style.transform=
     'rotateX('+(-rotX)+'deg) rotateY('+(-rotY)+'deg) translateZ('+pz+'px) translateX('+px+'px)';
   updPos();chkDoors();
 }
 
-// ═══ WALK ═══
-function mv(d){
-  if(d==='f'&&pz<MXZ)pz+=STEP;
-  else if(d==='b'&&pz>MNZ)pz-=STEP;
-  else if(d==='l'&&px<MXX)px+=SX;
-  else if(d==='r'&&px>MNX)px-=SX;
+// ═══ WALK (joystick driven) ═══
+var STEP=55,SX=22,walkTimer=null,joyActive=false;
+function walkDir(dx,dy){
+  if(dy<-0.3&&pz<MXZ)pz+=STEP*Math.abs(dy);
+  else if(dy>0.3&&pz>MNZ)pz-=STEP*Math.abs(dy);
+  if(dx<-0.3&&px<MXX)px+=SX*Math.abs(dx);
+  else if(dx>0.3&&px>MNX)px-=SX*Math.abs(dx);
   apply();
 }
-function sm(d){
-  st();mv(d);
-  var m={f:'hf',b:'hb',l:'hl',r:'hr'};
-  document.getElementById(m[d]).classList.add('act');
-  mi=setInterval(function(){mv(d);},55);
+
+// ═══ JOYSTICK ═══
+var jCanvas=document.getElementById('joystick-canvas');
+var jKnob=document.getElementById('joystick-knob');
+var jWrap=document.getElementById('joystick-wrap');
+var jCtx=jCanvas.getContext('2d');
+var JR=45,KR=15,jActive=false,jTouchId=null;
+var jCX=JR,jCY=JR,jKX=JR,jKY=JR;
+
+function drawJoy(){
+  jCtx.clearRect(0,0,90,90);
+  jCtx.beginPath();jCtx.arc(JR,JR,JR-2,0,Math.PI*2);
+  jCtx.strokeStyle='rgba(0,200,168,.4)';jCtx.lineWidth=1.5;jCtx.stroke();
+  jCtx.beginPath();jCtx.arc(JR,JR,JR-2,0,Math.PI*2);
+  jCtx.fillStyle='rgba(0,0,0,.35)';jCtx.fill();
+  // crosshairs
+  jCtx.strokeStyle='rgba(0,200,168,.2)';jCtx.lineWidth=1;
+  jCtx.beginPath();jCtx.moveTo(JR,8);jCtx.lineTo(JR,82);jCtx.stroke();
+  jCtx.beginPath();jCtx.moveTo(8,JR);jCtx.lineTo(82,JR);jCtx.stroke();
 }
-function st(){
-  clearInterval(mi);
-  ['hf','hb','hl','hr'].forEach(function(b){document.getElementById(b).classList.remove('act');});
+drawJoy();
+
+function joyMove(cx,cy){
+  var rect=jWrap.getBoundingClientRect();
+  var lx=cx-rect.left-JR,ly=cy-rect.top-JR;
+  var dist=Math.sqrt(lx*lx+ly*ly);
+  var maxR=JR-KR-2;
+  if(dist>maxR){lx=lx/dist*maxR;ly=ly/dist*maxR;}
+  jKnob.style.left=(JR+lx-KR)+'px';
+  jKnob.style.top=(JR+ly-KR)+'px';
+  var ndx=lx/maxR,ndy=ly/maxR;
+  if(walkTimer)clearInterval(walkTimer);
+  walkTimer=setInterval(function(){walkDir(ndx,ndy);},50);
 }
+function joyEnd(){
+  jActive=false;jTouchId=null;
+  jKnob.style.left=(JR-KR)+'px';jKnob.style.top=(JR-KR)+'px';
+  if(walkTimer){clearInterval(walkTimer);walkTimer=null;}
+}
+
+jWrap.addEventListener('touchstart',function(e){
+  e.stopPropagation();e.preventDefault();
+  jActive=true;jTouchId=e.changedTouches[0].identifier;
+  joyMove(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
+},{passive:false});
+jWrap.addEventListener('touchmove',function(e){
+  e.stopPropagation();e.preventDefault();
+  for(var i=0;i<e.changedTouches.length;i++){
+    if(e.changedTouches[i].identifier===jTouchId){
+      joyMove(e.changedTouches[i].clientX,e.changedTouches[i].clientY);break;
+    }
+  }
+},{passive:false});
+jWrap.addEventListener('touchend',function(e){e.stopPropagation();joyEnd();},{passive:false});
+// Mouse joystick
+jWrap.addEventListener('mousedown',function(e){
+  e.stopPropagation();jActive=true;
+  joyMove(e.clientX,e.clientY);
+  document.addEventListener('mousemove',jMouseMove);
+  document.addEventListener('mouseup',jMouseUp);
+});
+function jMouseMove(e){if(jActive)joyMove(e.clientX,e.clientY);}
+function jMouseUp(){joyEnd();document.removeEventListener('mousemove',jMouseMove);document.removeEventListener('mouseup',jMouseUp);}
 
 // ═══ KEYBOARD ═══
 var ks={};
 document.addEventListener('keydown',function(e){
   if(ks[e.key])return;ks[e.key]=true;
-  if(e.key==='ArrowUp'||e.key==='w')sm('f');
-  else if(e.key==='ArrowDown'||e.key==='s')sm('b');
-  else if(e.key==='ArrowLeft'||e.key==='a')sm('l');
-  else if(e.key==='ArrowRight'||e.key==='d')sm('r');
+  if(e.key==='ArrowUp'||e.key==='w'){if(pz<MXZ)pz+=STEP;apply();}
+  else if(e.key==='ArrowDown'||e.key==='s'){if(pz>MNZ)pz-=STEP;apply();}
+  else if(e.key==='ArrowLeft'||e.key==='a'){if(px<MXX)px+=SX;apply();}
+  else if(e.key==='ArrowRight'||e.key==='d'){if(px>MNX)px-=SX;apply();}
   else if(e.key==='Enter')enterNearest();
   else if(e.key==='Escape'){rotY=0;rotX=0;apply();}
   e.preventDefault();
 });
-document.addEventListener('keyup',function(e){ks[e.key]=false;st();});
+document.addEventListener('keyup',function(e){ks[e.key]=false;});
 
-// ═══ POINTER LOCK — true first-person head turning ═══
-var hallEl=document.getElementById('hall');
-
-// Click hall to lock pointer (enter first-person mode)
-hallEl.addEventListener('click',function(e){
-  if(e.target.closest('.door'))return;
-  if(!locked){
-    hallEl.requestPointerLock = hallEl.requestPointerLock||hallEl.mozRequestPointerLock||hallEl.webkitRequestPointerLock;
-    if(hallEl.requestPointerLock) hallEl.requestPointerLock();
-  }
-});
-
-// Pointer lock change
-document.addEventListener('pointerlockchange',onLockChange,false);
-document.addEventListener('mozpointerlockchange',onLockChange,false);
-document.addEventListener('webkitpointerlockchange',onLockChange,false);
-
-function onLockChange(){
-  var el=document.pointerLockElement||document.mozPointerLockElement||document.webkitPointerLockElement;
-  if(el===hallEl){
-    locked=true;
-    hallEl.style.cursor='none';
-    lockHint.style.opacity='0';
-    crosshair.style.display='block';
-  } else {
-    locked=false;
-    hallEl.style.cursor='crosshair';
-    lockHint.style.opacity='1';
-    crosshair.style.display='none';
-  }
-}
-
-// Mouse move — only fires when pointer is locked
-document.addEventListener('mousemove',function(e){
-  if(!locked)return;
-  var dx=e.movementX||e.mozMovementX||e.webkitMovementX||0;
-  var dy=e.movementY||e.mozMovementY||e.webkitMovementY||0;
-  rotY+=dx*0.18;
-  rotX-=dy*0.14;
-  rotX=Math.max(MIN_ROTX,Math.min(MAX_ROTX,rotX));
-  apply();
-},false);
-
-// ═══ CROSSHAIR ═══
-var crosshair=document.createElement('div');
-crosshair.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:80;width:16px;height:16px;pointer-events:none;display:none;';
-crosshair.innerHTML='<svg width="16" height="16" viewBox="0 0 16 16"><line x1="8" y1="2" x2="8" y2="6" stroke="rgba(0,200,168,.7)" stroke-width="1.5"/><line x1="8" y1="10" x2="8" y2="14" stroke="rgba(0,200,168,.7)" stroke-width="1.5"/><line x1="2" y1="8" x2="6" y2="8" stroke="rgba(0,200,168,.7)" stroke-width="1.5"/><line x1="10" y1="8" x2="14" y2="8" stroke="rgba(0,200,168,.7)" stroke-width="1.5"/><circle cx="8" cy="8" r="1.5" fill="rgba(0,200,168,.9)"/></svg>';
-document.body.appendChild(crosshair);
-
-// ═══ LOCK HINT ═══
-var lockHint=document.createElement('div');
-lockHint.style.cssText='position:fixed;top:46px;left:50%;transform:translateX(-50%);z-index:60;font-family:Rajdhani,sans-serif;font-size:6.5px;letter-spacing:.28em;text-transform:uppercase;color:rgba(0,200,168,.5);background:rgba(0,0,0,.72);border:1px solid rgba(0,200,168,.1);padding:4px 14px;white-space:nowrap;transition:opacity .4s;';
-lockHint.textContent='CLICK HALL TO LOOK AROUND · ARROWS TO WALK · ESC TO RESET';
-document.body.appendChild(lockHint);
-hallEl.style.cursor='crosshair';
-
-// ═══ FALLBACK DRAG LOOK (if pointer lock not supported) ═══
-var dragging=false,lastMX=0,lastMY=0;
+// ═══ DRAG TO LOOK — Street View style with momentum ═══
+var dragging=false,lastMX=0,lastMY=0,lastDX=0,lastDY=0;
 hallEl.addEventListener('mousedown',function(e){
-  if(e.target.closest('.door'))return;
-  if(!locked){dragging=true;lastMX=e.clientX;lastMY=e.clientY;hallEl.style.cursor='grabbing';}
+  if(e.target.closest('.door')||jActive)return;
+  dragging=true;lastMX=e.clientX;lastMY=e.clientY;
+  lastDX=0;lastDY=0;
+  hallEl.style.cursor='grabbing';
+  if(RAF)cancelAnimationFrame(RAF);
 });
 document.addEventListener('mousemove',function(e){
-  if(!dragging||locked)return;
-  var dx=e.clientX-lastMX,dy=e.clientY-lastMY;
-  rotY+=dx*.22;rotX-=dy*.16;
+  if(!dragging)return;
+  lastDX=e.clientX-lastMX;lastDY=e.clientY-lastMY;
+  rotY+=lastDX*.18;rotX-=lastDY*.14;
   rotX=Math.max(MIN_ROTX,Math.min(MAX_ROTX,rotX));
   lastMX=e.clientX;lastMY=e.clientY;apply();
 });
 document.addEventListener('mouseup',function(){
-  dragging=false;
-  if(!locked)hallEl.style.cursor='crosshair';
+  if(!dragging)return;
+  dragging=false;hallEl.style.cursor='grab';
+  velY=lastDX*.18;velX=-lastDY*.14;
+  if(RAF)cancelAnimationFrame(RAF);
+  RAF=requestAnimationFrame(applyMomentum);
 });
 
-// Double click reset
-hallEl.addEventListener('dblclick',function(){rotY=0;rotX=0;apply();});
-
-// ═══ TOUCH — single finger = look, swipe fast = walk ═══
-var ttx=0,tty=0;
+// ═══ TOUCH LOOK — smooth drag with momentum ═══
+var lookTouchId=null,ltx=0,lty=0,ltdx=0,ltdy=0;
 hallEl.addEventListener('touchstart',function(e){
-  ttx=e.touches[0].clientX;tty=e.touches[0].clientY;
+  if(jActive)return;
+  // Only use first touch that isn't on joystick
+  for(var i=0;i<e.changedTouches.length;i++){
+    var t=e.changedTouches[i];
+    var jRect=jWrap.getBoundingClientRect();
+    var overJoy=(t.clientX>=jRect.left&&t.clientX<=jRect.right&&t.clientY>=jRect.top&&t.clientY<=jRect.bottom);
+    if(!overJoy&&lookTouchId===null){
+      lookTouchId=t.identifier;ltx=t.clientX;lty=t.clientY;ltdx=0;ltdy=0;
+      if(RAF)cancelAnimationFrame(RAF);
+      break;
+    }
+  }
 },{passive:true});
+
 hallEl.addEventListener('touchmove',function(e){
-  var dx=e.touches[0].clientX-ttx,dy=e.touches[0].clientY-tty;
-  rotY+=dx*.2;rotX-=dy*.15;
-  rotX=Math.max(MIN_ROTX,Math.min(MAX_ROTX,rotX));
-  ttx=e.touches[0].clientX;tty=e.touches[0].clientY;
-  apply();e.preventDefault();
+  e.preventDefault();
+  for(var i=0;i<e.changedTouches.length;i++){
+    var t=e.changedTouches[i];
+    if(t.identifier===lookTouchId){
+      ltdx=t.clientX-ltx;ltdy=t.clientY-lty;
+      rotY+=ltdx*.18;rotX-=ltdy*.14;
+      rotX=Math.max(MIN_ROTX,Math.min(MAX_ROTX,rotX));
+      ltx=t.clientX;lty=t.clientY;apply();break;
+    }
+  }
 },{passive:false});
+
+hallEl.addEventListener('touchend',function(e){
+  for(var i=0;i<e.changedTouches.length;i++){
+    if(e.changedTouches[i].identifier===lookTouchId){
+      lookTouchId=null;
+      velY=ltdx*.18;velX=-ltdy*.14;
+      if(RAF)cancelAnimationFrame(RAF);
+      RAF=requestAnimationFrame(applyMomentum);
+      break;
+    }
+  }
+},{passive:true});
+
+// Double tap reset
+var lastTap=0;
+hallEl.addEventListener('touchend',function(e){
+  var now=Date.now();
+  if(now-lastTap<350){rotY=0;rotX=0;velY=0;velX=0;apply();}
+  lastTap=now;
+},{passive:true});
 
 // ═══ POSITION ZONES ═══
 var zones=[
@@ -1040,7 +1085,7 @@ allDoors.forEach(function(d){d.addEventListener('click',function(){goRoom(d.data
 function goRoom(r){
   if(locked){document.exitPointerLock=document.exitPointerLock||document.mozExitPointerLock||document.webkitExitPointerLock;if(document.exitPointerLock)document.exitPointerLock();}
   var f=document.getElementById('flash');f.style.opacity='.85';f.style.transition='opacity .18s';
-  setTimeout(function(){window.location.href='https://cubee1-jpg.github.io/horizon-cosmos/'+r;},220);
+  setTimeout(function(){window.location.href='https://chipper-bunny-540b2c.netlify.app/'+r;},220);
 }
 
 apply();
